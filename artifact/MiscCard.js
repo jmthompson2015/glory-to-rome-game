@@ -83,6 +83,8 @@ MiscCard.keys = () => Object.keys(MiscCard.properties);
 
 MiscCard.values = () => Object.values(MiscCard.properties);
 
+MiscCard.value = (key) => MiscCard.properties[key];
+
 Object.freeze(MiscCard);
 
 export default MiscCard;

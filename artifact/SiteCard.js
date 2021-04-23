@@ -52,6 +52,8 @@ SiteCard.keys = () => Object.keys(SiteCard.properties);
 
 SiteCard.values = () => Object.values(SiteCard.properties);
 
+SiteCard.value = (key) => SiteCard.properties[key];
+
 Object.freeze(SiteCard);
 
 export default SiteCard;

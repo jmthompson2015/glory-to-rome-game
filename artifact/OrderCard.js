@@ -457,6 +457,8 @@ OrderCard.keys = () => Object.keys(OrderCard.properties);
 
 OrderCard.values = () => Object.values(OrderCard.properties);
 
+OrderCard.value = (key) => OrderCard.properties[key];
+
 Object.freeze(OrderCard);
 
 export default OrderCard;

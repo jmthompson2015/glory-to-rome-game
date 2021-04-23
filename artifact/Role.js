@@ -44,6 +44,8 @@ Role.keys = () => Object.keys(Role.properties);
 
 Role.values = () => Object.values(Role.properties);
 
+Role.value = (key) => Role.properties[key];
+
 Object.freeze(Role);
 
 export default Role;

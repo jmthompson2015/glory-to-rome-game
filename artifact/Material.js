@@ -44,6 +44,8 @@ Material.keys = () => Object.keys(Material.properties);
 
 Material.values = () => Object.values(Material.properties);
 
+Material.value = (key) => Material.properties[key];
+
 Object.freeze(Material);
 
 export default Material;
