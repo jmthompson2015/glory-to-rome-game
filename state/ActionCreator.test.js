@@ -7,7 +7,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", (assert) => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 30);
+  assert.equal(actionTypeKeys.length, 32);
 
   // Run / Verify.
   actionTypeKeys.forEach((key) => {
@@ -321,6 +321,36 @@ QUnit.test("setWinner()", (assert) => {
   assert.ok(result);
   assert.equal(result.type, ActionType.SET_WINNER);
   assert.equal(result.winnerId, winnerId);
+});
+
+QUnit.test("transferCampToPool()", (assert) => {
+  // Setup.
+  const playerId = 3;
+  const cardId = 12;
+
+  // Run.
+  const result = ActionCreator.transferCampToPool(playerId, cardId);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.TRANSFER_CAMP_TO_POOL);
+  assert.equal(result.playerId, playerId);
+  assert.equal(result.cardId, cardId);
+});
+
+QUnit.test("transferHandToCamp()", (assert) => {
+  // Setup.
+  const playerId = 3;
+  const cardId = 12;
+
+  // Run.
+  const result = ActionCreator.transferHandToCamp(playerId, cardId);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.TRANSFER_HAND_TO_CAMP);
+  assert.equal(result.playerId, playerId);
+  assert.equal(result.cardId, cardId);
 });
 
 QUnit.test("transferHandToClientele()", (assert) => {

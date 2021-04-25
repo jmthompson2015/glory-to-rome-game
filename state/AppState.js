@@ -23,6 +23,7 @@ AppState.create = ({
   currentPhaseKey = null,
   currentPlayerId = null,
 
+  playerToCamp = {},
   playerToClientele = {},
   playerToHand = {},
   playerToInfluence = {},
@@ -58,6 +59,7 @@ AppState.create = ({
     currentPhaseKey,
     currentPlayerId,
 
+    playerToCamp,
     playerToClientele,
     playerToHand,
     playerToInfluence,

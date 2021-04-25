@@ -114,6 +114,18 @@ ActionCreator.setVersion = makeActionCreator(
 
 ActionCreator.setWinner = makeActionCreator(ActionType.SET_WINNER, "winnerId");
 
+ActionCreator.transferCampToPool = makeActionCreator(
+  ActionType.TRANSFER_CAMP_TO_POOL,
+  "playerId",
+  "cardId"
+);
+
+ActionCreator.transferHandToCamp = makeActionCreator(
+  ActionType.TRANSFER_HAND_TO_CAMP,
+  "playerId",
+  "cardId"
+);
+
 ActionCreator.transferHandToClientele = makeActionCreator(
   ActionType.TRANSFER_HAND_TO_CLIENTELE,
   "playerId",
