@@ -5,6 +5,7 @@ const Role = {
   LEGIONARY: "legionary",
   MERCHANT: "merchant",
   PATRON: "patron",
+  THINK: "think",
 };
 
 Role.properties = {
@@ -37,6 +38,11 @@ Role.properties = {
     name: "Patron",
     color: "Purple",
     key: "patron",
+  },
+  think: {
+    name: "Think",
+    color: "White",
+    key: "think",
   },
 };
 
