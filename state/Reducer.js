@@ -105,6 +105,7 @@ Reducer.root = (state, action) => {
   let newPlayerToStrategy;
   let newSiteDeck;
   let newSiteToDeck;
+  let newStructures;
   let oldSiteDeck;
 
   switch (action.type) {
@@ -121,6 +122,12 @@ Reducer.root = (state, action) => {
         { round: state.round, message: action.message },
       ];
       return { ...state, gameRecords: newGameRecords };
+    case ActionType.ADD_STRUCTURE:
+      newStructures = {
+        ...state.structureInstances,
+        [action.structureState.id]: action.structureState,
+      };
+      return { ...state, structureInstances: newStructures };
     case ActionType.ADD_TO_PLAYER_ARRAY:
       return addToArray(
         state,

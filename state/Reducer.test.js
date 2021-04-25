@@ -8,6 +8,7 @@ import CardState from "./CardState.js";
 import PlayerState from "./PlayerState.js";
 import Reducer from "./Reducer.js";
 import Selector from "./Selector.js";
+import StructureState from "./StructureState.js";
 
 QUnit.module("Reducer");
 
@@ -70,6 +71,40 @@ QUnit.test("addGameRecord()", (assert) => {
   assert.equal(gameRecords0[0].message, "first game record");
   assert.equal(gameRecords1[1].round, 2);
   assert.equal(gameRecords1[1].message, "second game record");
+});
+
+QUnit.test("addStructure()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const structureState = StructureState.create({
+    id: Selector.nextStructureId(state),
+    foundationId: 2,
+    siteId: 3,
+  });
+  const action = ActionCreator.addStructure(structureState);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const structures = result.structureInstances;
+  assert.ok(structures);
+  assert.equal(Object.keys(structures).length, 1);
+  const structure = structures[1];
+  assert.ok(structure);
+  assert.equal(structure.id, 1, `structure.id = ${structure.id}`);
+  assert.equal(
+    structure.foundationId,
+    2,
+    `structure.foundationId = ${structure.foundationId}`
+  );
+  assert.equal(structure.siteId, 3, `structure.siteId = ${structure.siteId}`);
+  assert.equal(
+    structure.materialIds.length,
+    0,
+    `structure.materialIds = ${structure.materialIds}`
+  );
 });
 
 QUnit.test("addToPlayerArray()", (assert) => {

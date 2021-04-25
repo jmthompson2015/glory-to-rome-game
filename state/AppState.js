@@ -28,10 +28,12 @@ AppState.create = ({
   playerToInfluence = {},
   playerToStockpile = {},
   playerToStrategy = {},
+  playerToStructures = {},
   playerToVault = {},
 
   cardInstances = {},
   playerInstances = {},
+  structureInstances = {},
 } = {}) =>
   Immutable({
     appName,
@@ -61,10 +63,12 @@ AppState.create = ({
     playerToInfluence,
     playerToStockpile,
     playerToStrategy,
+    playerToStructures,
     playerToVault,
 
     cardInstances,
     playerInstances,
+    structureInstances,
   });
 
 Object.freeze(AppState);

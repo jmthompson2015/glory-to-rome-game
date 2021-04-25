@@ -18,6 +18,11 @@ ActionCreator.addGameRecord = makeActionCreator(
   "message"
 );
 
+ActionCreator.addStructure = makeActionCreator(
+  ActionType.ADD_STRUCTURE,
+  "structureState"
+);
+
 ActionCreator.addToPlayerArray = (arrayName, playerId, cardId) => ({
   type: ActionType.ADD_TO_PLAYER_ARRAY,
   arrayName,

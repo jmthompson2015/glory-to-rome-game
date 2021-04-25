@@ -6,12 +6,20 @@ import CardState from "./CardState.js";
 import PlayerState from "./PlayerState.js";
 import Reducer from "./Reducer.js";
 import Selector from "./Selector.js";
+import StructureState from "./StructureState.js";
 
 QUnit.module("Selector");
 
 const addCard = (id, cardKey, state) => {
   const card = CardState.create({ id, cardKey });
   const action = ActionCreator.addCard(card);
+
+  return Reducer.root(state, action);
+};
+
+const addStructure = (id, foundationId, siteId, state) => {
+  const structure = StructureState.create({ id, foundationId, siteId });
+  const action = ActionCreator.addStructure(structure);
 
   return Reducer.root(state, action);
 };
@@ -158,6 +166,19 @@ QUnit.test("nextPlayerId()", (assert) => {
 
   // Run / Verify.
   assert.equal(Selector.nextPlayerId(state2), 3);
+});
+
+QUnit.test("nextStructureId()", (assert) => {
+  // Setup.
+  const state1 = AppState.create();
+
+  // Run / Verify.
+  assert.equal(Selector.nextStructureId(state1), 1);
+
+  const state2 = addStructure(12, 3, 4, state1);
+
+  // Run / Verify.
+  assert.equal(Selector.nextStructureId(state2), 13);
 });
 
 QUnit.test("playersInOrder() 1", (assert) => {

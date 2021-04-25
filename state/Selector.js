@@ -96,6 +96,8 @@ Selector.nextCardId = (state) => nextId(state.cardInstances);
 
 Selector.nextPlayerId = (state) => nextId(state.playerInstances);
 
+Selector.nextStructureId = (state) => nextId(state.structureInstances);
+
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 // Player collections.
 

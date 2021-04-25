@@ -7,7 +7,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", (assert) => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 29);
+  assert.equal(actionTypeKeys.length, 30);
 
   // Run / Verify.
   actionTypeKeys.forEach((key) => {
@@ -42,6 +42,19 @@ QUnit.test("addGameRecord()", (assert) => {
   assert.ok(result);
   assert.equal(result.type, ActionType.ADD_GAME_RECORD);
   assert.equal(result.message, message);
+});
+
+QUnit.test("addStructure()", (assert) => {
+  // Setup.
+  const structureState = 12;
+
+  // Run.
+  const result = ActionCreator.addStructure(structureState);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.ADD_STRUCTURE);
+  assert.equal(result.structureState, structureState);
 });
 
 QUnit.test("addToPlayerArray()", (assert) => {
