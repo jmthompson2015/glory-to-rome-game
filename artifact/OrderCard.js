@@ -102,6 +102,7 @@ OrderCard.properties = {
     name: "Bar",
     ability:
       "When performing PATRON action, you may take one additional client card from the deck.",
+    count: 6,
     materialKey: Material.RUBBLE,
     materialValue: 1,
     roleKey: Role.LABORER,
@@ -149,6 +150,7 @@ OrderCard.properties = {
   circus: {
     name: "Circus",
     ability: "You may play two cards of the same role as a JACK.",
+    count: 6,
     materialKey: Material.WOOD,
     materialValue: 1,
     roleKey: Role.CRAFTSMAN,
@@ -176,6 +178,7 @@ OrderCard.properties = {
   crane: {
     name: "Crane",
     ability: "You may use any card to lead or follow ARCHITECT.",
+    count: 6,
     materialKey: Material.WOOD,
     materialValue: 1,
     roleKey: Role.CRAFTSMAN,
@@ -185,6 +188,7 @@ OrderCard.properties = {
     name: "Dock",
     ability:
       "When performing LABORER action, you may take one additional material from your hand.",
+    count: 6,
     materialKey: Material.WOOD,
     materialValue: 1,
     roleKey: Role.CRAFTSMAN,
@@ -260,6 +264,7 @@ OrderCard.properties = {
   insula: {
     name: "Insula",
     ability: "Maximum clientele size +2",
+    count: 6,
     materialKey: Material.RUBBLE,
     materialValue: 1,
     roleKey: Role.LABORER,
@@ -269,6 +274,7 @@ OrderCard.properties = {
     name: "Latrine",
     ability:
       "Before performing THINKER action, you may discard one card to pool.",
+    count: 6,
     materialKey: Material.RUBBLE,
     materialValue: 1,
     roleKey: Role.LABORER,
@@ -285,6 +291,7 @@ OrderCard.properties = {
   market: {
     name: "Market",
     ability: "Maximum vault size +2",
+    count: 6,
     materialKey: Material.WOOD,
     materialValue: 1,
     roleKey: Role.CRAFTSMAN,
@@ -302,6 +309,7 @@ OrderCard.properties = {
   palisade: {
     name: "Palisade",
     ability: "Immune to LEGIONARY",
+    count: 6,
     materialKey: Material.WOOD,
     materialValue: 1,
     roleKey: Role.CRAFTSMAN,
@@ -321,6 +329,7 @@ OrderCard.properties = {
     name: "Road",
     ability:
       "You may use any material towards the completion of STONE structures.",
+    count: 6,
     materialKey: Material.RUBBLE,
     materialValue: 1,
     roleKey: Role.LABORER,
@@ -456,6 +465,13 @@ OrderCard.properties = {
 OrderCard.keys = () => Object.keys(OrderCard.properties);
 
 OrderCard.values = () => Object.values(OrderCard.properties);
+
+R.forEach((cardKey) => {
+  const card = OrderCard.properties[cardKey];
+  if (R.isNil(card.count)) {
+    card.count = 3;
+  }
+}, OrderCard.keys());
 
 OrderCard.value = (key) => OrderCard.properties[key];
 

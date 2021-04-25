@@ -13,6 +13,7 @@ QUnit.test("OrderCard properties Academy", (assert) => {
     "You may perform one THINKER action after any turn during which you performed " +
       "at least on CRAFTSMAN action."
   );
+  assert.equal(properties.count, 3);
   assert.equal(properties.materialKey, "brick");
   assert.equal(properties.materialValue, 2);
   assert.equal(properties.roleKey, "legionary");
