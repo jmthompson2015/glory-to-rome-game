@@ -32,8 +32,10 @@ AppState.create = ({
   playerToStructures = {},
   playerToVault = {},
 
-  cardInstances = {},
+  miscCardInstances = {},
+  orderCardInstances = {},
   playerInstances = {},
+  siteCardInstances = {},
   structureInstances = {},
 } = {}) =>
   Immutable({
@@ -68,8 +70,10 @@ AppState.create = ({
     playerToStructures,
     playerToVault,
 
-    cardInstances,
+    miscCardInstances,
+    orderCardInstances,
     playerInstances,
+    siteCardInstances,
     structureInstances,
   });
 

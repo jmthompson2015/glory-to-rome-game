@@ -23,11 +23,11 @@ StructureState.create = ({
   let materialTypes;
 
   if (store) {
-    const { cardInstances } = store.getState();
-    foundationType = OrderCard.value(cardInstances[foundationId].cardKey);
-    siteType = SiteCard.value(cardInstances[siteId].cardKey);
+    const { orderCardInstances, siteCardInstances } = store.getState();
+    foundationType = OrderCard.value(orderCardInstances[foundationId].cardKey);
+    siteType = SiteCard.value(siteCardInstances[siteId].cardKey);
     const mapFunction = (cardId) => {
-      const instance = cardInstances[cardId];
+      const instance = orderCardInstances[cardId];
       return OrderCard.value(instance.cardKey);
     };
     materialTypes = R.map(mapFunction, materialIds);

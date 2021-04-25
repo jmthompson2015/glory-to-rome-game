@@ -1,9 +1,9 @@
-import CardState from "./CardState.js";
+import SiteCardState from "./SiteCardState.js";
 
-QUnit.module("CardState");
+QUnit.module("SiteCardState");
 
 const createTestData = () =>
-  CardState.create({
+  SiteCardState.create({
     id: 1,
     cardKey: 2,
     isFaceup: 3,
@@ -40,12 +40,12 @@ QUnit.test("toString()", (assert) => {
   const card = createTestData();
 
   // Run.
-  const result = CardState.toString(card);
+  const result = SiteCardState.toString(card);
 
   // Verify.
   assert.ok(result);
   assert.equal(result, '{"id":1,"cardKey":2}');
 });
 
-const PlayerStateTest = {};
-export default PlayerStateTest;
+const SiteCardStateTest = {};
+export default SiteCardStateTest;

@@ -1,7 +1,9 @@
 const ActionType = {};
 
-ActionType.ADD_CARD = "addCard";
 ActionType.ADD_GAME_RECORD = "addGameRecord";
+ActionType.ADD_MISC_CARD = "addMiscCard";
+ActionType.ADD_ORDER_CARD = "addOrderCard";
+ActionType.ADD_SITE_CARD = "addSiteCard";
 ActionType.ADD_STRUCTURE = "addStructure";
 ActionType.ADD_TO_PLAYER_ARRAY = "addToPlayerArray";
 ActionType.SET_CURRENT_PHASE = "setCurrentPhase";

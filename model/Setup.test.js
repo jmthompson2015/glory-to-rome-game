@@ -24,13 +24,13 @@ QUnit.test("createSiteDecks()", (assert) => {
   store.dispatch(ActionCreator.setOrderDeck(orderDeck0));
 
   // Run.
-  Setup.createSiteDecks(players, store);
+  Setup.createSiteDecks(store, players);
 
   // Verify.
   const state = store.getState();
-  const { cardInstances, siteToDeck, siteToOutOfTownDeck } = state;
-  assert.ok(cardInstances);
-  assert.equal(Object.keys(cardInstances).length, 180);
+  const { siteCardInstances, siteToDeck, siteToOutOfTownDeck } = state;
+  assert.ok(siteCardInstances);
+  assert.equal(Object.keys(siteCardInstances).length, 36);
   assert.ok(siteToDeck);
   assert.equal(Object.keys(siteToDeck).length, 6);
   assert.ok(siteToOutOfTownDeck);
@@ -47,16 +47,16 @@ QUnit.test("dealOrderCards()", (assert) => {
   store.dispatch(ActionCreator.setJackDeck(jackDeck0));
 
   // Run.
-  Setup.dealOrderCards(players, store);
+  Setup.dealOrderCards(store, players);
 
   // Verify.
   const state = store.getState();
-  const { cardInstances, jackDeck, orderDeck, playerToHand } = state;
-  assert.ok(cardInstances);
+  const { orderCardInstances, jackDeck, orderDeck, playerToHand } = state;
+  assert.ok(orderCardInstances);
   assert.equal(
-    Object.keys(cardInstances).length,
-    150,
-    `cardInstances length = ${Object.keys(cardInstances).length}`
+    Object.keys(orderCardInstances).length,
+    144,
+    `orderCardInstances length = ${Object.keys(orderCardInstances).length}`
   );
   assert.ok(orderDeck);
   assert.equal(orderDeck.length, 134, `orderDeck.length = ${orderDeck.length}`);
@@ -78,16 +78,16 @@ QUnit.test("dealPoolCards()", (assert) => {
   store.dispatch(ActionCreator.setOrderDeck(orderDeck0));
 
   // Run.
-  Setup.dealPoolCards(players, store);
+  Setup.dealPoolCards(store, players);
 
   // Verify.
   const state = store.getState();
-  const { cardInstances, cardPool, initiativePlayerId, orderDeck } = state;
-  assert.ok(cardInstances);
+  const { cardPool, initiativePlayerId, orderCardInstances, orderDeck } = state;
+  assert.ok(orderCardInstances);
   assert.equal(
-    Object.keys(cardInstances).length,
+    Object.keys(orderCardInstances).length,
     144,
-    `cardInstances length = ${Object.keys(cardInstances).length}`
+    `orderCardInstances length = ${Object.keys(orderCardInstances).length}`
   );
   assert.ok(orderDeck);
   assert.equal(orderDeck.length, 142, `orderDeck.length = ${orderDeck.length}`);
@@ -112,20 +112,34 @@ QUnit.test("execute() Imperium", (assert) => {
   // Verify.
   const state = store.getState();
   const {
-    cardInstances,
     initiativePlayerId,
     jackDeck,
+    miscCardInstances: miscCards,
+    orderCardInstances: orderCards,
     orderDeck,
     playerInstances,
     playerToHand,
+    siteCardInstances: siteCards,
     siteToDeck,
     siteToOutOfTownDeck,
   } = state;
-  assert.ok(cardInstances);
+  assert.ok(miscCards);
   assert.equal(
-    Object.keys(cardInstances).length,
-    186,
-    `cardInstances length = ${Object.keys(cardInstances).length}`
+    Object.keys(miscCards).length,
+    6,
+    `miscCards length = ${Object.keys(miscCards).length}`
+  );
+  assert.ok(orderCards);
+  assert.equal(
+    Object.keys(orderCards).length,
+    144,
+    `orderCards length = ${Object.keys(orderCards).length}`
+  );
+  assert.ok(siteCards);
+  assert.equal(
+    Object.keys(siteCards).length,
+    36,
+    `siteCards length = ${Object.keys(siteCards).length}`
   );
   assert.ok(playerInstances);
   assert.equal(
@@ -169,20 +183,34 @@ QUnit.test("execute() Republic", (assert) => {
   // Verify.
   const state = store.getState();
   const {
-    cardInstances,
     initiativePlayerId,
     jackDeck,
+    miscCardInstances: miscCards,
+    orderCardInstances: orderCards,
     orderDeck,
     playerInstances,
     playerToHand,
+    siteCardInstances: siteCards,
     siteToDeck,
     siteToOutOfTownDeck,
   } = state;
-  assert.ok(cardInstances);
+  assert.ok(miscCards);
   assert.equal(
-    Object.keys(cardInstances).length,
-    186,
-    `cardInstances length = ${Object.keys(cardInstances).length}`
+    Object.keys(miscCards).length,
+    6,
+    `miscCards length = ${Object.keys(miscCards).length}`
+  );
+  assert.ok(orderCards);
+  assert.equal(
+    Object.keys(orderCards).length,
+    144,
+    `orderCards length = ${Object.keys(orderCards).length}`
+  );
+  assert.ok(siteCards);
+  assert.equal(
+    Object.keys(siteCards).length,
+    36,
+    `siteCards length = ${Object.keys(siteCards).length}`
   );
   assert.ok(playerInstances);
   assert.equal(

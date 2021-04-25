@@ -4,37 +4,15 @@ import Version from "../artifact/Version.js";
 
 import AppState from "./AppState.js";
 import ActionCreator from "./ActionCreator.js";
-import CardState from "./CardState.js";
+import MiscCardState from "./MiscCardState.js";
+import OrderCardState from "./OrderCardState.js";
 import PlayerState from "./PlayerState.js";
 import Reducer from "./Reducer.js";
 import Selector from "./Selector.js";
+import SiteCardState from "./SiteCardState.js";
 import StructureState from "./StructureState.js";
 
 QUnit.module("Reducer");
-
-QUnit.test("addCard()", (assert) => {
-  // Setup.
-  const state = AppState.create();
-  const cardKey = "knight";
-  const cardState = CardState.create({
-    id: Selector.nextCardId(state),
-    cardKey,
-  });
-  const action = ActionCreator.addCard(cardState);
-
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  const cards = result.cardInstances;
-  assert.ok(cards);
-  assert.equal(Object.keys(cards).length, 1);
-  const card = cards[1];
-  assert.ok(card);
-  assert.equal(card.id, 1);
-  assert.equal(card.cardKey, cardKey);
-});
 
 QUnit.test("addGameRecord()", (assert) => {
   // Setup.
@@ -71,6 +49,78 @@ QUnit.test("addGameRecord()", (assert) => {
   assert.equal(gameRecords0[0].message, "first game record");
   assert.equal(gameRecords1[1].round, 2);
   assert.equal(gameRecords1[1].message, "second game record");
+});
+
+QUnit.test("addMiscCard()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const cardKey = "knight";
+  const cardState = MiscCardState.create({
+    id: Selector.nextOrderCardId(state),
+    cardKey,
+  });
+  const action = ActionCreator.addMiscCard(cardState);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const cards = result.miscCardInstances;
+  assert.ok(cards);
+  assert.equal(Object.keys(cards).length, 1);
+  const card = cards[1];
+  assert.ok(card);
+  assert.equal(card.id, 1);
+  assert.equal(card.cardKey, cardKey);
+});
+
+QUnit.test("addOrderCard()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const cardKey = "knight";
+  const cardState = OrderCardState.create({
+    id: Selector.nextOrderCardId(state),
+    cardKey,
+  });
+  const action = ActionCreator.addOrderCard(cardState);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const cards = result.orderCardInstances;
+  assert.ok(cards);
+  assert.equal(Object.keys(cards).length, 1);
+  const card = cards[1];
+  assert.ok(card);
+  assert.equal(card.id, 1);
+  assert.equal(card.cardKey, cardKey);
+});
+
+QUnit.test("addSiteCard()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const cardKey = "knight";
+  const cardState = SiteCardState.create({
+    id: Selector.nextSiteCardId(state),
+    cardKey,
+  });
+  const action = ActionCreator.addSiteCard(cardState);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const cards = result.siteCardInstances;
+  assert.ok(cards);
+  assert.equal(Object.keys(cards).length, 1);
+  const card = cards[1];
+  assert.ok(card);
+  assert.equal(card.id, 1);
+  assert.equal(card.cardKey, cardKey);
 });
 
 QUnit.test("addStructure()", (assert) => {
@@ -399,8 +449,8 @@ QUnit.test("transferCampToPool()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.addToPlayerArray(
     "playerToHand",
@@ -430,8 +480,8 @@ QUnit.test("transferHandToCamp()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.addToPlayerArray(
     "playerToHand",
@@ -461,8 +511,8 @@ QUnit.test("transferHandToClientele()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.addToPlayerArray(
     "playerToHand",
@@ -492,8 +542,8 @@ QUnit.test("transferHandToInfluence()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.addToPlayerArray(
     "playerToHand",
@@ -523,8 +573,8 @@ QUnit.test("transferHandToStockpile()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.addToPlayerArray(
     "playerToHand",
@@ -554,8 +604,8 @@ QUnit.test("transferHandToVault()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.addToPlayerArray(
     "playerToHand",
@@ -585,8 +635,8 @@ QUnit.test("transferJackToHand()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = MiscCard.JACK1;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = MiscCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.setJackDeck([cardId]);
   const state = Reducer.root(state1, action1);
@@ -612,8 +662,8 @@ QUnit.test("transferOrderToHand()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.setOrderDeck([cardId]);
   const state = Reducer.root(state1, action1);
@@ -638,8 +688,8 @@ QUnit.test("transferOrderToPool()", (assert) => {
   const state0 = AppState.create();
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.setOrderDeck([cardId]);
   const state = Reducer.root(state1, action1);
@@ -664,8 +714,8 @@ QUnit.test("transferPoolToHand()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const card = CardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addCard(card);
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.setOrderDeck([cardId]);
   const state = Reducer.root(state1, action1);

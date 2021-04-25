@@ -12,14 +12,14 @@ const shuffle = (array) => array.sort(() => Math.random() - 0.5);
 
 const Setup = {};
 
-Setup.createSiteDecks = (players, store) => {
+Setup.createSiteDecks = (store, players) => {
   const playerCount = players.length;
 
   const reduceFunction = (accum, siteKey) => {
     const { siteDeck, outOfTownDeck } = DeckBuilder.buildSiteDecks(
+      store,
       siteKey,
-      playerCount,
-      store
+      playerCount
     );
     store.dispatch(ActionCreator.setSiteToDeck(siteKey, siteDeck));
     store.dispatch(
@@ -30,14 +30,14 @@ Setup.createSiteDecks = (players, store) => {
   R.reduce(reduceFunction, [], siteKeys);
 };
 
-Setup.dealJackCards = (players, store) => {
+Setup.dealJackCards = (store, players) => {
   const forEachFunction = (player) => {
     store.dispatch(ActionCreator.transferJackToHand(player.id));
   };
   R.forEach(forEachFunction, players);
 };
 
-Setup.dealOrderCards = (players, store, cardCount = 5) => {
+Setup.dealOrderCards = (store, players, cardCount = 5) => {
   const forEachFunction = (player) => {
     const reduceFunction = () =>
       store.dispatch(ActionCreator.transferOrderToHand(player.id));
@@ -47,7 +47,7 @@ Setup.dealOrderCards = (players, store, cardCount = 5) => {
   R.forEach(forEachFunction, players);
 };
 
-Setup.dealPoolCards = (players, store) => {
+Setup.dealPoolCards = (store, players) => {
   const playerCount = players.length;
   const reduceFunction = () =>
     store.dispatch(ActionCreator.transferOrderToPool());
@@ -57,7 +57,7 @@ Setup.dealPoolCards = (players, store) => {
   const { cardPool } = store.getState();
   const cardPoolMap = reduceIndexed(
     (accum, id, i) => {
-      const cardInstance = store.getState().cardInstances[id];
+      const cardInstance = store.getState().orderCardInstances[id];
       const card = OrderCard.value(cardInstance.cardKey);
       return R.assoc(i, card, accum);
     },
@@ -93,18 +93,18 @@ Setup.execute = (players, versionKey = Version.REPUBLIC) => {
   store.dispatch(ActionCreator.setJackDeck(jackDeck));
 
   // Create the site decks.
-  Setup.createSiteDecks(players, store);
+  Setup.createSiteDecks(store, players);
 
   // Deal cards to each player.
   if (versionKey === Version.REPUBLIC) {
-    Setup.dealOrderCards(players, store);
+    Setup.dealOrderCards(store, players);
   } else {
-    Setup.dealOrderCards(players, store, 4);
-    Setup.dealJackCards(players, store);
+    Setup.dealOrderCards(store, players, 4);
+    Setup.dealJackCards(store, players);
   }
 
   // Deal an order card into the pool for each player, and determine the leader.
-  Setup.dealPoolCards(players, store);
+  Setup.dealPoolCards(store, players);
 
   return store;
 };

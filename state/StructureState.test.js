@@ -1,20 +1,21 @@
 import OrderCard from "../artifact/OrderCard.js";
 import SiteCard from "../artifact/SiteCard.js";
 
-import CardState from "./CardState.js";
+import OrderCardState from "./OrderCardState.js";
 import Reducer from "./Reducer.js";
+import SiteCardState from "./SiteCardState.js";
 import StructureState from "./StructureState.js";
 
 QUnit.module("StructureState");
 
 const createTestData = (store) => {
-  const foundation = CardState.create({
+  const foundation = OrderCardState.create({
     id: 2,
     cardKey: OrderCard.ACADEMY,
     store,
   });
-  const site = CardState.create({ id: 3, cardKey: SiteCard.BRICK, store });
-  const material0 = CardState.create({
+  const site = SiteCardState.create({ id: 3, cardKey: SiteCard.BRICK, store });
+  const material0 = OrderCardState.create({
     id: 4,
     cardKey: OrderCard.ARCHWAY,
     store,

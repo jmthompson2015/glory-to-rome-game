@@ -11,11 +11,24 @@ const makeActionCreator = (type, ...argNames) => (...args) => {
   return action;
 };
 
-ActionCreator.addCard = makeActionCreator(ActionType.ADD_CARD, "cardState");
-
 ActionCreator.addGameRecord = makeActionCreator(
   ActionType.ADD_GAME_RECORD,
   "message"
+);
+
+ActionCreator.addMiscCard = makeActionCreator(
+  ActionType.ADD_MISC_CARD,
+  "miscCardState"
+);
+
+ActionCreator.addOrderCard = makeActionCreator(
+  ActionType.ADD_ORDER_CARD,
+  "orderCardState"
+);
+
+ActionCreator.addSiteCard = makeActionCreator(
+  ActionType.ADD_SITE_CARD,
+  "siteCardState"
 );
 
 ActionCreator.addStructure = makeActionCreator(

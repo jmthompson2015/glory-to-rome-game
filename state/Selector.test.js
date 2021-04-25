@@ -1,18 +1,35 @@
+import MiscCard from "../artifact/MiscCard.js";
 import OrderCard from "../artifact/OrderCard.js";
+import SiteCard from "../artifact/SiteCard.js";
 
 import AppState from "./AppState.js";
 import ActionCreator from "./ActionCreator.js";
-import CardState from "./CardState.js";
+import OrderCardState from "./OrderCardState.js";
 import PlayerState from "./PlayerState.js";
 import Reducer from "./Reducer.js";
 import Selector from "./Selector.js";
+import SiteCardState from "./SiteCardState.js";
 import StructureState from "./StructureState.js";
 
 QUnit.module("Selector");
 
-const addCard = (id, cardKey, state) => {
-  const card = CardState.create({ id, cardKey });
-  const action = ActionCreator.addCard(card);
+const addMiscCard = (id, cardKey, state) => {
+  const card = OrderCardState.create({ id, cardKey });
+  const action = ActionCreator.addMiscCard(card);
+
+  return Reducer.root(state, action);
+};
+
+const addOrderCard = (id, cardKey, state) => {
+  const card = OrderCardState.create({ id, cardKey });
+  const action = ActionCreator.addOrderCard(card);
+
+  return Reducer.root(state, action);
+};
+
+const addSiteCard = (id, cardKey, state) => {
+  const card = SiteCardState.create({ id, cardKey });
+  const action = ActionCreator.addSiteCard(card);
 
   return Reducer.root(state, action);
 };
@@ -59,53 +76,6 @@ const createPlayers4 = () => {
 };
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
-QUnit.test("card()", (assert) => {
-  // Setup.
-  const state0 = AppState.create();
-  const cardId = 1;
-  const cardKey = OrderCard.ACADEMY;
-  const state = addCard(cardId, cardKey, state0);
-
-  // Run / Verify.
-  const result = Selector.card(cardId, state);
-
-  // Run / Verify.
-  assert.ok(result);
-  assert.equal(result.id, cardId);
-  assert.equal(result.cardKey, cardKey);
-});
-
-QUnit.test("cards()", (assert) => {
-  // Setup.
-  let state = AppState.create();
-  const orderCardKeys = OrderCard.keys();
-  for (let id = 1; id <= 5; id += 1) {
-    const cardKey = orderCardKeys[id - 1];
-    state = addCard(id, cardKey, state);
-  }
-  const cardIds = [1, 3, 5];
-
-  // Run / Verify.
-  const result = Selector.cards(cardIds, state);
-
-  // Run / Verify.
-  assert.ok(result);
-  assert.equal(Array.isArray(result), true);
-  assert.equal(result.length, cardIds.length);
-  const result0 = result[0];
-  assert.ok(result0);
-  assert.equal(result0.id, 1);
-  assert.equal(result0.cardKey, OrderCard.ACADEMY);
-  const result1 = result[1];
-  assert.ok(result1);
-  assert.equal(result1.id, 3);
-  assert.equal(result1.cardKey, OrderCard.AQUEDUCT);
-  const result2 = result[2];
-  assert.ok(result2);
-  assert.equal(result2.id, 5);
-  assert.equal(result2.cardKey, OrderCard.ATRIUM);
-});
-
 QUnit.test("delay()", (assert) => {
   // Setup.
   const state = AppState.create();
@@ -140,17 +110,30 @@ QUnit.test("hand()", (assert) => {
   assert.equal(result[0], cardId);
 });
 
-QUnit.test("nextCardId()", (assert) => {
+QUnit.test("nextMiscCardId()", (assert) => {
   // Setup.
   const state1 = AppState.create();
 
   // Run / Verify.
-  assert.equal(Selector.nextCardId(state1), 1);
+  assert.equal(Selector.nextMiscCardId(state1), 1);
 
-  const state2 = addCard(12, OrderCard.ACADEMY, state1);
+  const state2 = addMiscCard(12, MiscCard.MERCHANT_BONUS_BRICK, state1);
 
   // Run / Verify.
-  assert.equal(Selector.nextCardId(state2), 13);
+  assert.equal(Selector.nextMiscCardId(state2), 13);
+});
+
+QUnit.test("nextOrderCardId()", (assert) => {
+  // Setup.
+  const state1 = AppState.create();
+
+  // Run / Verify.
+  assert.equal(Selector.nextOrderCardId(state1), 1);
+
+  const state2 = addOrderCard(12, OrderCard.ACADEMY, state1);
+
+  // Run / Verify.
+  assert.equal(Selector.nextOrderCardId(state2), 13);
 });
 
 QUnit.test("nextPlayerId()", (assert) => {
@@ -168,6 +151,19 @@ QUnit.test("nextPlayerId()", (assert) => {
   assert.equal(Selector.nextPlayerId(state2), 3);
 });
 
+QUnit.test("nextSiteCardId()", (assert) => {
+  // Setup.
+  const state1 = AppState.create();
+
+  // Run / Verify.
+  assert.equal(Selector.nextSiteCardId(state1), 1);
+
+  const state2 = addSiteCard(12, SiteCard.BRICK, state1);
+
+  // Run / Verify.
+  assert.equal(Selector.nextSiteCardId(state2), 13);
+});
+
 QUnit.test("nextStructureId()", (assert) => {
   // Setup.
   const state1 = AppState.create();
@@ -179,6 +175,53 @@ QUnit.test("nextStructureId()", (assert) => {
 
   // Run / Verify.
   assert.equal(Selector.nextStructureId(state2), 13);
+});
+
+QUnit.test("orderCard()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const cardId = 1;
+  const cardKey = OrderCard.ACADEMY;
+  const state = addOrderCard(cardId, cardKey, state0);
+
+  // Run / Verify.
+  const result = Selector.orderCard(cardId, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(result.id, cardId);
+  assert.equal(result.cardKey, cardKey);
+});
+
+QUnit.test("orderCards()", (assert) => {
+  // Setup.
+  let state = AppState.create();
+  const orderCardKeys = OrderCard.keys();
+  for (let id = 1; id <= 5; id += 1) {
+    const cardKey = orderCardKeys[id - 1];
+    state = addOrderCard(id, cardKey, state);
+  }
+  const cardIds = [1, 3, 5];
+
+  // Run / Verify.
+  const result = Selector.orderCards(cardIds, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, cardIds.length);
+  const result0 = result[0];
+  assert.ok(result0);
+  assert.equal(result0.id, 1);
+  assert.equal(result0.cardKey, OrderCard.ACADEMY);
+  const result1 = result[1];
+  assert.ok(result1);
+  assert.equal(result1.id, 3);
+  assert.equal(result1.cardKey, OrderCard.AQUEDUCT);
+  const result2 = result[2];
+  assert.ok(result2);
+  assert.equal(result2.id, 5);
+  assert.equal(result2.cardKey, OrderCard.ATRIUM);
 });
 
 QUnit.test("playersInOrder() 1", (assert) => {
@@ -267,6 +310,53 @@ QUnit.test("playersInOrder() 4", (assert) => {
   assert.equal(result[1].id, 1);
   assert.equal(result[2].id, 2);
   assert.equal(result[3].id, 3);
+});
+
+QUnit.test("siteCard()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const cardId = 1;
+  const cardKey = OrderCard.ACADEMY;
+  const state = addSiteCard(cardId, cardKey, state0);
+
+  // Run / Verify.
+  const result = Selector.siteCard(cardId, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(result.id, cardId);
+  assert.equal(result.cardKey, cardKey);
+});
+
+QUnit.test("siteCards()", (assert) => {
+  // Setup.
+  let state = AppState.create();
+  const orderCardKeys = OrderCard.keys();
+  for (let id = 1; id <= 5; id += 1) {
+    const cardKey = orderCardKeys[id - 1];
+    state = addSiteCard(id, cardKey, state);
+  }
+  const cardIds = [1, 3, 5];
+
+  // Run / Verify.
+  const result = Selector.siteCards(cardIds, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, cardIds.length);
+  const result0 = result[0];
+  assert.ok(result0);
+  assert.equal(result0.id, 1);
+  assert.equal(result0.cardKey, OrderCard.ACADEMY);
+  const result1 = result[1];
+  assert.ok(result1);
+  assert.equal(result1.id, 3);
+  assert.equal(result1.cardKey, OrderCard.AQUEDUCT);
+  const result2 = result[2];
+  assert.ok(result2);
+  assert.equal(result2.id, 5);
+  assert.equal(result2.cardKey, OrderCard.ATRIUM);
 });
 
 const ReducerTest = {};

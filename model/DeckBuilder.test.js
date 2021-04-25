@@ -70,7 +70,7 @@ QUnit.test("buildSiteDecks() Brick", (assert) => {
   const store = Redux.createStore(Reducer.root);
 
   // Run.
-  const result = DeckBuilder.buildSiteDecks(siteKey, playerCount, store);
+  const result = DeckBuilder.buildSiteDecks(store, siteKey, playerCount);
 
   // Verify.
   assert.ok(result);

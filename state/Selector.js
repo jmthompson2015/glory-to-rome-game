@@ -1,13 +1,5 @@
 const Selector = {};
 
-Selector.card = (cardId, state) => state.cardInstances[cardId];
-
-Selector.cards = (cardIds, state) => {
-  const mapFunction = (id) => state.cardInstances[id];
-
-  return R.map(mapFunction, cardIds);
-};
-
 Selector.currentPlayer = (state) =>
   Selector.player(state.currentPlayerId, state);
 
@@ -52,6 +44,22 @@ Selector.isVerbose = (state) => state.isVerbose;
 
 Selector.mctsRoot = (state) => state.mctsRoot;
 
+Selector.miscCard = (cardId, state) => state.miscCardInstances[cardId];
+
+Selector.miscCards = (cardIds, state) => {
+  const mapFunction = (id) => state.miscCardInstances[id];
+
+  return R.map(mapFunction, cardIds);
+};
+
+Selector.orderCard = (cardId, state) => state.orderCardInstances[cardId];
+
+Selector.orderCards = (cardIds, state) => {
+  const mapFunction = (id) => state.orderCardInstances[id];
+
+  return R.map(mapFunction, cardIds);
+};
+
 Selector.player = (playerId, state) => state.playerInstances[playerId];
 
 Selector.playerCount = (state) => Object.keys(state.playerInstances).length;
@@ -82,6 +90,14 @@ Selector.playersInOrder = (state) => {
   return [...first, ...second];
 };
 
+Selector.siteCard = (cardId, state) => state.siteCardInstances[cardId];
+
+Selector.siteCards = (cardIds, state) => {
+  const mapFunction = (id) => state.siteCardInstances[id];
+
+  return R.map(mapFunction, cardIds);
+};
+
 Selector.userMessage = (state) => state.userMessage;
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,9 +108,13 @@ const nextId = (instanceMap) => {
   return (maxId !== undefined ? maxId : 0) + 1;
 };
 
-Selector.nextCardId = (state) => nextId(state.cardInstances);
+Selector.nextMiscCardId = (state) => nextId(state.miscCardInstances);
+
+Selector.nextOrderCardId = (state) => nextId(state.orderCardInstances);
 
 Selector.nextPlayerId = (state) => nextId(state.playerInstances);
+
+Selector.nextSiteCardId = (state) => nextId(state.siteCardInstances);
 
 Selector.nextStructureId = (state) => nextId(state.structureInstances);
 

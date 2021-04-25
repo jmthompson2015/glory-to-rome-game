@@ -7,7 +7,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", (assert) => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 32);
+  assert.equal(actionTypeKeys.length, 34);
 
   // Run / Verify.
   actionTypeKeys.forEach((key) => {
@@ -16,19 +16,6 @@ QUnit.test("all action types", (assert) => {
       `actionType = ${key} ${ActionType[key]}`
     );
   });
-});
-
-QUnit.test("addCard()", (assert) => {
-  // Setup.
-  const cardState = 12;
-
-  // Run.
-  const result = ActionCreator.addCard(cardState);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.type, ActionType.ADD_CARD);
-  assert.equal(result.cardState, cardState);
 });
 
 QUnit.test("addGameRecord()", (assert) => {
@@ -42,6 +29,32 @@ QUnit.test("addGameRecord()", (assert) => {
   assert.ok(result);
   assert.equal(result.type, ActionType.ADD_GAME_RECORD);
   assert.equal(result.message, message);
+});
+
+QUnit.test("addOrderCard()", (assert) => {
+  // Setup.
+  const orderCardState = 12;
+
+  // Run.
+  const result = ActionCreator.addOrderCard(orderCardState);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.ADD_ORDER_CARD);
+  assert.equal(result.orderCardState, orderCardState);
+});
+
+QUnit.test("addSiteCard()", (assert) => {
+  // Setup.
+  const siteCardState = 12;
+
+  // Run.
+  const result = ActionCreator.addSiteCard(siteCardState);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.ADD_SITE_CARD);
+  assert.equal(result.siteCardState, siteCardState);
 });
 
 QUnit.test("addStructure()", (assert) => {

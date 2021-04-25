@@ -123,12 +123,6 @@ Reducer.root = (state, action) => {
   let oldSiteDeck;
 
   switch (action.type) {
-    case ActionType.ADD_CARD:
-      newCards = {
-        ...state.cardInstances,
-        [action.cardState.id]: action.cardState,
-      };
-      return { ...state, cardInstances: newCards };
     case ActionType.ADD_GAME_RECORD:
       log(`Reducer ADD_GAME_RECORD message = ${action.message}`, state);
       newGameRecords = [
@@ -136,6 +130,24 @@ Reducer.root = (state, action) => {
         { round: state.round, message: action.message },
       ];
       return { ...state, gameRecords: newGameRecords };
+    case ActionType.ADD_MISC_CARD:
+      newCards = {
+        ...state.miscCardInstances,
+        [action.miscCardState.id]: action.miscCardState,
+      };
+      return { ...state, miscCardInstances: newCards };
+    case ActionType.ADD_ORDER_CARD:
+      newCards = {
+        ...state.orderCardInstances,
+        [action.orderCardState.id]: action.orderCardState,
+      };
+      return { ...state, orderCardInstances: newCards };
+    case ActionType.ADD_SITE_CARD:
+      newCards = {
+        ...state.siteCardInstances,
+        [action.siteCardState.id]: action.siteCardState,
+      };
+      return { ...state, siteCardInstances: newCards };
     case ActionType.ADD_STRUCTURE:
       newStructures = {
         ...state.structureInstances,
