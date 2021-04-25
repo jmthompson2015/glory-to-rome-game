@@ -15,6 +15,7 @@ AppState.create = ({
   siteToDeck = {},
   siteToOutOfTownDeck = {},
   userMessage = null,
+  versionKey = "republic",
   winnerId = null,
 
   round = 0,
@@ -47,6 +48,7 @@ AppState.create = ({
     siteToDeck,
     siteToOutOfTownDeck,
     userMessage,
+    versionKey,
     winnerId,
 
     round,

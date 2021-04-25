@@ -7,7 +7,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", (assert) => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 27);
+  assert.equal(actionTypeKeys.length, 29);
 
   // Run / Verify.
   actionTypeKeys.forEach((key) => {
@@ -284,6 +284,19 @@ QUnit.test("setVerbose()", (assert) => {
   assert.equal(result.isVerbose, isVerbose);
 });
 
+QUnit.test("setVersion()", (assert) => {
+  // Setup.
+  const versionKey = "bogus";
+
+  // Run.
+  const result = ActionCreator.setVersion(versionKey);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.SET_VERSION);
+  assert.equal(result.versionKey, versionKey);
+});
+
 QUnit.test("setWinner()", (assert) => {
   // Setup.
   const winnerId = 12;
@@ -355,6 +368,19 @@ QUnit.test("transferHandToVault()", (assert) => {
   assert.equal(result.type, ActionType.TRANSFER_HAND_TO_VAULT);
   assert.equal(result.playerId, playerId);
   assert.equal(result.cardId, cardId);
+});
+
+QUnit.test("transferJackToHand()", (assert) => {
+  // Setup.
+  const playerId = 3;
+
+  // Run.
+  const result = ActionCreator.transferJackToHand(playerId);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.TRANSFER_JACK_TO_HAND);
+  assert.equal(result.playerId, playerId);
 });
 
 QUnit.test("transferOrderToHand()", (assert) => {

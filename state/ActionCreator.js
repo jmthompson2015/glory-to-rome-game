@@ -102,6 +102,11 @@ ActionCreator.setVerbose = makeActionCreator(
   "isVerbose"
 );
 
+ActionCreator.setVersion = makeActionCreator(
+  ActionType.SET_VERSION,
+  "versionKey"
+);
+
 ActionCreator.setWinner = makeActionCreator(ActionType.SET_WINNER, "winnerId");
 
 ActionCreator.transferHandToClientele = makeActionCreator(
@@ -126,6 +131,11 @@ ActionCreator.transferHandToVault = makeActionCreator(
   ActionType.TRANSFER_HAND_TO_VAULT,
   "playerId",
   "cardId"
+);
+
+ActionCreator.transferJackToHand = makeActionCreator(
+  ActionType.TRANSFER_JACK_TO_HAND,
+  "playerId"
 );
 
 ActionCreator.transferOrderToHand = makeActionCreator(

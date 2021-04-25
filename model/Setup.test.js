@@ -1,3 +1,5 @@
+import Version from "../artifact/Version.js";
+
 import ActionCreator from "../state/ActionCreator.js";
 import PlayerState from "../state/PlayerState.js";
 import Reducer from "../state/Reducer.js";
@@ -28,7 +30,7 @@ QUnit.test("createSiteDecks()", (assert) => {
   const state = store.getState();
   const { cardInstances, siteToDeck, siteToOutOfTownDeck } = state;
   assert.ok(cardInstances);
-  assert.equal(Object.keys(cardInstances).length, 195);
+  assert.equal(Object.keys(cardInstances).length, 180);
   assert.ok(siteToDeck);
   assert.equal(Object.keys(siteToDeck).length, 6);
   assert.ok(siteToOutOfTownDeck);
@@ -41,21 +43,25 @@ QUnit.test("dealOrderCards()", (assert) => {
   const store = Redux.createStore(Reducer.root);
   const orderDeck0 = DeckBuilder.buildOrderDeck(store);
   store.dispatch(ActionCreator.setOrderDeck(orderDeck0));
+  const jackDeck0 = DeckBuilder.buildJackDeck(store);
+  store.dispatch(ActionCreator.setJackDeck(jackDeck0));
 
   // Run.
   Setup.dealOrderCards(players, store);
 
   // Verify.
   const state = store.getState();
-  const { cardInstances, orderDeck, playerToHand } = state;
+  const { cardInstances, jackDeck, orderDeck, playerToHand } = state;
   assert.ok(cardInstances);
   assert.equal(
     Object.keys(cardInstances).length,
-    159,
+    150,
     `cardInstances length = ${Object.keys(cardInstances).length}`
   );
   assert.ok(orderDeck);
-  assert.equal(orderDeck.length, 149, `orderDeck.length = ${orderDeck.length}`);
+  assert.equal(orderDeck.length, 134, `orderDeck.length = ${orderDeck.length}`);
+  assert.ok(jackDeck);
+  assert.equal(jackDeck.length, 6, `jackDeck.length = ${jackDeck.length}`);
   const hand1 = playerToHand[1];
   assert.ok(hand1, `hand1 = ${hand1}`);
   assert.equal(hand1.length, 5);
@@ -76,20 +82,84 @@ QUnit.test("dealPoolCards()", (assert) => {
 
   // Verify.
   const state = store.getState();
-  const { cardInstances, cardPool, orderDeck } = state;
+  const { cardInstances, cardPool, initiativePlayerId, orderDeck } = state;
   assert.ok(cardInstances);
   assert.equal(
     Object.keys(cardInstances).length,
-    159,
+    144,
     `cardInstances length = ${Object.keys(cardInstances).length}`
   );
   assert.ok(orderDeck);
-  assert.equal(orderDeck.length, 157, `orderDeck.length = ${orderDeck.length}`);
+  assert.equal(orderDeck.length, 142, `orderDeck.length = ${orderDeck.length}`);
   assert.ok(cardPool);
   assert.equal(cardPool.length, 2, `cardPool.length = ${cardPool.length}`);
+
+  assert.equal(
+    initiativePlayerId,
+    1,
+    `initiativePlayerId = ${initiativePlayerId}`
+  );
 });
 
-QUnit.test("execute()", (assert) => {
+QUnit.test("execute() Imperium", (assert) => {
+  // Setup.
+  const players = createPlayers();
+  const versionKey = Version.IMPERIUM;
+
+  // Run.
+  const store = Setup.execute(players, versionKey);
+
+  // Verify.
+  const state = store.getState();
+  const {
+    cardInstances,
+    initiativePlayerId,
+    jackDeck,
+    orderDeck,
+    playerInstances,
+    playerToHand,
+    siteToDeck,
+    siteToOutOfTownDeck,
+  } = state;
+  assert.ok(cardInstances);
+  assert.equal(
+    Object.keys(cardInstances).length,
+    186,
+    `cardInstances length = ${Object.keys(cardInstances).length}`
+  );
+  assert.ok(playerInstances);
+  assert.equal(
+    Object.keys(playerInstances).length,
+    2,
+    `playerInstances length = ${Object.keys(playerInstances).length}`
+  );
+
+  assert.ok(orderDeck);
+  assert.equal(orderDeck.length, 134, `orderDeck.length = ${orderDeck.length}`);
+
+  assert.ok(jackDeck);
+  assert.equal(jackDeck.length, 4, `jackDeck.length = ${jackDeck.length}`);
+
+  assert.ok(siteToDeck);
+  assert.equal(Object.keys(siteToDeck).length, 6);
+  assert.ok(siteToOutOfTownDeck);
+  assert.equal(Object.keys(siteToOutOfTownDeck).length, 6);
+
+  const hand1 = playerToHand[1];
+  assert.ok(hand1, `hand1 = ${hand1}`);
+  assert.equal(hand1.length, 5);
+  const hand2 = playerToHand[2];
+  assert.ok(hand2, `hand2 = ${hand2}`);
+  assert.equal(hand2.length, 5);
+
+  assert.equal(
+    [1, 2].includes(initiativePlayerId),
+    true,
+    `initiativePlayerId = ${initiativePlayerId}`
+  );
+});
+
+QUnit.test("execute() Republic", (assert) => {
   // Setup.
   const players = createPlayers();
 
@@ -111,7 +181,7 @@ QUnit.test("execute()", (assert) => {
   assert.ok(cardInstances);
   assert.equal(
     Object.keys(cardInstances).length,
-    201,
+    186,
     `cardInstances length = ${Object.keys(cardInstances).length}`
   );
   assert.ok(playerInstances);
@@ -122,7 +192,7 @@ QUnit.test("execute()", (assert) => {
   );
 
   assert.ok(orderDeck);
-  assert.equal(orderDeck.length, 147, `orderDeck.length = ${orderDeck.length}`);
+  assert.equal(orderDeck.length, 132, `orderDeck.length = ${orderDeck.length}`);
 
   assert.ok(jackDeck);
   assert.equal(jackDeck.length, 6, `jackDeck.length = ${jackDeck.length}`);
@@ -140,8 +210,8 @@ QUnit.test("execute()", (assert) => {
   assert.equal(hand2.length, 5);
 
   assert.equal(
-    initiativePlayerId,
-    1,
+    [1, 2].includes(initiativePlayerId),
+    true,
     `initiativePlayerId = ${initiativePlayerId}`
   );
 });

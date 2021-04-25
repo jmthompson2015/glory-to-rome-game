@@ -1,5 +1,6 @@
 import OrderCard from "../artifact/OrderCard.js";
 import SiteCard from "../artifact/SiteCard.js";
+import Version from "../artifact/Version.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Reducer from "../state/Reducer.js";
@@ -29,11 +30,18 @@ Setup.createSiteDecks = (players, store) => {
   R.reduce(reduceFunction, [], siteKeys);
 };
 
-Setup.dealOrderCards = (players, store) => {
+Setup.dealJackCards = (players, store) => {
+  const forEachFunction = (player) => {
+    store.dispatch(ActionCreator.transferJackToHand(player.id));
+  };
+  R.forEach(forEachFunction, players);
+};
+
+Setup.dealOrderCards = (players, store, cardCount = 5) => {
   const forEachFunction = (player) => {
     const reduceFunction = () =>
       store.dispatch(ActionCreator.transferOrderToHand(player.id));
-    const counters = R.repeat(1, 5);
+    const counters = R.repeat(1, cardCount);
     return R.reduce(reduceFunction, [], counters);
   };
   R.forEach(forEachFunction, players);
@@ -71,8 +79,9 @@ Setup.dealPoolCards = (players, store) => {
   store.dispatch(ActionCreator.setInitiativePlayer(leaderId));
 };
 
-Setup.execute = (players) => {
+Setup.execute = (players, versionKey = Version.REPUBLIC) => {
   const store = Redux.createStore(Reducer.root);
+  store.dispatch(ActionCreator.setVersion(versionKey));
   store.dispatch(ActionCreator.setPlayers(players));
 
   // Create the order deck.
@@ -86,8 +95,13 @@ Setup.execute = (players) => {
   // Create the site decks.
   Setup.createSiteDecks(players, store);
 
-  // Deal 5 cards to each player.
-  Setup.dealOrderCards(players, store);
+  // Deal cards to each player.
+  if (versionKey === Version.REPUBLIC) {
+    Setup.dealOrderCards(players, store);
+  } else {
+    Setup.dealOrderCards(players, store, 4);
+    Setup.dealJackCards(players, store);
+  }
 
   // Deal an order card into the pool for each player, and determine the leader.
   Setup.dealPoolCards(players, store);

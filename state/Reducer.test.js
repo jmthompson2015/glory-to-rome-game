@@ -1,4 +1,6 @@
+import MiscCard from "../artifact/MiscCard.js";
 import OrderCard from "../artifact/OrderCard.js";
+import Version from "../artifact/Version.js";
 
 import AppState from "./AppState.js";
 import ActionCreator from "./ActionCreator.js";
@@ -328,6 +330,20 @@ QUnit.test("setVerbose()", (assert) => {
   assert.equal(result.isVerbose, isVerbose);
 });
 
+QUnit.test("setVersion()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const versionKey = Version.IMPERIUM;
+  const action = ActionCreator.setVersion(versionKey);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.versionKey, versionKey);
+});
+
 QUnit.test("setWinner()", (assert) => {
   // Setup.
   const state = AppState.create();
@@ -464,6 +480,33 @@ QUnit.test("transferHandToVault()", (assert) => {
   assert.ok(vault);
   assert.equal(vault.length, 1);
   assert.equal(R.head(vault), cardId);
+});
+
+QUnit.test("transferJackToHand()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const playerId = 3;
+  const cardId = 1;
+  const cardKey = MiscCard.JACK1;
+  const card = CardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addCard(card);
+  const state1 = Reducer.root(state0, action0);
+  const action1 = ActionCreator.setJackDeck([cardId]);
+  const state = Reducer.root(state1, action1);
+  const action = ActionCreator.transferJackToHand(playerId);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const { orderDeck, playerToHand } = result;
+  assert.ok(orderDeck);
+  assert.equal(orderDeck.length, 0, `orderDeck.length = ${orderDeck.length}`);
+  const hand = playerToHand[playerId];
+  assert.ok(hand);
+  assert.equal(hand.length, 1, `hand.length = ${hand.length}`);
+  assert.equal(R.head(hand), cardId);
 });
 
 QUnit.test("transferOrderToHand()", (assert) => {

@@ -1,6 +1,5 @@
-/* eslint no-console: ["error", { allow: ["log", "warn"] }] */
-
 import OrderCard from "./OrderCard.js";
+import Version from "./Version.js";
 
 QUnit.module("OrderCard");
 
@@ -17,12 +16,11 @@ QUnit.test("OrderCard properties Academy", (assert) => {
   assert.equal(properties.materialKey, "brick");
   assert.equal(properties.materialValue, 2);
   assert.equal(properties.roleKey, "legionary");
+  assert.equal(properties.versionKey, undefined);
   assert.equal(properties.key, cardKey);
 });
 
 QUnit.test("keys and values", (assert) => {
-  // Setup.
-
   // Run.
   const result = OrderCard.keys();
   const ownPropertyNames = Object.getOwnPropertyNames(OrderCard);
@@ -49,10 +47,73 @@ QUnit.test("keys()", (assert) => {
 
   // Verify.
   assert.ok(result);
-  const length = 44;
-  assert.equal(result.length, length);
+  assert.equal(result.length, 44);
   assert.equal(R.head(result), OrderCard.ACADEMY);
   assert.equal(R.last(result), OrderCard.WALL);
+});
+
+QUnit.test("keysByVersion() Imperium", (assert) => {
+  // Setup.
+  const versionKey = Version.IMPERIUM;
+
+  // Run.
+  const result = OrderCard.keysByVersion(versionKey);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 40);
+  assert.equal(R.head(result), OrderCard.ACADEMY);
+  assert.equal(R.last(result), OrderCard.WALL);
+  assert.equal(result.includes(OrderCard.CIRCUS), true);
+  assert.equal(result.includes(OrderCard.COLOSSEUM), true);
+  assert.equal(result.includes(OrderCard.FORUM), true);
+  assert.equal(result.includes(OrderCard.SENATE), true);
+});
+
+QUnit.test("keysByVersion() Republic", (assert) => {
+  // Setup.
+  const versionKey = Version.REPUBLIC;
+
+  // Run.
+  const result = OrderCard.keysByVersion(versionKey);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 40);
+  assert.equal(R.head(result), OrderCard.ACADEMY);
+  assert.equal(R.last(result), OrderCard.WALL);
+  assert.equal(result.includes(OrderCard.CRANE), true);
+  assert.equal(result.includes(OrderCard.DOMUS_AUREA), true);
+  assert.equal(result.includes(OrderCard.FORUM_ROMANUM), true);
+  assert.equal(result.includes(OrderCard.TRIBUNAL), true);
+});
+
+QUnit.test("valuesByVersion() Imperium", (assert) => {
+  // Setup.
+  const versionKey = Version.IMPERIUM;
+
+  // Run.
+  const result = OrderCard.valuesByVersion(versionKey);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 40);
+  assert.equal(R.head(result).key, OrderCard.ACADEMY);
+  assert.equal(R.last(result).key, OrderCard.WALL);
+});
+
+QUnit.test("valuesByVersion() Republic", (assert) => {
+  // Setup.
+  const versionKey = Version.REPUBLIC;
+
+  // Run.
+  const result = OrderCard.valuesByVersion(versionKey);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 40);
+  assert.equal(R.head(result).key, OrderCard.ACADEMY);
+  assert.equal(R.last(result).key, OrderCard.WALL);
 });
 
 const OrderCardTest = {};

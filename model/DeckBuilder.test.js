@@ -1,5 +1,7 @@
 import SiteCard from "../artifact/SiteCard.js";
+import Version from "../artifact/Version.js";
 
+import ActionCreator from "../state/ActionCreator.js";
 import Reducer from "../state/Reducer.js";
 
 import DeckBuilder from "./DeckBuilder.js";
@@ -24,7 +26,26 @@ QUnit.test("buildJackDeck()", (assert) => {
   assert.equal(cardLast, 6);
 });
 
-QUnit.test("buildOrderDeck()", (assert) => {
+QUnit.test("buildOrderDeck() Imperium", (assert) => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root);
+  store.dispatch(ActionCreator.setVersion(Version.IMPERIUM));
+
+  // Run.
+  const result = DeckBuilder.buildOrderDeck(store);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 144);
+  const cardFirst = R.head(result);
+  assert.ok(cardFirst);
+  assert.equal(cardFirst, 1);
+  const cardLast = R.last(result);
+  assert.ok(cardLast);
+  assert.equal(cardLast, 144);
+});
+
+QUnit.test("buildOrderDeck() Republic", (assert) => {
   // Setup.
   const store = Redux.createStore(Reducer.root);
 
@@ -33,13 +54,13 @@ QUnit.test("buildOrderDeck()", (assert) => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.length, 159);
+  assert.equal(result.length, 144);
   const cardFirst = R.head(result);
   assert.ok(cardFirst);
   assert.equal(cardFirst, 1);
   const cardLast = R.last(result);
   assert.ok(cardLast);
-  assert.equal(cardLast, 159);
+  assert.equal(cardLast, 144);
 });
 
 QUnit.test("buildSiteDecks() Brick", (assert) => {

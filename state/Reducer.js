@@ -33,6 +33,20 @@ const transferBetweenArrays = (state, fromKey, toKey, playerId, cardId) => {
   return { ...state, [fromKey]: newPlayerToFrom, [toKey]: newPlayerToTo };
 };
 
+const transferJackToHand = (state, playerId) => {
+  const [cardId] = state.jackDeck;
+  const newJackDeck = R.without([cardId], state.jackDeck);
+  const oldHand = state.playerToHand[playerId] || [];
+  const newHand = [...oldHand, cardId];
+  const newPlayerToHand = { ...state.playerToHand, [playerId]: newHand };
+
+  return {
+    ...state,
+    jackDeck: newJackDeck,
+    playerToHand: newPlayerToHand,
+  };
+};
+
 const transferOrderToHand = (state, playerId) => {
   const [cardId] = state.orderDeck;
   const newOrderDeck = R.without([cardId], state.orderDeck);
@@ -208,6 +222,9 @@ Reducer.root = (state, action) => {
     case ActionType.SET_VERBOSE:
       log(`Reducer SET_VERBOSE isVerbose = ${action.isVerbose}`, state);
       return { ...state, isVerbose: action.isVerbose };
+    case ActionType.SET_VERSION:
+      log(`Reducer SET_VERSION versionKey = ${action.versionKey}`, state);
+      return { ...state, versionKey: action.versionKey };
     case ActionType.SET_WINNER:
       log(`Reducer SET_WINNER winnerId = ${action.winnerId}`, state);
       return { ...state, winnerId: action.winnerId };
@@ -243,6 +260,8 @@ Reducer.root = (state, action) => {
         action.playerId,
         action.cardId
       );
+    case ActionType.TRANSFER_JACK_TO_HAND:
+      return transferJackToHand(state, action.playerId);
     case ActionType.TRANSFER_ORDER_TO_HAND:
       return transferOrderToHand(state, action.playerId);
     case ActionType.TRANSFER_ORDER_TO_POOL:

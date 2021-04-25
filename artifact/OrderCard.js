@@ -1,5 +1,6 @@
 import Material from "./Material.js";
 import Role from "./Role.js";
+import Version from "./Version.js";
 
 const OrderCard = {
   ACADEMY: "academy",
@@ -154,6 +155,7 @@ OrderCard.properties = {
     materialKey: Material.WOOD,
     materialValue: 1,
     roleKey: Role.CRAFTSMAN,
+    versionKey: Version.IMPERIUM,
     key: "circus",
   },
   "circus maximus": {
@@ -173,6 +175,7 @@ OrderCard.properties = {
     materialKey: Material.STONE,
     materialValue: 3,
     roleKey: Role.MERCHANT,
+    versionKey: Version.IMPERIUM,
     key: "colosseum",
   },
   crane: {
@@ -182,6 +185,7 @@ OrderCard.properties = {
     materialKey: Material.WOOD,
     materialValue: 1,
     roleKey: Role.CRAFTSMAN,
+    versionKey: Version.REPUBLIC,
     key: "crane",
   },
   dock: {
@@ -203,6 +207,7 @@ OrderCard.properties = {
     materialKey: Material.STONE,
     materialValue: 3,
     roleKey: Role.MERCHANT,
+    versionKey: Version.REPUBLIC,
     key: "domus aurea",
   },
   forum: {
@@ -212,6 +217,7 @@ OrderCard.properties = {
     materialKey: Material.MARBLE,
     materialValue: 3,
     roleKey: Role.PATRON,
+    versionKey: Version.IMPERIUM,
     key: "forum",
   },
   "forum romanum": {
@@ -222,6 +228,7 @@ OrderCard.properties = {
     materialKey: Material.MARBLE,
     materialValue: 3,
     roleKey: Role.PATRON,
+    versionKey: Version.REPUBLIC,
     key: "forum romanum",
   },
   foundry: {
@@ -360,6 +367,7 @@ OrderCard.properties = {
     materialKey: Material.CONCRETE,
     materialValue: 2,
     roleKey: Role.ARCHITECT,
+    versionKey: Version.IMPERIUM,
     key: "senate",
   },
   sewer: {
@@ -430,6 +438,7 @@ OrderCard.properties = {
     materialKey: Material.CONCRETE,
     materialValue: 2,
     roleKey: Role.ARCHITECT,
+    versionKey: Version.REPUBLIC,
     key: "tribunal",
   },
   villa: {
@@ -473,7 +482,17 @@ R.forEach((cardKey) => {
   }
 }, OrderCard.keys());
 
+OrderCard.keysByVersion = (versionKey) =>
+  R.map((c) => c.key, OrderCard.valuesByVersion(versionKey));
+
 OrderCard.value = (key) => OrderCard.properties[key];
+
+OrderCard.valuesByVersion = (versionKey) => {
+  const filterFunction = (value) =>
+    R.isNil(value.versionKey) || value.versionKey === versionKey;
+
+  return R.filter(filterFunction, OrderCard.values());
+};
 
 Object.freeze(OrderCard);
 
