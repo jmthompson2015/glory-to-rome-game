@@ -12,6 +12,31 @@ import Selector from "./Selector.js";
 import SiteCardState from "./SiteCardState.js";
 import StructureState from "./StructureState.js";
 
+const createPlayers = () => {
+  const player1 = PlayerState.create({
+    id: 1,
+    name: "Alfred", // Pennyworth
+  });
+  const player2 = PlayerState.create({
+    id: 2,
+    name: "Bruce", // Wayne
+  });
+  const player3 = PlayerState.create({
+    id: 3,
+    name: "Clark", // Kent
+  });
+  const player4 = PlayerState.create({
+    id: 4,
+    name: "Diana", // Prince
+  });
+  const player5 = PlayerState.create({
+    id: 5,
+    name: "Edward", // Nygma
+  });
+
+  return [player1, player2, player3, player4, player5];
+};
+
 QUnit.module("Reducer");
 
 QUnit.test("addGameRecord()", (assert) => {
@@ -208,20 +233,6 @@ QUnit.test("setCurrentPlayer()", (assert) => {
   assert.equal(result.currentPlayerId, playerId);
 });
 
-QUnit.test("setCurrentPlayerOrder()", (assert) => {
-  // Setup.
-  const state = AppState.create();
-  const playerIds = [4, 3, 2, 1];
-  const action = ActionCreator.setCurrentPlayerOrder(playerIds);
-
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.currentPlayerOrder.join(), playerIds.join());
-});
-
 QUnit.test("setCurrentRound()", (assert) => {
   // Setup.
   const state = AppState.create();
@@ -264,20 +275,6 @@ QUnit.test("setDelay()", (assert) => {
   assert.equal(result.delay, delay);
 });
 
-QUnit.test("setInitiativePlayer()", (assert) => {
-  // Setup.
-  const state = AppState.create();
-  const playerId = 3;
-  const action = ActionCreator.setInitiativePlayer(playerId);
-
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.initiativePlayerId, playerId);
-});
-
 QUnit.test("setJackDeck()", (assert) => {
   // Setup.
   const state = AppState.create();
@@ -290,6 +287,24 @@ QUnit.test("setJackDeck()", (assert) => {
   // Verify.
   assert.ok(result);
   assert.equal(result.jackDeck, jackDeck);
+});
+
+QUnit.test("setLeader()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const players = createPlayers();
+  const action0 = ActionCreator.setPlayers(players);
+  const state = Reducer.root(state0, action0);
+  const playerId = 3;
+  const action = ActionCreator.setLeader(playerId);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.leaderId, playerId);
+  assert.equal(result.currentPlayerOrder.join(), [3, 4, 5, 1, 2].join());
 });
 
 QUnit.test("setMctsRoot()", (assert) => {

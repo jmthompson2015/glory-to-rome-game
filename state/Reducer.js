@@ -20,6 +20,18 @@ const log = (message, state) => {
   }
 };
 
+const setLeader = (state, leaderId) => {
+  const players = Object.values(state.playerInstances);
+  const playerIds = R.map(R.prop("id"), players);
+  const count = playerIds.length;
+  const index0 = playerIds.indexOf(leaderId);
+  const first = R.slice(index0, count, playerIds);
+  const second = R.slice(0, index0, playerIds);
+  const currentPlayerOrder = [...first, ...second];
+
+  return { ...state, leaderId, currentPlayerOrder };
+};
+
 const transferBetweenArrays = (state, fromKey, toKey, playerId, cardId) => {
   const oldFrom = state[fromKey][playerId] || [];
   const oldTo = state[toKey][playerId] || [];
@@ -171,14 +183,6 @@ Reducer.root = (state, action) => {
         state
       );
       return { ...state, currentPlayerId: action.playerId, userMessage: null };
-    case ActionType.SET_CURRENT_PLAYER_ORDER:
-      log(
-        `Reducer SET_CURRENT_PLAYER_ORDER playerIds = ${JSON.stringify(
-          action.playerIds
-        )}`,
-        state
-      );
-      return { ...state, currentPlayerOrder: action.playerIds };
     case ActionType.SET_CURRENT_ROUND:
       log(`Reducer SET_CURRENT_ROUND round = ${action.round}`, state);
       return { ...state, currentRound: action.round };
@@ -188,11 +192,12 @@ Reducer.root = (state, action) => {
     case ActionType.SET_DELAY:
       log(`Reducer SET_DELAY delay = ${action.delay}`, state);
       return { ...state, delay: action.delay };
-    case ActionType.SET_INITIATIVE_PLAYER:
-      log(`Reducer SET_INITIATIVE_PLAYER playerId = ${action.playerId}`, state);
-      return { ...state, initiativePlayerId: action.playerId };
     case ActionType.SET_JACK_DECK:
       return { ...state, jackDeck: action.jackDeck };
+    case ActionType.SET_LEADER:
+      log(`Reducer SET_LEADER leaderId = ${action.leaderId}`, state);
+      // return { ...state, leaderId: action.playerId };
+      return setLeader(state, action.leaderId);
     case ActionType.SET_MCTS_ROOT:
       log(`Reducer SET_MCTS_ROOT mctsRoot = ${action.mctsRoot}`, state);
       return { ...state, mctsRoot: action.mctsRoot };

@@ -12,7 +12,7 @@ Selector.delay = (state) => state.delay;
 Selector.gameRecords = (state) => state.gameRecords;
 
 Selector.initiativePlayer = (state) => {
-  const id = state.initiativePlayerId;
+  const id = state.leaderId;
   return state.playerInstances[id];
 };
 
@@ -39,8 +39,7 @@ Selector.isInHand = (playerId, cardId, state) => {
   return R.contains(cardId, hand);
 };
 
-Selector.isInitiativePlayer = (playerId, state) =>
-  playerId === state.initiativePlayerId;
+Selector.isInitiativePlayer = (playerId, state) => playerId === state.leaderId;
 
 Selector.isVerbose = (state) => state.isVerbose;
 
@@ -81,15 +80,10 @@ Selector.playerStrategy = (playerId, state) => state.playerToStrategy[playerId];
 Selector.players = (state) => Object.values(state.playerInstances);
 
 Selector.playersInOrder = (state) => {
-  const count = Selector.playerCount(state);
-  const players0 = Object.values(state.playerInstances);
-  const index0 = R.findIndex(R.propEq("id", state.initiativePlayerId))(
-    players0
-  );
-  const first = R.slice(index0, count, players0);
-  const second = R.slice(0, index0, players0);
+  const { currentPlayerOrder, playerInstances } = state;
+  const mapFunction = (id) => playerInstances[id];
 
-  return [...first, ...second];
+  return R.map(mapFunction, currentPlayerOrder);
 };
 
 Selector.siteCard = (cardId, state) => state.siteCardInstances[cardId];

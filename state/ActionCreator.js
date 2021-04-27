@@ -53,11 +53,6 @@ ActionCreator.setCurrentPlayer = makeActionCreator(
   "playerId"
 );
 
-ActionCreator.setCurrentPlayerOrder = makeActionCreator(
-  ActionType.SET_CURRENT_PLAYER_ORDER,
-  "playerIds"
-);
-
 ActionCreator.setCurrentRound = makeActionCreator(
   ActionType.SET_CURRENT_ROUND,
   "round"
@@ -70,15 +65,12 @@ ActionCreator.setCurrentStep = makeActionCreator(
 
 ActionCreator.setDelay = makeActionCreator(ActionType.SET_DELAY, "delay");
 
-ActionCreator.setInitiativePlayer = makeActionCreator(
-  ActionType.SET_INITIATIVE_PLAYER,
-  "playerId"
-);
-
 ActionCreator.setJackDeck = makeActionCreator(
   ActionType.SET_JACK_DECK,
   "jackDeck"
 );
+
+ActionCreator.setLeader = makeActionCreator(ActionType.SET_LEADER, "leaderId");
 
 ActionCreator.setMctsRoot = makeActionCreator(
   ActionType.SET_MCTS_ROOT,

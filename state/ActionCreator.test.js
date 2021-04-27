@@ -7,7 +7,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", (assert) => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 34);
+  assert.equal(actionTypeKeys.length, 33);
 
   // Run / Verify.
   actionTypeKeys.forEach((key) => {
@@ -116,19 +116,6 @@ QUnit.test("setCurrentPlayer()", (assert) => {
   assert.equal(result.playerId, playerId);
 });
 
-QUnit.test("setCurrentPlayerOrder()", (assert) => {
-  // Setup.
-  const playerIds = 3;
-
-  // Run.
-  const result = ActionCreator.setCurrentPlayerOrder(playerIds);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.type, ActionType.SET_CURRENT_PLAYER_ORDER);
-  assert.equal(result.playerIds, playerIds);
-});
-
 QUnit.test("setCurrentRound()", (assert) => {
   // Setup.
   const round = 12;
@@ -168,19 +155,6 @@ QUnit.test("setDelay()", (assert) => {
   assert.equal(result.delay, delay);
 });
 
-QUnit.test("setInitiativePlayer()", (assert) => {
-  // Setup.
-  const playerId = 3;
-
-  // Run.
-  const result = ActionCreator.setInitiativePlayer(playerId);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.type, ActionType.SET_INITIATIVE_PLAYER);
-  assert.equal(result.playerId, playerId);
-});
-
 QUnit.test("setJackDeck()", (assert) => {
   // Setup.
   const jackDeck = 12;
@@ -192,6 +166,19 @@ QUnit.test("setJackDeck()", (assert) => {
   assert.ok(result);
   assert.equal(result.type, ActionType.SET_JACK_DECK);
   assert.equal(result.jackDeck, jackDeck);
+});
+
+QUnit.test("setLeader()", (assert) => {
+  // Setup.
+  const leaderId = 3;
+
+  // Run.
+  const result = ActionCreator.setLeader(leaderId);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.SET_LEADER);
+  assert.equal(result.leaderId, leaderId);
 });
 
 QUnit.test("setMctsRoot()", (assert) => {

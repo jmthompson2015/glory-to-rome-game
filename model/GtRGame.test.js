@@ -10,7 +10,7 @@ QUnit.test("execute()", (assert) => {
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setVerbose(true));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentPlayerOrder([1, 2, 3, 4, 5]));
+  store.dispatch(ActionCreator.setLeader(1));
 
   // Run.
   const done = assert.async();
