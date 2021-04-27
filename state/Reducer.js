@@ -120,14 +120,13 @@ Reducer.root = (state, action) => {
   let newSiteDeck;
   let newSiteToDeck;
   let newStructures;
-  let oldSiteDeck;
 
   switch (action.type) {
     case ActionType.ADD_GAME_RECORD:
       log(`Reducer ADD_GAME_RECORD message = ${action.message}`, state);
       newGameRecords = [
         ...state.gameRecords,
-        { round: state.round, message: action.message },
+        { round: state.currentRound, message: action.message },
       ];
       return { ...state, gameRecords: newGameRecords };
     case ActionType.ADD_MISC_CARD:
@@ -165,18 +164,13 @@ Reducer.root = (state, action) => {
       log(`Reducer SET_CURRENT_PHASE phaseKey = ${action.phaseKey}`, state);
       return { ...state, currentPhaseKey: action.phaseKey };
     case ActionType.SET_CURRENT_PLAYER:
-      log(`Reducer SET_CURRENT_PLAYER playerId = ${action.playerId}`, state);
-      return {
-        ...state,
-        currentPlayerId: action.playerId,
-        currentPaymentCardId: null,
-        currentHandCallback: null,
-        currentMoves: [],
-        currentMove: null,
-        currentDamageTargetKey: null,
-        currentDamageCallback: null,
-        userMessage: null,
-      };
+      log(
+        `Reducer SET_CURRENT_PLAYER playerId = ${JSON.stringify(
+          action.playerId
+        )}`,
+        state
+      );
+      return { ...state, currentPlayerId: action.playerId, userMessage: null };
     case ActionType.SET_CURRENT_PLAYER_ORDER:
       log(
         `Reducer SET_CURRENT_PLAYER_ORDER playerIds = ${JSON.stringify(
@@ -187,7 +181,7 @@ Reducer.root = (state, action) => {
       return { ...state, currentPlayerOrder: action.playerIds };
     case ActionType.SET_CURRENT_ROUND:
       log(`Reducer SET_CURRENT_ROUND round = ${action.round}`, state);
-      return { ...state, round: action.round };
+      return { ...state, currentRound: action.round };
     case ActionType.SET_CURRENT_STEP:
       log(`Reducer SET_CURRENT_STEP stepKey = ${action.stepKey}`, state);
       return { ...state, currentStepKey: action.stepKey };
@@ -229,18 +223,20 @@ Reducer.root = (state, action) => {
       log(`Reducer SET_ROUND round = ${action.round}`, state);
       return { ...state, round: action.round };
     case ActionType.SET_SITE_TO_DECK:
-      log(`siteKey = ${action.siteKey} siteDeck = ${action.siteDeck}`, state);
-      oldSiteDeck = state.siteToDeck[action.siteKey] || [];
-      newSiteDeck = [...oldSiteDeck, action.siteDeck];
+      log(
+        `Reducer SET_SITE_TO_DECK siteKey = ${action.siteKey} siteDeck = ${action.siteDeck}`,
+        state
+      );
+      newSiteDeck = action.siteDeck || [];
       newSiteToDeck = { ...state.siteToDeck, [action.siteKey]: newSiteDeck };
       return { ...state, siteToDeck: newSiteToDeck };
     case ActionType.SET_SITE_TO_OUT_OF_TOWN_DECK:
       log(
-        `siteKey = ${action.siteKey} outOfTownDeck = ${action.outOfTownDeck}`,
+        `Reducer SET_SITE_TO_OUT_OF_TOWN_DECK siteKey = ${action.siteKey} ` +
+          `outOfTownDeck = ${action.outOfTownDeck}`,
         state
       );
-      oldSiteDeck = state.siteToOutOfTownDeck[action.siteKey] || [];
-      newSiteDeck = [...oldSiteDeck, action.outOfTownDeck];
+      newSiteDeck = action.outOfTownDeck || [];
       newSiteToDeck = {
         ...state.siteToDeck,
         [action.siteKey]: newSiteDeck,

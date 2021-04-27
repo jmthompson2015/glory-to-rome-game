@@ -43,7 +43,7 @@ QUnit.test("keys()", (assert) => {
   assert.ok(result);
   assert.equal(result.length, 7);
   assert.equal(R.head(result), Role.ARCHITECT);
-  assert.equal(R.last(result), Role.THINK);
+  assert.equal(R.last(result), Role.THINKER);
 });
 
 const RoleTest = {};

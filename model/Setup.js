@@ -3,7 +3,6 @@ import SiteCard from "../artifact/SiteCard.js";
 import Version from "../artifact/Version.js";
 
 import ActionCreator from "../state/ActionCreator.js";
-import Reducer from "../state/Reducer.js";
 
 import DeckBuilder from "./DeckBuilder.js";
 
@@ -79,8 +78,7 @@ Setup.dealPoolCards = (store, players) => {
   store.dispatch(ActionCreator.setInitiativePlayer(leaderId));
 };
 
-Setup.execute = (players, versionKey = Version.REPUBLIC) => {
-  const store = Redux.createStore(Reducer.root);
+Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {
   store.dispatch(ActionCreator.setVersion(versionKey));
   store.dispatch(ActionCreator.setPlayers(players));
 
@@ -105,8 +103,6 @@ Setup.execute = (players, versionKey = Version.REPUBLIC) => {
 
   // Deal an order card into the pool for each player, and determine the leader.
   Setup.dealPoolCards(store, players);
-
-  return store;
 };
 
 Object.freeze(Setup);

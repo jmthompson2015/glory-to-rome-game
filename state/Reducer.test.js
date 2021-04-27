@@ -233,7 +233,7 @@ QUnit.test("setCurrentRound()", (assert) => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.round, round);
+  assert.equal(result.currentRound, round);
 });
 
 QUnit.test("setCurrentStep()", (assert) => {

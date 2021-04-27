@@ -5,6 +5,8 @@ Selector.currentPlayer = (state) =>
 
 Selector.currentPlayerOrder = (state) => state.currentPlayerOrder;
 
+Selector.currentRound = (state) => state.currentRound;
+
 Selector.delay = (state) => state.delay;
 
 Selector.gameRecords = (state) => state.gameRecords;

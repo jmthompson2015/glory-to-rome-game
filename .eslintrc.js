@@ -4,7 +4,7 @@ module.exports = {
   },
   extends: ["airbnb", "prettier"],
   globals: {
-    FilteredReactTable: true,
+    GameEngine: true,
     Immutable: true,
     LOGGER: true,
     PropTypes: true,
@@ -16,7 +16,6 @@ module.exports = {
     ReactDOMFactories: true,
     ReactRedux: true,
     Redux: true,
-    StringUtilities: true,
   },
   rules: {
     "import/extensions": ["error", { js: "always" }],

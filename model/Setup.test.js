@@ -18,8 +18,8 @@ const createPlayers = () => {
 
 QUnit.test("createSiteDecks()", (assert) => {
   // Setup.
-  const players = createPlayers();
   const store = Redux.createStore(Reducer.root);
+  const players = createPlayers();
   const orderDeck0 = DeckBuilder.buildOrderDeck(store);
   store.dispatch(ActionCreator.setOrderDeck(orderDeck0));
 
@@ -39,8 +39,8 @@ QUnit.test("createSiteDecks()", (assert) => {
 
 QUnit.test("dealOrderCards()", (assert) => {
   // Setup.
-  const players = createPlayers();
   const store = Redux.createStore(Reducer.root);
+  const players = createPlayers();
   const orderDeck0 = DeckBuilder.buildOrderDeck(store);
   store.dispatch(ActionCreator.setOrderDeck(orderDeck0));
   const jackDeck0 = DeckBuilder.buildJackDeck(store);
@@ -72,8 +72,8 @@ QUnit.test("dealOrderCards()", (assert) => {
 
 QUnit.test("dealPoolCards()", (assert) => {
   // Setup.
-  const players = createPlayers();
   const store = Redux.createStore(Reducer.root);
+  const players = createPlayers();
   const orderDeck0 = DeckBuilder.buildOrderDeck(store);
   store.dispatch(ActionCreator.setOrderDeck(orderDeck0));
 
@@ -103,11 +103,12 @@ QUnit.test("dealPoolCards()", (assert) => {
 
 QUnit.test("execute() Imperium", (assert) => {
   // Setup.
+  const store = Redux.createStore(Reducer.root);
   const players = createPlayers();
   const versionKey = Version.IMPERIUM;
 
   // Run.
-  const store = Setup.execute(players, versionKey);
+  Setup.execute(store, players, versionKey);
 
   // Verify.
   const state = store.getState();
@@ -175,10 +176,11 @@ QUnit.test("execute() Imperium", (assert) => {
 
 QUnit.test("execute() Republic", (assert) => {
   // Setup.
+  const store = Redux.createStore(Reducer.root);
   const players = createPlayers();
 
   // Run.
-  const store = Setup.execute(players);
+  Setup.execute(store, players);
 
   // Verify.
   const state = store.getState();

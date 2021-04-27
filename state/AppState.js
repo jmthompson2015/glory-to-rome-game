@@ -7,7 +7,7 @@ AppState.create = ({
   gameRecords = [],
   initiativePlayerId,
   isGameOver = false,
-  isVerbose = true,
+  isVerbose = false,
   jackDeck = [],
   mctsRoot = null,
   orderDeck = [],
@@ -18,10 +18,11 @@ AppState.create = ({
   versionKey = "republic",
   winnerId = null,
 
-  round = 0,
+  currentRound = 0,
   currentPlayerOrder = null,
   currentPhaseKey = null,
   currentPlayerId = null,
+  currentStepKey = null,
 
   playerToCamp = {},
   playerToClientele = {},
@@ -56,10 +57,11 @@ AppState.create = ({
     versionKey,
     winnerId,
 
-    round,
+    currentRound,
     currentPlayerOrder,
     currentPhaseKey,
     currentPlayerId,
+    currentStepKey,
 
     playerToCamp,
     playerToClientele,
