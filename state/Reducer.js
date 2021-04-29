@@ -1,5 +1,7 @@
 /* eslint no-console: ["error", { allow: ["error", "log", "warn"] }] */
 
+import IV from "../utility/InputValidator.js";
+
 import ActionType from "./ActionType.js";
 import AppState from "./AppState.js";
 
@@ -61,9 +63,12 @@ const transferCampToPool = (state, playerId, cardId) => {
 
 const transferJackToHand = (state, playerId) => {
   const [cardId] = state.jackDeck;
+  IV.validateNotNil("cardId", cardId);
   const newJackDeck = R.without([cardId], state.jackDeck);
+  IV.validateNotIncludesNil("newJackDeck", newJackDeck);
   const oldHand = state.playerToHand[playerId] || [];
   const newHand = [...oldHand, cardId];
+  IV.validateNotIncludesNil("newHand", newHand);
   const newPlayerToHand = { ...state.playerToHand, [playerId]: newHand };
 
   return {
@@ -78,6 +83,7 @@ const transferOrderToHand = (state, playerId) => {
   const newOrderDeck = R.without([cardId], state.orderDeck);
   const oldHand = state.playerToHand[playerId] || [];
   const newHand = [...oldHand, cardId];
+  IV.validateNotIncludesNil("newHand", newHand);
   const newPlayerToHand = { ...state.playerToHand, [playerId]: newHand };
 
   return {
@@ -104,6 +110,7 @@ const transferPoolToHand = (state, playerId, cardId) => {
   const newPool = R.without([cardId], state.cardPool);
   const oldHand = state.playerToHand[playerId] || [];
   const newHand = [...oldHand, cardId];
+  IV.validateNotIncludesNil("newHand", newHand);
   const newPlayerToHand = { ...state.playerToHand, [playerId]: newHand };
 
   return {
@@ -196,8 +203,10 @@ Reducer.root = (state, action) => {
       return { ...state, jackDeck: action.jackDeck };
     case ActionType.SET_LEADER:
       log(`Reducer SET_LEADER leaderId = ${action.leaderId}`, state);
-      // return { ...state, leaderId: action.playerId };
       return setLeader(state, action.leaderId);
+    case ActionType.SET_LEAD_ROLE:
+      log(`Reducer SET_LEAD_ROLE leadRoleKey = ${action.leadRoleKey}`, state);
+      return { ...state, leadRoleKey: action.leadRoleKey };
     case ActionType.SET_MCTS_ROOT:
       log(`Reducer SET_MCTS_ROOT mctsRoot = ${action.mctsRoot}`, state);
       return { ...state, mctsRoot: action.mctsRoot };
@@ -263,8 +272,16 @@ Reducer.root = (state, action) => {
       log(`Reducer SET_WINNER winnerId = ${action.winnerId}`, state);
       return { ...state, winnerId: action.winnerId };
     case ActionType.TRANSFER_CAMP_TO_POOL:
+      log(
+        `Reducer TRANSFER_CAMP_TO_POOL playerId = ${action.playerId} cardId = ${action.cardId}`,
+        state
+      );
       return transferCampToPool(state, action.playerId, action.cardId);
     case ActionType.TRANSFER_HAND_TO_CAMP:
+      log(
+        `Reducer TRANSFER_HAND_TO_CAMP playerId = ${action.playerId} cardId = ${action.cardId}`,
+        state
+      );
       return transferBetweenArrays(
         state,
         "playerToHand",
@@ -273,6 +290,11 @@ Reducer.root = (state, action) => {
         action.cardId
       );
     case ActionType.TRANSFER_HAND_TO_CLIENTELE:
+      log(
+        `Reducer TRANSFER_HAND_TO_CLIENTELE playerId = ${action.playerId} ` +
+          `cardId = ${action.cardId}`,
+        state
+      );
       return transferBetweenArrays(
         state,
         "playerToHand",
@@ -281,6 +303,11 @@ Reducer.root = (state, action) => {
         action.cardId
       );
     case ActionType.TRANSFER_HAND_TO_INFLUENCE:
+      log(
+        `Reducer TRANSFER_HAND_TO_INFLUENCE playerId = ${action.playerId} ` +
+          `cardId = ${action.cardId}`,
+        state
+      );
       return transferBetweenArrays(
         state,
         "playerToHand",
@@ -289,6 +316,11 @@ Reducer.root = (state, action) => {
         action.cardId
       );
     case ActionType.TRANSFER_HAND_TO_STOCKPILE:
+      log(
+        `Reducer TRANSFER_HAND_TO_STOCKPILE playerId = ${action.playerId} ` +
+          `cardId = ${action.cardId}`,
+        state
+      );
       return transferBetweenArrays(
         state,
         "playerToHand",
@@ -297,6 +329,10 @@ Reducer.root = (state, action) => {
         action.cardId
       );
     case ActionType.TRANSFER_HAND_TO_VAULT:
+      log(
+        `Reducer TRANSFER_HAND_TO_VAULT playerId = ${action.playerId} cardId = ${action.cardId}`,
+        state
+      );
       return transferBetweenArrays(
         state,
         "playerToHand",

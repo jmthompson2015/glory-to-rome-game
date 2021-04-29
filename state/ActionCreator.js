@@ -1,9 +1,20 @@
+import IV from "../utility/InputValidator.js";
+
 import ActionType from "./ActionType.js";
 
 const ActionCreator = {};
 
 // See https://redux.js.org/recipes/reducing-boilerplate
 const makeActionCreator = (type, ...argNames) => (...args) => {
+  const action = { type };
+  argNames.forEach((arg, index) => {
+    IV.validateNotNil(argNames[index], args[index]);
+    action[argNames[index]] = args[index];
+  });
+  return action;
+};
+
+const makeActionCreatorNilAllowed = (type, ...argNames) => (...args) => {
   const action = { type };
   argNames.forEach((arg, index) => {
     action[argNames[index]] = args[index];
@@ -43,12 +54,12 @@ ActionCreator.addToPlayerArray = (arrayName, playerId, cardId) => ({
   cardId,
 });
 
-ActionCreator.setCurrentPhase = makeActionCreator(
+ActionCreator.setCurrentPhase = makeActionCreatorNilAllowed(
   ActionType.SET_CURRENT_PHASE,
   "phaseKey"
 );
 
-ActionCreator.setCurrentPlayer = makeActionCreator(
+ActionCreator.setCurrentPlayer = makeActionCreatorNilAllowed(
   ActionType.SET_CURRENT_PLAYER,
   "playerId"
 );
@@ -58,7 +69,7 @@ ActionCreator.setCurrentRound = makeActionCreator(
   "round"
 );
 
-ActionCreator.setCurrentStep = makeActionCreator(
+ActionCreator.setCurrentStep = makeActionCreatorNilAllowed(
   ActionType.SET_CURRENT_STEP,
   "stepKey"
 );
@@ -71,6 +82,11 @@ ActionCreator.setJackDeck = makeActionCreator(
 );
 
 ActionCreator.setLeader = makeActionCreator(ActionType.SET_LEADER, "leaderId");
+
+ActionCreator.setLeadRole = makeActionCreator(
+  ActionType.SET_LEAD_ROLE,
+  "leadRoleKey"
+);
 
 ActionCreator.setMctsRoot = makeActionCreator(
   ActionType.SET_MCTS_ROOT,
@@ -166,8 +182,7 @@ ActionCreator.transferOrderToHand = makeActionCreator(
 );
 
 ActionCreator.transferOrderToPool = makeActionCreator(
-  ActionType.TRANSFER_ORDER_TO_POOL,
-  "playerId"
+  ActionType.TRANSFER_ORDER_TO_POOL
 );
 
 ActionCreator.transferPoolToHand = makeActionCreator(

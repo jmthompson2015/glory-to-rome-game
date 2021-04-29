@@ -307,6 +307,20 @@ QUnit.test("setLeader()", (assert) => {
   assert.equal(result.currentPlayerOrder.join(), [3, 4, 5, 1, 2].join());
 });
 
+QUnit.test("setLeadRole()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const roleKey = 12;
+  const action = ActionCreator.setLeadRole(roleKey);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.leadRoleKey, roleKey);
+});
+
 QUnit.test("setMctsRoot()", (assert) => {
   // Setup.
   const state = AppState.create();

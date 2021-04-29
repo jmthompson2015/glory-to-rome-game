@@ -1,3 +1,5 @@
+import IV from "../utility/InputValidator.js";
+
 const Selector = {};
 
 Selector.currentPlayer = (state) =>
@@ -53,10 +55,20 @@ Selector.miscCards = (cardIds, state) => {
   return R.map(mapFunction, cardIds);
 };
 
-Selector.orderCard = (cardId, state) => state.orderCardInstances[cardId];
+Selector.orderCard = (cardId, state) => {
+  IV.validateNotNil("cardId", cardId);
+  IV.validateNotNil("state", state);
+  return state.orderCardInstances[cardId];
+};
 
 Selector.orderCards = (cardIds, state) => {
-  const mapFunction = (id) => state.orderCardInstances[id];
+  IV.validateNotIncludesNil("cardIds", cardIds);
+  IV.validateNotNil("state", state);
+  const mapFunction = (id) => {
+    const answer = state.orderCardInstances[id];
+    IV.validateNotNil("card", answer);
+    return answer;
+  };
 
   return R.map(mapFunction, cardIds);
 };
@@ -85,6 +97,8 @@ Selector.playersInOrder = (state) => {
 
   return R.map(mapFunction, currentPlayerOrder);
 };
+
+Selector.refillLimit = (/* playerId, state */) => 5;
 
 Selector.siteCard = (cardId, state) => state.siteCardInstances[cardId];
 

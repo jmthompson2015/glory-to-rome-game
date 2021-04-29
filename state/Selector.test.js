@@ -312,6 +312,18 @@ QUnit.test("playersInOrder() 4", (assert) => {
   assert.equal(result[3].id, 3);
 });
 
+QUnit.test("refillLimit()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const playerId = 1;
+
+  // Run / Verify.
+  const result = Selector.refillLimit(playerId, state);
+
+  // Run / Verify.
+  assert.equal(result, 5);
+});
+
 QUnit.test("siteCard()", (assert) => {
   // Setup.
   const state0 = AppState.create();

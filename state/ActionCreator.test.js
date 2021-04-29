@@ -7,7 +7,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", (assert) => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 33);
+  assert.equal(actionTypeKeys.length, 34);
 
   // Run / Verify.
   actionTypeKeys.forEach((key) => {
@@ -179,6 +179,19 @@ QUnit.test("setLeader()", (assert) => {
   assert.ok(result);
   assert.equal(result.type, ActionType.SET_LEADER);
   assert.equal(result.leaderId, leaderId);
+});
+
+QUnit.test("setLeadRole()", (assert) => {
+  // Setup.
+  const leadRoleKey = 3;
+
+  // Run.
+  const result = ActionCreator.setLeadRole(leadRoleKey);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.SET_LEAD_ROLE);
+  assert.equal(result.leadRoleKey, leadRoleKey);
 });
 
 QUnit.test("setMctsRoot()", (assert) => {
@@ -449,7 +462,6 @@ QUnit.test("transferOrderToPool()", (assert) => {
   // Verify.
   assert.ok(result);
   assert.equal(result.type, ActionType.TRANSFER_ORDER_TO_POOL);
-  assert.equal(result.playerId, playerId);
 });
 
 QUnit.test("transferPoolToHand()", (assert) => {
