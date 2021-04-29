@@ -1,4 +1,7 @@
+import MiscCard from "../artifact/MiscCard.js";
+
 import ActionCreator from "../state/ActionCreator.js";
+import MiscCardState from "../state/MiscCardState.js";
 import PlayerState from "../state/PlayerState.js";
 import Reducer from "../state/Reducer.js";
 
@@ -38,6 +41,13 @@ TestData.createStore = () => {
 
   // From Setup.execute(); don't shuffle for repeatability.
   store.dispatch(ActionCreator.setPlayers(players));
+
+  // Create the Leader card.
+  MiscCardState.create({ cardKey: MiscCard.LEADER, store });
+
+  // Create Merchant Bonus cards.
+  const forEachFunction = (cardKey) => MiscCardState.create({ cardKey, store });
+  R.forEach(forEachFunction, MiscCard.keys().slice(1));
 
   // Create the order deck.
   const orderDeck = DeckBuilder.buildOrderDeck(store);

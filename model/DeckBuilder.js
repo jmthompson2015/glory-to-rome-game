@@ -1,22 +1,11 @@
-import MiscCard from "../artifact/MiscCard.js";
 import OrderCard from "../artifact/OrderCard.js";
-import SiteCard from "../artifact/SiteCard.js";
 
-import MiscCardState from "../state/MiscCardState.js";
 import OrderCardState from "../state/OrderCardState.js";
 import SiteCardState from "../state/SiteCardState.js";
 
 const cardToId = (card) => card.id;
 
 const DeckBuilder = {};
-
-const createMiscCards = (store, cardKey, count, isFaceUp = false) => {
-  const reduceFunction = (accum) =>
-    R.append(MiscCardState.create({ cardKey, isFaceUp, store }), accum);
-  const counters = R.repeat(1, count);
-
-  return R.reduce(reduceFunction, [], counters);
-};
 
 const createOrderCards = (store, cardKey, count, isFaceUp = false) => {
   const reduceFunction = (accum) =>
@@ -36,8 +25,8 @@ const createSiteCards = (store, cardKey, count, isFaceUp = false) => {
 
 DeckBuilder.buildJackDeck = (store) => {
   const array = R.concat(
-    createMiscCards(store, MiscCard.JACK1, 3, true),
-    createMiscCards(store, MiscCard.JACK2, 3, true)
+    createOrderCards(store, OrderCard.JACK1, 3, true),
+    createOrderCards(store, OrderCard.JACK2, 3, true)
   );
 
   return R.map(cardToId, array);

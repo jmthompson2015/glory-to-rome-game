@@ -8,7 +8,8 @@ QUnit.module("GtRGame");
 QUnit.test("execute()", (assert) => {
   // Setup.
   const store = TestData.createStore();
-  store.dispatch(ActionCreator.setVerbose(true));
+  // store.dispatch(ActionCreator.setVerbose(true));
+  store.dispatch(ActionCreator.setDelay(0));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setLeader(1));
 

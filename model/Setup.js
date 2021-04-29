@@ -1,8 +1,10 @@
+import MiscCard from "../artifact/MiscCard.js";
 import OrderCard from "../artifact/OrderCard.js";
 import SiteCard from "../artifact/SiteCard.js";
 import Version from "../artifact/Version.js";
 
 import ActionCreator from "../state/ActionCreator.js";
+import MiscCardState from "../state/MiscCardState.js";
 
 import DeckBuilder from "./DeckBuilder.js";
 
@@ -81,6 +83,13 @@ Setup.dealPoolCards = (store, players) => {
 Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {
   store.dispatch(ActionCreator.setVersion(versionKey));
   store.dispatch(ActionCreator.setPlayers(players));
+
+  // Create the Leader card.
+  MiscCardState.create({ cardKey: MiscCard.LEADER, store });
+
+  // Create Merchant Bonus cards.
+  const forEachFunction = (cardKey) => MiscCardState.create({ cardKey, store });
+  R.forEach(forEachFunction, MiscCard.keys().slice(1));
 
   // Create the order deck.
   const orderDeck = shuffle(DeckBuilder.buildOrderDeck(store));

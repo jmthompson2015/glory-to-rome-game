@@ -55,7 +55,7 @@ QUnit.test("dealOrderCards()", (assert) => {
   assert.ok(orderCardInstances);
   assert.equal(
     Object.keys(orderCardInstances).length,
-    144,
+    150,
     `orderCardInstances length = ${Object.keys(orderCardInstances).length}`
   );
   assert.ok(orderDeck);
@@ -123,13 +123,13 @@ QUnit.test("execute() Imperium", (assert) => {
   assert.ok(miscCards);
   assert.equal(
     Object.keys(miscCards).length,
-    6,
+    7,
     `miscCards length = ${Object.keys(miscCards).length}`
   );
   assert.ok(orderCards);
   assert.equal(
     Object.keys(orderCards).length,
-    144,
+    150,
     `orderCards length = ${Object.keys(orderCards).length}`
   );
   assert.ok(siteCards);
@@ -191,13 +191,13 @@ QUnit.test("execute() Republic", (assert) => {
   assert.ok(miscCards);
   assert.equal(
     Object.keys(miscCards).length,
-    6,
+    7,
     `miscCards length = ${Object.keys(miscCards).length}`
   );
   assert.ok(orderCards);
   assert.equal(
     Object.keys(orderCards).length,
-    144,
+    150,
     `orderCards length = ${Object.keys(orderCards).length}`
   );
   assert.ok(siteCards);
