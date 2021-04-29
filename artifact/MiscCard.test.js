@@ -4,10 +4,10 @@ import MiscCard from "./MiscCard.js";
 
 QUnit.module("MiscCard");
 
-QUnit.test("MiscCard properties Jack1", (assert) => {
-  const cardKey = MiscCard.JACK1;
+QUnit.test("MiscCard properties Leader", (assert) => {
+  const cardKey = MiscCard.LEADER;
   const properties = MiscCard.properties[cardKey];
-  assert.equal(properties.name, "Jack");
+  assert.equal(properties.name, "Leader");
   assert.equal(properties.key, cardKey);
 });
 
@@ -40,9 +40,8 @@ QUnit.test("keys()", (assert) => {
 
   // Verify.
   assert.ok(result);
-  const length = 9;
-  assert.equal(result.length, length);
-  assert.equal(R.head(result), MiscCard.JACK1);
+  assert.equal(result.length, 7);
+  assert.equal(R.head(result), MiscCard.LEADER);
   assert.equal(R.last(result), MiscCard.MERCHANT_BONUS_WOOD);
 });
 

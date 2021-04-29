@@ -42,6 +42,11 @@ Role.properties = {
   thinker: {
     name: "Thinker",
     color: "White",
+    options: {
+      DRAW_JACK: "draw a jack",
+      REFILL_HAND: "refill hand",
+      DRAW_CARD: "draw a card",
+    },
     key: "thinker",
   },
 };

@@ -47,7 +47,7 @@ QUnit.test("keys()", (assert) => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.length, 44);
+  assert.equal(result.length, 46);
   assert.equal(R.head(result), OrderCard.ACADEMY);
   assert.equal(R.last(result), OrderCard.WALL);
 });
