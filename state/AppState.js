@@ -34,7 +34,7 @@ AppState.create = ({
   playerToStructures = {},
   playerToVault = {},
 
-  miscCardInstances = {},
+  bonusCardInstances = {},
   orderCardInstances = {},
   playerInstances = {},
   siteCardInstances = {},
@@ -74,7 +74,7 @@ AppState.create = ({
     playerToStructures,
     playerToVault,
 
-    miscCardInstances,
+    bonusCardInstances,
     orderCardInstances,
     playerInstances,
     siteCardInstances,

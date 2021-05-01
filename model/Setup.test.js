@@ -111,7 +111,7 @@ QUnit.test("execute() Imperium", (assert) => {
   const {
     currentPlayerId,
     jackDeck,
-    miscCardInstances: miscCards,
+    bonusCardInstances: bonusCards,
     orderCardInstances: orderCards,
     orderDeck,
     playerInstances,
@@ -120,11 +120,11 @@ QUnit.test("execute() Imperium", (assert) => {
     siteToDeck,
     siteToOutOfTownDeck,
   } = state;
-  assert.ok(miscCards);
+  assert.ok(bonusCards);
   assert.equal(
-    Object.keys(miscCards).length,
+    Object.keys(bonusCards).length,
     6,
-    `miscCards length = ${Object.keys(miscCards).length}`
+    `bonusCards length = ${Object.keys(bonusCards).length}`
   );
   assert.ok(orderCards);
   assert.equal(
@@ -183,7 +183,7 @@ QUnit.test("execute() Republic", (assert) => {
   const {
     currentPlayerId,
     jackDeck,
-    miscCardInstances: miscCards,
+    bonusCardInstances: bonusCards,
     orderCardInstances: orderCards,
     orderDeck,
     playerInstances,
@@ -192,11 +192,11 @@ QUnit.test("execute() Republic", (assert) => {
     siteToDeck,
     siteToOutOfTownDeck,
   } = state;
-  assert.ok(miscCards);
+  assert.ok(bonusCards);
   assert.equal(
-    Object.keys(miscCards).length,
+    Object.keys(bonusCards).length,
     6,
-    `miscCards length = ${Object.keys(miscCards).length}`
+    `bonusCards length = ${Object.keys(bonusCards).length}`
   );
   assert.ok(orderCards);
   assert.equal(

@@ -1,10 +1,10 @@
-import MiscCard from "../artifact/MiscCard.js";
+import BonusCard from "../artifact/BonusCard.js";
 import OrderCard from "../artifact/OrderCard.js";
 import Version from "../artifact/Version.js";
 
 import AppState from "./AppState.js";
 import ActionCreator from "./ActionCreator.js";
-import MiscCardState from "./MiscCardState.js";
+import BonusCardState from "./BonusCardState.js";
 import OrderCardState from "./OrderCardState.js";
 import PlayerState from "./PlayerState.js";
 import Reducer from "./Reducer.js";
@@ -76,22 +76,22 @@ QUnit.test("addGameRecord()", (assert) => {
   assert.equal(gameRecords1[1].message, "second game record");
 });
 
-QUnit.test("addMiscCard()", (assert) => {
+QUnit.test("addBonusCard()", (assert) => {
   // Setup.
   const state = AppState.create();
   const cardKey = "knight";
-  const cardState = MiscCardState.create({
+  const cardState = BonusCardState.create({
     id: Selector.nextOrderCardId(state),
     cardKey,
   });
-  const action = ActionCreator.addMiscCard(cardState);
+  const action = ActionCreator.addBonusCard(cardState);
 
   // Run.
   const result = Reducer.root(state, action);
 
   // Verify.
   assert.ok(result);
-  const cards = result.miscCardInstances;
+  const cards = result.bonusCardInstances;
   assert.ok(cards);
   assert.equal(Object.keys(cards).length, 1);
   const card = cards[1];
@@ -663,8 +663,8 @@ QUnit.test("transferJackToHand()", (assert) => {
   const state0 = AppState.create();
   const playerId = 3;
   const cardId = 1;
-  const cardKey = MiscCard.JACK1;
-  const card = MiscCardState.create({ id: cardId, cardKey });
+  const cardKey = BonusCard.JACK1;
+  const card = BonusCardState.create({ id: cardId, cardKey });
   const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.setJackDeck([cardId]);

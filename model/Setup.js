@@ -1,10 +1,10 @@
-import MiscCard from "../artifact/MiscCard.js";
+import BonusCard from "../artifact/BonusCard.js";
 import OrderCard from "../artifact/OrderCard.js";
 import SiteCard from "../artifact/SiteCard.js";
 import Version from "../artifact/Version.js";
 
 import ActionCreator from "../state/ActionCreator.js";
-import MiscCardState from "../state/MiscCardState.js";
+import BonusCardState from "../state/BonusCardState.js";
 import OrderCardState from "../state/OrderCardState.js";
 
 import DeckBuilder from "./DeckBuilder.js";
@@ -100,8 +100,8 @@ Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {
   Setup.createSiteDecks(store, players);
 
   // Create Merchant Bonus cards.
-  const forEachFunction = (cardKey) => MiscCardState.create({ cardKey, store });
-  R.forEach(forEachFunction, MiscCard.keys());
+  const forEachFunction = (cardKey) => BonusCardState.create({ cardKey, store });
+  R.forEach(forEachFunction, BonusCard.keys());
 
   // Deal cards to each player.
   if (versionKey === Version.REPUBLIC) {

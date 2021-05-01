@@ -1,5 +1,6 @@
 import IV from "../utility/InputValidator.js";
 
+import OrderCard from "../artifact/OrderCard.js";
 import SiteCard from "../artifact/SiteCard.js";
 
 const Selector = {};
@@ -51,7 +52,7 @@ Selector.isVerbose = (state) => state.isVerbose;
 
 Selector.leaderCard = (state) => {
   IV.validateNotNil("state", state);
-  const filterFunction = (card) => card.cardType.key === "leader";
+  const filterFunction = (card) => card.cardType.key === OrderCard.LEADER;
   const cards = R.filter(
     filterFunction,
     Object.values(state.orderCardInstances)
@@ -64,10 +65,10 @@ Selector.leaderId = (state) => R.head(state.currentPlayerOrder);
 
 Selector.mctsRoot = (state) => state.mctsRoot;
 
-Selector.miscCard = (cardId, state) => state.miscCardInstances[cardId];
+Selector.bonusCard = (cardId, state) => state.bonusCardInstances[cardId];
 
-Selector.miscCards = (cardIds, state) => {
-  const mapFunction = (id) => state.miscCardInstances[id];
+Selector.bonusCards = (cardIds, state) => {
+  const mapFunction = (id) => state.bonusCardInstances[id];
 
   return R.map(mapFunction, cardIds);
 };
@@ -159,7 +160,7 @@ const nextId = (instanceMap) => {
   return (maxId !== undefined ? maxId : 0) + 1;
 };
 
-Selector.nextMiscCardId = (state) => nextId(state.miscCardInstances);
+Selector.nextBonusCardId = (state) => nextId(state.bonusCardInstances);
 
 Selector.nextOrderCardId = (state) => nextId(state.orderCardInstances);
 

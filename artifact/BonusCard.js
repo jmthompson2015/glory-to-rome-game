@@ -1,6 +1,6 @@
 import Material from "./Material.js";
 
-const MiscCard = {
+const BonusCard = {
   MERCHANT_BONUS_BRICK: "merchant bonus brick",
   MERCHANT_BONUS_CONCRETE: "merchant bonus concrete",
   MERCHANT_BONUS_MARBLE: "merchant bonus marble",
@@ -9,7 +9,7 @@ const MiscCard = {
   MERCHANT_BONUS_WOOD: "merchant bonus wood",
 };
 
-MiscCard.properties = {
+BonusCard.properties = {
   "merchant bonus brick": {
     name: "Merchant Bonus (Brick)",
     ability:
@@ -61,12 +61,12 @@ MiscCard.properties = {
   },
 };
 
-MiscCard.keys = () => Object.keys(MiscCard.properties);
+BonusCard.keys = () => Object.keys(BonusCard.properties);
 
-MiscCard.values = () => Object.values(MiscCard.properties);
+BonusCard.values = () => Object.values(BonusCard.properties);
 
-MiscCard.value = (key) => MiscCard.properties[key];
+BonusCard.value = (key) => BonusCard.properties[key];
 
-Object.freeze(MiscCard);
+Object.freeze(BonusCard);
 
-export default MiscCard;
+export default BonusCard;

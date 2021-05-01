@@ -1,11 +1,11 @@
-import MiscCard from "../artifact/MiscCard.js";
+import BonusCard from "../artifact/BonusCard.js";
 
 import ActionCreator from "./ActionCreator.js";
 import Selector from "./Selector.js";
 
-const MiscCardState = {};
+const BonusCardState = {};
 
-MiscCardState.create = ({
+BonusCardState.create = ({
   id,
   cardKey,
   isFaceup = true,
@@ -13,7 +13,7 @@ MiscCardState.create = ({
   store,
 }) => {
   const myId =
-    R.isNil(id) && store ? Selector.nextMiscCardId(store.getState()) : id;
+    R.isNil(id) && store ? Selector.nextBonusCardId(store.getState()) : id;
 
   const card = Immutable({
     // Required.
@@ -23,19 +23,19 @@ MiscCardState.create = ({
     isFaceup,
     isHighlighted,
     // Managed.
-    cardType: MiscCard.value(cardKey),
+    cardType: BonusCard.value(cardKey),
   });
 
   if (store) {
-    store.dispatch(ActionCreator.addMiscCard(card));
+    store.dispatch(ActionCreator.addBonusCard(card));
   }
 
   return card;
 };
 
-MiscCardState.toString = (card) =>
+BonusCardState.toString = (card) =>
   JSON.stringify(R.pick(["id", "cardKey"], card));
 
-Object.freeze(MiscCardState);
+Object.freeze(BonusCardState);
 
-export default MiscCardState;
+export default BonusCardState;

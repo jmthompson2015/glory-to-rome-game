@@ -22,14 +22,14 @@ const makeActionCreatorNilAllowed = (type, ...argNames) => (...args) => {
   return action;
 };
 
+ActionCreator.addBonusCard = makeActionCreator(
+  ActionType.ADD_BONUS_CARD,
+  "bonusCardState"
+);
+
 ActionCreator.addGameRecord = makeActionCreator(
   ActionType.ADD_GAME_RECORD,
   "message"
-);
-
-ActionCreator.addMiscCard = makeActionCreator(
-  ActionType.ADD_MISC_CARD,
-  "miscCardState"
 );
 
 ActionCreator.addOrderCard = makeActionCreator(

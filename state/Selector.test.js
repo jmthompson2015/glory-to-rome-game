@@ -1,4 +1,4 @@
-import MiscCard from "../artifact/MiscCard.js";
+import BonusCard from "../artifact/BonusCard.js";
 import OrderCard from "../artifact/OrderCard.js";
 import SiteCard from "../artifact/SiteCard.js";
 
@@ -13,9 +13,9 @@ import StructureState from "./StructureState.js";
 
 QUnit.module("Selector");
 
-const addMiscCard = (id, cardKey, state) => {
+const addBonusCard = (id, cardKey, state) => {
   const card = OrderCardState.create({ id, cardKey });
-  const action = ActionCreator.addMiscCard(card);
+  const action = ActionCreator.addBonusCard(card);
 
   return Reducer.root(state, action);
 };
@@ -181,17 +181,17 @@ QUnit.test("leaderId()", (assert) => {
   assert.equal(result, playerId);
 });
 
-QUnit.test("nextMiscCardId()", (assert) => {
+QUnit.test("nextBonusCardId()", (assert) => {
   // Setup.
   const state1 = AppState.create();
 
   // Run / Verify.
-  assert.equal(Selector.nextMiscCardId(state1), 1);
+  assert.equal(Selector.nextBonusCardId(state1), 1);
 
-  const state2 = addMiscCard(12, MiscCard.MERCHANT_BONUS_BRICK, state1);
+  const state2 = addBonusCard(12, BonusCard.MERCHANT_BONUS_BRICK, state1);
 
   // Run / Verify.
-  assert.equal(Selector.nextMiscCardId(state2), 13);
+  assert.equal(Selector.nextBonusCardId(state2), 13);
 });
 
 QUnit.test("nextOrderCardId()", (assert) => {

@@ -1,9 +1,11 @@
 /* eslint no-console: ["error", { allow: ["info"] }] */
 
-import MiscCard from "../artifact/MiscCard.js";
+import OrderCard from "../artifact/OrderCard.js";
+import BonusCard from "../artifact/BonusCard.js";
 
 import ActionCreator from "../state/ActionCreator.js";
-import MiscCardState from "../state/MiscCardState.js";
+import BonusCardState from "../state/BonusCardState.js";
+import OrderCardState from "../state/OrderCardState.js";
 import PlayerState from "../state/PlayerState.js";
 import Reducer from "../state/Reducer.js";
 
@@ -47,11 +49,7 @@ TestData.createStore = () => {
   store.dispatch(ActionCreator.setPlayers(players));
 
   // Create the Leader card.
-  MiscCardState.create({ cardKey: MiscCard.LEADER, store });
-
-  // Create Merchant Bonus cards.
-  const forEachFunction = (cardKey) => MiscCardState.create({ cardKey, store });
-  R.forEach(forEachFunction, MiscCard.keys().slice(1));
+  OrderCardState.create({ cardKey: OrderCard.LEADER, store });
 
   // Create the order deck.
   const orderDeck = DeckBuilder.buildOrderDeck(store);
@@ -63,6 +61,10 @@ TestData.createStore = () => {
 
   // Create the site decks.
   Setup.createSiteDecks(store, players);
+
+  // Create Merchant Bonus cards.
+  const forEachFunction = (cardKey) => BonusCardState.create({ cardKey, store });
+  R.forEach(forEachFunction, BonusCard.keys().slice(1));
 
   // Deal cards to each player.
   Setup.dealOrderCards(store, players);

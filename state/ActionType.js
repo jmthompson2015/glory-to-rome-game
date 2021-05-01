@@ -1,7 +1,7 @@
 const ActionType = {};
 
+ActionType.ADD_BONUS_CARD = "addBonusCard";
 ActionType.ADD_GAME_RECORD = "addGameRecord";
-ActionType.ADD_MISC_CARD = "addMiscCard";
 ActionType.ADD_ORDER_CARD = "addOrderCard";
 ActionType.ADD_POOL_CARD = "addPoolCard";
 ActionType.ADD_SITE_CARD = "addSiteCard";

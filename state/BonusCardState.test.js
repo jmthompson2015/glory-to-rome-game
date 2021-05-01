@@ -1,9 +1,9 @@
-import MiscCardState from "./MiscCardState.js";
+import BonusCardState from "./BonusCardState.js";
 
-QUnit.module("MiscCardState");
+QUnit.module("BonusCardState");
 
 const createTestData = () =>
-  MiscCardState.create({
+  BonusCardState.create({
     id: 1,
     cardKey: 2,
     isFaceup: 3,
@@ -40,12 +40,12 @@ QUnit.test("toString()", (assert) => {
   const card = createTestData();
 
   // Run.
-  const result = MiscCardState.toString(card);
+  const result = BonusCardState.toString(card);
 
   // Verify.
   assert.ok(result);
   assert.equal(result, '{"id":1,"cardKey":2}');
 });
 
-const MiscCardStateTest = {};
-export default MiscCardStateTest;
+const BonusCardStateTest = {};
+export default BonusCardStateTest;

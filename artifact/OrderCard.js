@@ -303,6 +303,7 @@ OrderCard.properties = {
   leader: {
     name: "Leader",
     ability: "LEAD a role from your hand or THINK and draw new cards",
+    roleKey: Role.THINKER,
     key: "leader",
   },
   "ludus magnus": {
