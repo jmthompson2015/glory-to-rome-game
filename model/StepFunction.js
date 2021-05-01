@@ -106,7 +106,9 @@ const createTasks = (store) => {
     const campCards = Selector.orderCards(campIds, store.getState());
     const roleKeys = R.map((c) => c.cardType.roleKey, campCards);
 
-    return roleKeys.length > 0 ? roleFunction.execute(playerId, store) : accum;
+    return roleKeys.length > 0
+      ? accum.then(() => roleFunction.execute(playerId, store))
+      : accum;
   };
 
   return R.reduce(reduceFunction, Promise.resolve(), currentPlayerOrder);

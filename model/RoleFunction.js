@@ -16,45 +16,6 @@ const computeShortfall = (playerId, state) => {
   return refillLimit - hand.length;
 };
 
-const determineLaborerOptions = (playerId, state) => {
-  const cardPoolIds = Selector.cardPool(state);
-  const cardPool = Selector.orderCards(cardPoolIds, state);
-  const reduceFunction = (accum, card) => {
-    if (card && card.cardType && card.cardType.materialKey) {
-      return R.append(card.cardType.materialKey, accum);
-    }
-    return accum;
-  };
-
-  return R.uniq(R.reduce(reduceFunction, [], cardPool));
-};
-
-const determineMerchantOptions = (playerId, state) => {
-  const stockpileIds = Selector.stockpile(playerId, state);
-  const stockpile = Selector.orderCards(stockpileIds, state);
-  const reduceFunction = (accum, card) => {
-    if (card && card.cardType && card.cardType.materialKey) {
-      return R.append(card.cardType.materialKey, accum);
-    }
-    return accum;
-  };
-
-  return R.uniq(R.reduce(reduceFunction, [], stockpile));
-};
-
-const determinePatronOptions = (playerId, state) => {
-  const cardPoolIds = Selector.cardPool(state);
-  const cardPool = Selector.orderCards(cardPoolIds, state);
-  const reduceFunction = (accum, card) => {
-    if (card && card.cardType && card.cardType.roleKey) {
-      return R.append(card.cardType.roleKey, accum);
-    }
-    return accum;
-  };
-
-  return R.uniq(R.reduce(reduceFunction, [], cardPool));
-};
-
 const determineThinkerOptions = (playerId, state) => {
   const answer = [];
   const { options } = Role.value(Role.THINKER);
@@ -69,61 +30,34 @@ const determineThinkerOptions = (playerId, state) => {
   return answer;
 };
 
-const firstLaborerCard = (materialKey, cardPool) => {
-  const filterFunction = (card) => card.cardType.materialKey === materialKey;
-  const materialCards = R.filter(filterFunction, cardPool);
-  IV.validateNotEmpty("materialCards", materialCards);
-
-  return R.head(materialCards).id;
-};
-
-const firstMaterialCard = (materialKey, stockpile) => {
-  const filterFunction = (card) => card.cardType.materialKey === materialKey;
-  const materialCards = R.filter(filterFunction, stockpile);
-  IV.validateNotEmpty("materialCards", materialCards);
-
-  return R.head(materialCards).id;
-};
-
-const firstPatronCard = (roleKey, cardPool) => {
-  const filterFunction = (card) => card.cardType.roleKey === roleKey;
-  const roleCards = R.filter(filterFunction, cardPool);
-  IV.validateNotEmpty("roleCards", roleCards);
-
-  return R.head(roleCards).id;
-};
-
-const performLaborerOption = (playerId, store) => (materialKey) => {
-  IV.validateNotNil("materialKey", materialKey);
+const performLaborerOption = (playerId, store) => (cardId) => {
+  IV.validateNotNil("cardId", cardId);
   const player = Selector.player(playerId, store.getState());
+  const card = Selector.orderCard(cardId, store.getState());
+  const { materialKey } = card.cardType;
   const userMessage = `${player.name} chose to take ${materialKey}.`;
   store.dispatch(ActionCreator.setUserMessage(userMessage));
-  const cardPoolIds = Selector.cardPool(store.getState());
-  const cardPool = Selector.orderCards(cardPoolIds, store.getState());
-  const cardId = firstLaborerCard(materialKey, cardPool);
   store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
 };
 
-const performMerchantOption = (playerId, store) => (materialKey) => {
-  IV.validateNotNil("materialKey", materialKey);
+const performMerchantOption = (playerId, store) => (cardId) => {
+  IV.validateNotNil("cardId", cardId);
   const player = Selector.player(playerId, store.getState());
+  const card = Selector.orderCard(cardId, store.getState());
+  const { materialKey } = card.cardType;
   const userMessage = `${player.name} chose to sell ${materialKey}.`;
   store.dispatch(ActionCreator.setUserMessage(userMessage));
-  const stockpileIds = Selector.stockpile(playerId, store.getState());
-  const stockpile = Selector.orderCards(stockpileIds, store.getState());
-  const cardId = firstMaterialCard(materialKey, stockpile);
   store.dispatch(ActionCreator.transferStockpileToVault(playerId, cardId));
 };
 
-const performPatronOption = (playerId, store) => (roleKey) => {
-  IV.validateNotNil("roleKey", roleKey);
+const performPatronOption = (playerId, store) => (cardId) => {
+  IV.validateNotNil("cardId", cardId);
   const player = Selector.player(playerId, store.getState());
+  const card = Selector.orderCard(cardId, store.getState());
+  const { roleKey } = card.cardType;
   const article = roleKey === Role.ARCHITECT ? "an" : "a";
   const userMessage = `${player.name} chose to hire ${article} ${roleKey}.`;
   store.dispatch(ActionCreator.setUserMessage(userMessage));
-  const cardPoolIds = Selector.cardPool(store.getState());
-  const cardPool = Selector.orderCards(cardPoolIds, store.getState());
-  const cardId = firstPatronCard(roleKey, cardPool);
   store.dispatch(ActionCreator.transferPoolToClientele(playerId, cardId));
 };
 
@@ -186,16 +120,13 @@ const RoleFunction = {
     execute: (playerId, store) => {
       // Take a card from Pool and place it in Stockpile.
       console.log(`RoleFunction LABORER execute()`);
-      const state = store.getState();
-      const options = determineLaborerOptions(playerId, state);
-      const player = Selector.player(playerId, state);
+      const options = Selector.cardPool(store.getState());
+      const player = Selector.player(playerId, store.getState());
       const strategy = StrategyResolver.resolve(player.strategy);
-      const delay = Selector.delay(state);
+      const delay = Selector.delay(store.getState());
       return strategy
-        .chooseLaborerOption(options, state, delay)
-        .then((materialKey) => {
-          performLaborerOption(playerId, store)(materialKey);
-        })
+        .chooseLaborerOption(options, store.getState(), delay)
+        .then(performLaborerOption(playerId, store))
         .catch((error) => {
           console.error(error.message);
           throw error;
@@ -225,13 +156,12 @@ const RoleFunction = {
   [Role.MERCHANT]: {
     execute: (playerId, store) => {
       // Take one material from Stockpile and place face-down in Vault.
-      const state = store.getState();
-      const options = determineMerchantOptions(playerId, state);
-      const player = Selector.player(playerId, state);
+      const options = Selector.stockpile(playerId, store.getState());
+      const player = Selector.player(playerId, store.getState());
       const strategy = StrategyResolver.resolve(player.strategy);
-      const delay = Selector.delay(state);
+      const delay = Selector.delay(store.getState());
       return strategy
-        .chooseMerchantOption(options, state, delay)
+        .chooseMerchantOption(options, store.getState(), delay)
         .then(performMerchantOption(playerId, store))
         .catch((error) => {
           console.error(error.message);
@@ -250,13 +180,12 @@ const RoleFunction = {
   [Role.PATRON]: {
     execute: (playerId, store) => {
       // Take a card from the Pool and place it in Clientele.
-      const state = store.getState();
-      const options = determinePatronOptions(playerId, state);
-      const player = Selector.player(playerId, state);
+      const options = Selector.cardPool(store.getState());
+      const player = Selector.player(playerId, store.getState());
       const strategy = StrategyResolver.resolve(player.strategy);
-      const delay = Selector.delay(state);
+      const delay = Selector.delay(store.getState());
       return strategy
-        .choosePatronOption(options, state, delay)
+        .choosePatronOption(options, store.getState(), delay)
         .then(performPatronOption(playerId, store))
         .catch((error) => {
           console.error(error.message);

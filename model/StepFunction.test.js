@@ -8,6 +8,8 @@ import TestData from "./TestData.js";
 
 QUnit.module("StepFunction");
 
+const isInRange = (low, value, high) => low <= value && value <= high;
+
 QUnit.test("declare role", (assert) => {
   // Setup.
   const stepKey = Step.DECLARE_ROLE;
@@ -76,7 +78,7 @@ QUnit.test("perform role Laborer", (assert) => {
       1,
       `stockpile1.length = ${stockpile1.length}`
     );
-    assert.equal([26, 27, 28, 29, 30].includes(R.head(stockpile1)), true);
+    assert.equal(isInRange(26, R.head(stockpile1), 31), true);
 
     const stockpile4 = playerToStockpile[4] || [];
     assert.ok(stockpile4, `stockpile4 = ${JSON.stringify(stockpile4)}`);
@@ -85,7 +87,7 @@ QUnit.test("perform role Laborer", (assert) => {
       1,
       `stockpile4.length = ${stockpile4.length}`
     );
-    assert.equal([26, 27, 28, 29, 30].includes(R.head(stockpile4)), true);
+    assert.equal(isInRange(26, R.head(stockpile4), 31), true);
 
     const stockpile5 = playerToStockpile[5] || [];
     assert.ok(stockpile5, `stockpile5 = ${JSON.stringify(stockpile5)}`);
@@ -94,7 +96,7 @@ QUnit.test("perform role Laborer", (assert) => {
       1,
       `stockpile5.length = ${stockpile5.length}`
     );
-    assert.equal([26, 27, 28, 29, 30].includes(R.head(stockpile5)), true);
+    assert.equal(isInRange(26, R.head(stockpile5), 31), true);
     done();
   };
 
@@ -173,7 +175,7 @@ QUnit.test("perform role Patron", (assert) => {
       1,
       `clientele5.length = ${clientele5.length}`
     );
-    assert.equal([26, 27, 28, 29, 30].includes(R.head(clientele5)), true);
+    assert.equal(isInRange(26, R.head(clientele5), 31), true);
     done();
   };
 
