@@ -12,11 +12,19 @@ Role.properties = {
   architect: {
     name: "Architect",
     color: "Gray",
+    options: {
+      LAY_FOUNDATION: "lay a foundation",
+      BUILD_STRUCTURE: "build structure",
+    },
     key: "architect",
   },
   craftsman: {
     name: "Craftsman",
     color: "Green",
+    options: {
+      LAY_FOUNDATION: "lay a foundation",
+      BUILD_STRUCTURE: "build structure",
+    },
     key: "craftsman",
   },
   laborer: {

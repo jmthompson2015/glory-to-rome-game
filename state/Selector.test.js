@@ -1,5 +1,7 @@
+import Material from "../artifact/Material.js";
 import MiscCard from "../artifact/MiscCard.js";
 import OrderCard from "../artifact/OrderCard.js";
+import Role from "../artifact/Role.js";
 import SiteCard from "../artifact/SiteCard.js";
 
 import AppState from "./AppState.js";
@@ -34,8 +36,13 @@ const addSiteCard = (id, cardKey, state) => {
   return Reducer.root(state, action);
 };
 
-const addStructure = (id, foundationId, siteId, state) => {
-  const structure = StructureState.create({ id, foundationId, siteId });
+const addStructure = (id, foundationId, siteId, materialIds, state) => {
+  const structure = StructureState.create({
+    id,
+    foundationId,
+    siteId,
+    materialIds,
+  });
   const action = ActionCreator.addStructure(structure);
 
   return Reducer.root(state, action);
@@ -221,7 +228,7 @@ QUnit.test("nextStructureId()", (assert) => {
   // Run / Verify.
   assert.equal(Selector.nextStructureId(state1), 1);
 
-  const state2 = addStructure(12, 3, 4, state1);
+  const state2 = addStructure(12, 3, 4, [], state1);
 
   // Run / Verify.
   assert.equal(Selector.nextStructureId(state2), 13);
@@ -425,6 +432,30 @@ QUnit.test("siteCards()", (assert) => {
   assert.equal(result2.cardKey, OrderCard.ATRIUM);
 });
 
+QUnit.test("sitesAvailable()", (assert) => {
+  // Setup.
+  let state = AppState.create();
+  const siteCardKeys = SiteCard.keys();
+  for (let id = 1; id <= 3; id += 1) {
+    const cardKey = siteCardKeys[id - 1];
+    state = addSiteCard(id, cardKey, state);
+    const action = ActionCreator.setSiteToDeck(cardKey, [id]);
+    state = Reducer.root(state, action);
+  }
+
+  // Run / Verify.
+  const result = Selector.sitesAvailable(state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, 3);
+  const resultFirst = R.head(result);
+  assert.equal(resultFirst, SiteCard.BRICK);
+  const resultLast = R.last(result);
+  assert.equal(resultLast, SiteCard.MARBLE);
+});
+
 QUnit.test("stockpile()", (assert) => {
   // Setup.
   const state = AppState.create();
@@ -437,6 +468,37 @@ QUnit.test("stockpile()", (assert) => {
   assert.ok(result);
   assert.equal(Array.isArray(result), true);
   assert.equal(result.length, 0);
+});
+
+QUnit.test("unfinishedStructures()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const playerId = 3;
+  const state1 = addSiteCard(1, SiteCard.BRICK, state0);
+  const state2 = addStructure(1, 2, 1, [], state1);
+  const state3 = addSiteCard(2, SiteCard.CONCRETE, state2);
+  const state4 = addStructure(2, 3, 2, [5, 6], state3);
+  const action4 = ActionCreator.addToPlayerArray(
+    "playerToStructures",
+    playerId,
+    1
+  );
+  const state5 = Reducer.root(state4, action4);
+  const action5 = ActionCreator.addToPlayerArray(
+    "playerToStructures",
+    playerId,
+    2
+  );
+  const state = Reducer.root(state5, action5);
+
+  // Run / Verify.
+  const result = Selector.unfinishedStructures(playerId, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, 1, `result.length = ${result.length}`);
+  assert.equal(R.head(result), 1);
 });
 
 QUnit.test("vault()", (assert) => {

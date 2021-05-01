@@ -46,9 +46,9 @@ QUnit.test("perform role Laborer", (assert) => {
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
   store.dispatch(ActionCreator.setCurrentStep(stepKey));
   store.dispatch(ActionCreator.setLeadRole(Role.LABORER));
-  TestData.printOrderCards(store);
-  TestData.printHands(store);
-  TestData.printCardPool(store);
+  // TestData.printOrderCards(store);
+  // TestData.printHands(store);
+  // TestData.printCardPool(store);
   store.dispatch(ActionCreator.addToPlayerArray("playerToHand", 1, 67));
   store.dispatch(ActionCreator.transferHandToCamp(1, 67));
   store.dispatch(ActionCreator.transferHandToCamp(4, 16));

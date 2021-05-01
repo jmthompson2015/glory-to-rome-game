@@ -1,5 +1,7 @@
 import IV from "../utility/InputValidator.js";
 
+import SiteCard from "../artifact/SiteCard.js";
+
 const Selector = {};
 
 Selector.cardPool = (state) => state.cardPool || [];
@@ -112,7 +114,31 @@ Selector.siteCards = (cardIds, state) => {
   return R.map(mapFunction, cardIds);
 };
 
+Selector.sitesAvailable = (state) => {
+  const reduceFunction = (accum, siteKey) => {
+    const siteIds = state.siteToDeck[siteKey] || [];
+
+    return siteIds.length > 0 ? R.append(siteKey, accum) : accum;
+  };
+  const siteKeys = SiteCard.keys();
+
+  return R.uniq(R.reduce(reduceFunction, [], siteKeys));
+};
+
 Selector.userMessage = (state) => state.userMessage;
+
+Selector.unfinishedStructures = (playerId, state) => {
+  const filterFunction = (structureId) => {
+    const structure = state.structureInstances[structureId];
+    const { materialIds, siteId } = structure;
+    const site = state.siteCardInstances[siteId];
+    const siteCard = SiteCard.value(site.cardKey);
+    return materialIds.length < siteCard.materialValue;
+  };
+  const structureIds = Selector.structures(playerId, state);
+
+  return R.filter(filterFunction, structureIds);
+};
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 const nextId = (instanceMap) => {
@@ -147,6 +173,9 @@ Selector.influence = (playerId, state) =>
 
 Selector.stockpile = (playerId, state) =>
   state.playerToStockpile[playerId] || [];
+
+Selector.structures = (playerId, state) =>
+  state.playerToStructures[playerId] || [];
 
 Selector.vault = (playerId, state) => state.playerToVault[playerId] || [];
 
