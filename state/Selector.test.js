@@ -1,7 +1,5 @@
-import Material from "../artifact/Material.js";
 import MiscCard from "../artifact/MiscCard.js";
 import OrderCard from "../artifact/OrderCard.js";
-import Role from "../artifact/Role.js";
 import SiteCard from "../artifact/SiteCard.js";
 
 import AppState from "./AppState.js";
@@ -148,6 +146,22 @@ QUnit.test("influence()", (assert) => {
   assert.ok(result);
   assert.equal(Array.isArray(result), true);
   assert.equal(result.length, 0);
+});
+
+QUnit.test("leaderCard()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const cardId = 12;
+  const cardKey = OrderCard.LEADER;
+  const state = addOrderCard(cardId, cardKey, state0);
+
+  // Run / Verify.
+  const result = Selector.leaderCard(state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(result.id, cardId);
+  assert.equal(result.cardKey, cardKey);
 });
 
 QUnit.test("leaderId()", (assert) => {

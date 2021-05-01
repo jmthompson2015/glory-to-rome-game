@@ -49,6 +49,17 @@ Selector.isInitiativePlayer = (playerId, state) => playerId === state.leaderId;
 
 Selector.isVerbose = (state) => state.isVerbose;
 
+Selector.leaderCard = (state) => {
+  IV.validateNotNil("state", state);
+  const filterFunction = (card) => card.cardType.key === "leader";
+  const cards = R.filter(
+    filterFunction,
+    Object.values(state.orderCardInstances)
+  );
+
+  return cards.length > 0 ? cards[0] : null;
+};
+
 Selector.leaderId = (state) => R.head(state.currentPlayerOrder);
 
 Selector.mctsRoot = (state) => state.mctsRoot;

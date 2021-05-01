@@ -1,7 +1,6 @@
 import Material from "./Material.js";
 
 const MiscCard = {
-  LEADER: "leader",
   MERCHANT_BONUS_BRICK: "merchant bonus brick",
   MERCHANT_BONUS_CONCRETE: "merchant bonus concrete",
   MERCHANT_BONUS_MARBLE: "merchant bonus marble",
@@ -11,11 +10,6 @@ const MiscCard = {
 };
 
 MiscCard.properties = {
-  leader: {
-    name: "Leader",
-    ability: "LEAD a role from your hand or THINK and draw new cards",
-    key: "leader",
-  },
   "merchant bonus brick": {
     name: "Merchant Bonus (Brick)",
     ability:

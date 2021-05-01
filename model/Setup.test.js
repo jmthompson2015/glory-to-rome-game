@@ -123,13 +123,13 @@ QUnit.test("execute() Imperium", (assert) => {
   assert.ok(miscCards);
   assert.equal(
     Object.keys(miscCards).length,
-    7,
+    6,
     `miscCards length = ${Object.keys(miscCards).length}`
   );
   assert.ok(orderCards);
   assert.equal(
     Object.keys(orderCards).length,
-    150,
+    151,
     `orderCards length = ${Object.keys(orderCards).length}`
   );
   assert.ok(siteCards);
@@ -195,13 +195,13 @@ QUnit.test("execute() Republic", (assert) => {
   assert.ok(miscCards);
   assert.equal(
     Object.keys(miscCards).length,
-    7,
+    6,
     `miscCards length = ${Object.keys(miscCards).length}`
   );
   assert.ok(orderCards);
   assert.equal(
     Object.keys(orderCards).length,
-    150,
+    151,
     `orderCards length = ${Object.keys(orderCards).length}`
   );
   assert.ok(siteCards);

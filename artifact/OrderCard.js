@@ -29,6 +29,7 @@ const OrderCard = {
   JACK1: "jack1",
   JACK2: "jack2",
   LATRINE: "latrine",
+  LEADER: "leader",
   LUDUS_MAGNUS: "ludus magnus",
   MARKET: "market",
   PALACE: "palace",
@@ -299,6 +300,11 @@ OrderCard.properties = {
     roleKey: Role.LABORER,
     key: "latrine",
   },
+  leader: {
+    name: "Leader",
+    ability: "LEAD a role from your hand or THINK and draw new cards",
+    key: "leader",
+  },
   "ludus magnus": {
     name: "Ludus Magnus",
     ability: "Each MERCHANT client in your clientele counts as any role.",
@@ -501,6 +507,7 @@ OrderCard.value = (key) => OrderCard.properties[key];
 
 OrderCard.valuesByVersion = (versionKey) => {
   const filterFunction = (value) =>
+    value.key !== "leader" &&
     !value.key.startsWith("jack") &&
     (R.isNil(value.versionKey) || value.versionKey === versionKey);
 
