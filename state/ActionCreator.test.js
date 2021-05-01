@@ -7,7 +7,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", (assert) => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 34);
+  assert.equal(actionTypeKeys.length, 37);
 
   // Run / Verify.
   actionTypeKeys.forEach((key) => {
@@ -42,6 +42,19 @@ QUnit.test("addOrderCard()", (assert) => {
   assert.ok(result);
   assert.equal(result.type, ActionType.ADD_ORDER_CARD);
   assert.equal(result.orderCardState, orderCardState);
+});
+
+QUnit.test("addPoolCard()", (assert) => {
+  // Setup.
+  const cardId = 12;
+
+  // Run.
+  const result = ActionCreator.addPoolCard(cardId);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.ADD_POOL_CARD);
+  assert.equal(result.cardId, cardId);
 });
 
 QUnit.test("addSiteCard()", (assert) => {
@@ -166,19 +179,6 @@ QUnit.test("setJackDeck()", (assert) => {
   assert.ok(result);
   assert.equal(result.type, ActionType.SET_JACK_DECK);
   assert.equal(result.jackDeck, jackDeck);
-});
-
-QUnit.test("setLeader()", (assert) => {
-  // Setup.
-  const leaderId = 3;
-
-  // Run.
-  const result = ActionCreator.setLeader(leaderId);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.type, ActionType.SET_LEADER);
-  assert.equal(result.leaderId, leaderId);
 });
 
 QUnit.test("setLeadRole()", (assert) => {
@@ -464,17 +464,47 @@ QUnit.test("transferOrderToPool()", (assert) => {
   assert.equal(result.type, ActionType.TRANSFER_ORDER_TO_POOL);
 });
 
-QUnit.test("transferPoolToHand()", (assert) => {
+QUnit.test("transferPoolToClientele()", (assert) => {
   // Setup.
   const playerId = 3;
   const cardId = 12;
 
   // Run.
-  const result = ActionCreator.transferPoolToHand(playerId, cardId);
+  const result = ActionCreator.transferPoolToClientele(playerId, cardId);
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.type, ActionType.TRANSFER_POOL_TO_HAND);
+  assert.equal(result.type, ActionType.TRANSFER_POOL_TO_CLIENTELE);
+  assert.equal(result.playerId, playerId);
+  assert.equal(result.cardId, cardId);
+});
+
+QUnit.test("transferPoolToStockpile()", (assert) => {
+  // Setup.
+  const playerId = 3;
+  const cardId = 12;
+
+  // Run.
+  const result = ActionCreator.transferPoolToStockpile(playerId, cardId);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.TRANSFER_POOL_TO_STOCKPILE);
+  assert.equal(result.playerId, playerId);
+  assert.equal(result.cardId, cardId);
+});
+
+QUnit.test("transferStockpileToVault()", (assert) => {
+  // Setup.
+  const playerId = 3;
+  const cardId = 12;
+
+  // Run.
+  const result = ActionCreator.transferStockpileToVault(playerId, cardId);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.TRANSFER_STOCKPILE_TO_VAULT);
   assert.equal(result.playerId, playerId);
   assert.equal(result.cardId, cardId);
 });

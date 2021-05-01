@@ -41,41 +41,60 @@ const addStructure = (id, foundationId, siteId, state) => {
   return Reducer.root(state, action);
 };
 
-const createPlayers2 = () => {
-  const ravenPlayer1 = PlayerState.create({
+const createPlayers = () => {
+  const player1 = PlayerState.create({
     id: 1,
-    name: "Alan",
+    name: "Alfred", // Pennyworth
   });
-  const wolfPlayer1 = PlayerState.create({
+  const player2 = PlayerState.create({
     id: 2,
-    name: "Brian",
+    name: "Bruce", // Wayne
   });
-
-  return [ravenPlayer1, wolfPlayer1];
-};
-
-const createPlayers4 = () => {
-  const ravenPlayer1 = PlayerState.create({
-    id: 1,
-    name: "Alan",
-  });
-  const wolfPlayer1 = PlayerState.create({
-    id: 2,
-    name: "Brian",
-  });
-  const ravenPlayer2 = PlayerState.create({
+  const player3 = PlayerState.create({
     id: 3,
-    name: "Chris",
+    name: "Clark", // Kent
   });
-  const wolfPlayer2 = PlayerState.create({
+  const player4 = PlayerState.create({
     id: 4,
-    name: "David",
+    name: "Diana", // Prince
+  });
+  const player5 = PlayerState.create({
+    id: 5,
+    name: "Edward", // Nygma
   });
 
-  return [ravenPlayer1, wolfPlayer1, ravenPlayer2, wolfPlayer2];
+  return [player1, player2, player3, player4, player5];
 };
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
+QUnit.test("camp()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const playerId = 3;
+
+  // Run / Verify.
+  const result = Selector.camp(playerId, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, 0);
+});
+
+QUnit.test("clientele()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const playerId = 3;
+
+  // Run / Verify.
+  const result = Selector.clientele(playerId, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, 0);
+});
+
 QUnit.test("delay()", (assert) => {
   // Setup.
   const state = AppState.create();
@@ -108,6 +127,37 @@ QUnit.test("hand()", (assert) => {
   assert.equal(result.length, 1);
   assert.equal(result.includes(cardId), true);
   assert.equal(result[0], cardId);
+});
+
+QUnit.test("influence()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const playerId = 3;
+
+  // Run / Verify.
+  const result = Selector.influence(playerId, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, 0);
+});
+
+QUnit.test("leaderId()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const players = createPlayers();
+  const action0 = ActionCreator.setPlayers(players);
+  const state1 = Reducer.root(state0, action0);
+  const playerId = 3;
+  const action1 = ActionCreator.setCurrentPlayer(playerId);
+  const state = Reducer.root(state1, action1);
+
+  // Run / Verify.
+  const result = Selector.leaderId(state);
+
+  // Run / Verify.
+  assert.equal(result, playerId);
 });
 
 QUnit.test("nextMiscCardId()", (assert) => {
@@ -143,12 +193,12 @@ QUnit.test("nextPlayerId()", (assert) => {
   // Run / Verify.
   assert.equal(Selector.nextPlayerId(state1), 1);
 
-  const players = createPlayers2();
+  const players = createPlayers();
   const action1 = ActionCreator.setPlayers(players);
   const state2 = Reducer.root(state1, action1);
 
   // Run / Verify.
-  assert.equal(Selector.nextPlayerId(state2), 3);
+  assert.equal(Selector.nextPlayerId(state2), 6);
 });
 
 QUnit.test("nextSiteCardId()", (assert) => {
@@ -227,10 +277,10 @@ QUnit.test("orderCards()", (assert) => {
 QUnit.test("playersInOrder() 1", (assert) => {
   // Setup.
   const state0 = AppState.create();
-  const players = createPlayers4();
+  const players = createPlayers();
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.setLeader(1);
+  const action1 = ActionCreator.setCurrentPlayer(1);
   const state = Reducer.root(state1, action1);
 
   // Run.
@@ -239,20 +289,21 @@ QUnit.test("playersInOrder() 1", (assert) => {
   // Verify.
   assert.ok(result);
   assert.equal(Array.isArray(result), true);
-  assert.equal(result.length, 4);
+  assert.equal(result.length, 5);
   assert.equal(result[0].id, 1);
   assert.equal(result[1].id, 2);
   assert.equal(result[2].id, 3);
   assert.equal(result[3].id, 4);
+  assert.equal(result[4].id, 5);
 });
 
 QUnit.test("playersInOrder() 2", (assert) => {
   // Setup.
   const state0 = AppState.create();
-  const players = createPlayers4();
+  const players = createPlayers();
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.setLeader(2);
+  const action1 = ActionCreator.setCurrentPlayer(2);
   const state = Reducer.root(state1, action1);
 
   // Run.
@@ -261,20 +312,21 @@ QUnit.test("playersInOrder() 2", (assert) => {
   // Verify.
   assert.ok(result);
   assert.equal(Array.isArray(result), true);
-  assert.equal(result.length, 4);
+  assert.equal(result.length, 5);
   assert.equal(result[0].id, 2);
   assert.equal(result[1].id, 3);
   assert.equal(result[2].id, 4);
-  assert.equal(result[3].id, 1);
+  assert.equal(result[3].id, 5);
+  assert.equal(result[4].id, 1);
 });
 
 QUnit.test("playersInOrder() 3", (assert) => {
   // Setup.
   const state0 = AppState.create();
-  const players = createPlayers4();
+  const players = createPlayers();
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.setLeader(3);
+  const action1 = ActionCreator.setCurrentPlayer(3);
   const state = Reducer.root(state1, action1);
 
   // Run.
@@ -283,20 +335,21 @@ QUnit.test("playersInOrder() 3", (assert) => {
   // Verify.
   assert.ok(result);
   assert.equal(Array.isArray(result), true);
-  assert.equal(result.length, 4);
+  assert.equal(result.length, 5);
   assert.equal(result[0].id, 3);
   assert.equal(result[1].id, 4);
-  assert.equal(result[2].id, 1);
-  assert.equal(result[3].id, 2);
+  assert.equal(result[2].id, 5);
+  assert.equal(result[3].id, 1);
+  assert.equal(result[4].id, 2);
 });
 
 QUnit.test("playersInOrder() 4", (assert) => {
   // Setup.
   const state0 = AppState.create();
-  const players = createPlayers4();
+  const players = createPlayers();
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.setLeader(4);
+  const action1 = ActionCreator.setCurrentPlayer(4);
   const state = Reducer.root(state1, action1);
 
   // Run.
@@ -305,11 +358,12 @@ QUnit.test("playersInOrder() 4", (assert) => {
   // Verify.
   assert.ok(result);
   assert.equal(Array.isArray(result), true);
-  assert.equal(result.length, 4);
+  assert.equal(result.length, 5);
   assert.equal(result[0].id, 4);
-  assert.equal(result[1].id, 1);
-  assert.equal(result[2].id, 2);
-  assert.equal(result[3].id, 3);
+  assert.equal(result[1].id, 5);
+  assert.equal(result[2].id, 1);
+  assert.equal(result[3].id, 2);
+  assert.equal(result[4].id, 3);
 });
 
 QUnit.test("refillLimit()", (assert) => {
@@ -369,6 +423,34 @@ QUnit.test("siteCards()", (assert) => {
   assert.ok(result2);
   assert.equal(result2.id, 5);
   assert.equal(result2.cardKey, OrderCard.ATRIUM);
+});
+
+QUnit.test("stockpile()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const playerId = 3;
+
+  // Run / Verify.
+  const result = Selector.stockpile(playerId, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, 0);
+});
+
+QUnit.test("vault()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const playerId = 3;
+
+  // Run / Verify.
+  const result = Selector.vault(playerId, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, 0);
 });
 
 const ReducerTest = {};

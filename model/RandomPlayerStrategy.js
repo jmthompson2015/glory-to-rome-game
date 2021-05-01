@@ -15,6 +15,24 @@ RandomPlayerStrategy.delayedResolve = (choice, resolve, delay = DELAY) => {
   }
 };
 
+RandomPlayerStrategy.chooseLaborerOption = (options, state, delay = DELAY) =>
+  new Promise((resolve) => {
+    const answer = options.length <= 1 ? options[0] : randomElement(options);
+    RandomPlayerStrategy.delayedResolve(answer, resolve, delay);
+  });
+
+RandomPlayerStrategy.chooseMerchantOption = (options, state, delay = DELAY) =>
+  new Promise((resolve) => {
+    const answer = options.length <= 1 ? options[0] : randomElement(options);
+    RandomPlayerStrategy.delayedResolve(answer, resolve, delay);
+  });
+
+RandomPlayerStrategy.choosePatronOption = (options, state, delay = DELAY) =>
+  new Promise((resolve) => {
+    const answer = options.length <= 1 ? options[0] : randomElement(options);
+    RandomPlayerStrategy.delayedResolve(answer, resolve, delay);
+  });
+
 RandomPlayerStrategy.chooseRoleOption = (options, state, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);

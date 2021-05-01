@@ -1,3 +1,5 @@
+/* eslint no-console: ["error", { allow: ["info"] }] */
+
 import MiscCard from "../artifact/MiscCard.js";
 
 import ActionCreator from "../state/ActionCreator.js";
@@ -35,6 +37,8 @@ const createPlayers = () => {
   return [player1, player2, player3, player4, player5];
 };
 
+TestData.DELAY = 100;
+
 TestData.createStore = () => {
   const store = Redux.createStore(Reducer.root);
   const players = createPlayers();
@@ -67,6 +71,34 @@ TestData.createStore = () => {
   Setup.dealPoolCards(store, players);
 
   return store;
+};
+
+TestData.printCardPool = (store) => {
+  const { cardPool } = store.getState();
+  console.info(`cardPool ${JSON.stringify(cardPool)}`);
+};
+
+TestData.printHands = (store) => {
+  const { playerToHand } = store.getState();
+  const { length } = Object.keys(playerToHand);
+  console.info(`player length = ${length}`);
+
+  for (let i = 1; i <= length; i += 1) {
+    console.info(`player ${i} hand ${JSON.stringify(playerToHand[i])}`);
+  }
+};
+
+TestData.printOrderCards = (store) => {
+  const { orderCardInstances } = store.getState();
+  const { length } = Object.keys(orderCardInstances);
+  console.info(`orderCard length = ${length}`);
+
+  for (let i = 1; i <= length; i += 1) {
+    const card = R.pick(["cardKey", "cardType"], orderCardInstances[i]);
+    console.info(
+      `orderCard ${i} ${card.cardKey} ${card.cardType.roleKey} ${card.cardType.materialKey}`
+    );
+  }
 };
 
 Object.freeze(TestData);

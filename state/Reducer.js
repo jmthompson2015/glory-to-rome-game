@@ -22,16 +22,16 @@ const log = (message, state) => {
   }
 };
 
-const setLeader = (state, leaderId) => {
+const setCurrentPlayer = (state, currentPlayerId) => {
   const players = Object.values(state.playerInstances);
   const playerIds = R.map(R.prop("id"), players);
   const count = playerIds.length;
-  const index0 = playerIds.indexOf(leaderId);
+  const index0 = playerIds.indexOf(currentPlayerId);
   const first = R.slice(index0, count, playerIds);
   const second = R.slice(0, index0, playerIds);
   const currentPlayerOrder = [...first, ...second];
 
-  return { ...state, leaderId, currentPlayerOrder };
+  return { ...state, currentPlayerId, currentPlayerOrder };
 };
 
 const transferBetweenArrays = (state, fromKey, toKey, playerId, cardId) => {
@@ -106,17 +106,41 @@ const transferOrderToPool = (state) => {
   };
 };
 
-const transferPoolToHand = (state, playerId, cardId) => {
+const transferPoolToClientele = (state, playerId, cardId) => {
+  IV.validateNotEmpty("cardPool", state.cardPool);
   const newPool = R.without([cardId], state.cardPool);
-  const oldHand = state.playerToHand[playerId] || [];
-  const newHand = [...oldHand, cardId];
-  IV.validateNotIncludesNil("newHand", newHand);
-  const newPlayerToHand = { ...state.playerToHand, [playerId]: newHand };
+  IV.validateNotIncludesNil("newPool", newPool);
+  const oldClientele = state.playerToClientele[playerId] || [];
+  const newClientele = [...oldClientele, cardId];
+  IV.validateNotIncludesNil("newClientele", newClientele);
+  const newPlayerToClientele = {
+    ...state.playerToClientele,
+    [playerId]: newClientele,
+  };
 
   return {
     ...state,
     cardPool: newPool,
-    playerToHand: newPlayerToHand,
+    playerToClientele: newPlayerToClientele,
+  };
+};
+
+const transferPoolToStockpile = (state, playerId, cardId) => {
+  IV.validateNotEmpty("cardPool", state.cardPool);
+  const newPool = R.without([cardId], state.cardPool);
+  IV.validateNotIncludesNil("newPool", newPool);
+  const oldStockpile = state.playerToStockpile[playerId] || [];
+  const newStockpile = [...oldStockpile, cardId];
+  IV.validateNotIncludesNil("newStockpile", newStockpile);
+  const newPlayerToStockpile = {
+    ...state.playerToStockpile,
+    [playerId]: newStockpile,
+  };
+
+  return {
+    ...state,
+    cardPool: newPool,
+    playerToStockpile: newPlayerToStockpile,
   };
 };
 
@@ -160,6 +184,9 @@ Reducer.root = (state, action) => {
         [action.orderCardState.id]: action.orderCardState,
       };
       return { ...state, orderCardInstances: newCards };
+    case ActionType.ADD_POOL_CARD:
+      newCards = [...state.cardPool, action.cardId];
+      return { ...state, cardPool: newCards };
     case ActionType.ADD_SITE_CARD:
       newCards = {
         ...state.siteCardInstances,
@@ -179,6 +206,8 @@ Reducer.root = (state, action) => {
         action.playerId,
         action.cardId
       );
+    case ActionType.SET_CARD_POOL:
+      return { ...state, cardPool: action.cardPool };
     case ActionType.SET_CURRENT_PHASE:
       log(`Reducer SET_CURRENT_PHASE phaseKey = ${action.phaseKey}`, state);
       return { ...state, currentPhaseKey: action.phaseKey };
@@ -189,7 +218,7 @@ Reducer.root = (state, action) => {
         )}`,
         state
       );
-      return { ...state, currentPlayerId: action.playerId, userMessage: null };
+      return setCurrentPlayer(state, action.playerId);
     case ActionType.SET_CURRENT_ROUND:
       log(`Reducer SET_CURRENT_ROUND round = ${action.round}`, state);
       return { ...state, currentRound: action.round };
@@ -201,9 +230,6 @@ Reducer.root = (state, action) => {
       return { ...state, delay: action.delay };
     case ActionType.SET_JACK_DECK:
       return { ...state, jackDeck: action.jackDeck };
-    case ActionType.SET_LEADER:
-      log(`Reducer SET_LEADER leaderId = ${action.leaderId}`, state);
-      return setLeader(state, action.leaderId);
     case ActionType.SET_LEAD_ROLE:
       log(`Reducer SET_LEAD_ROLE leadRoleKey = ${action.leadRoleKey}`, state);
       return { ...state, leadRoleKey: action.leadRoleKey };
@@ -341,13 +367,43 @@ Reducer.root = (state, action) => {
         action.cardId
       );
     case ActionType.TRANSFER_JACK_TO_HAND:
+      log(`Reducer TRANSFER_JACK_TO_HAND playerId = ${action.playerId}`, state);
       return transferJackToHand(state, action.playerId);
     case ActionType.TRANSFER_ORDER_TO_HAND:
+      log(
+        `Reducer TRANSFER_ORDER_TO_HAND playerId = ${action.playerId}`,
+        state
+      );
       return transferOrderToHand(state, action.playerId);
     case ActionType.TRANSFER_ORDER_TO_POOL:
       return transferOrderToPool(state);
-    case ActionType.TRANSFER_POOL_TO_HAND:
-      return transferPoolToHand(state, action.playerId, action.cardId);
+    case ActionType.TRANSFER_POOL_TO_CLIENTELE:
+      log(
+        `Reducer TRANSFER_POOL_TO_CLIENTELE playerId = ${action.playerId} ` +
+          `cardId = ${action.cardId}`,
+        state
+      );
+      return transferPoolToClientele(state, action.playerId, action.cardId);
+    case ActionType.TRANSFER_POOL_TO_STOCKPILE:
+      log(
+        `Reducer TRANSFER_POOL_TO_STOCKPILE playerId = ${action.playerId} ` +
+          `cardId = ${action.cardId}`,
+        state
+      );
+      return transferPoolToStockpile(state, action.playerId, action.cardId);
+    case ActionType.TRANSFER_STOCKPILE_TO_VAULT:
+      log(
+        `Reducer TRANSFER_STOCKPILE_TO_VAULT playerId = ${action.playerId} ` +
+          `cardId = ${action.cardId}`,
+        state
+      );
+      return transferBetweenArrays(
+        state,
+        "playerToStockpile",
+        "playerToVault",
+        action.playerId,
+        action.cardId
+      );
     default:
       console.warn(`Reducer.root: Unhandled action type: ${action.type}`);
       return state;

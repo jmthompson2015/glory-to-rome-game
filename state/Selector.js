@@ -2,6 +2,8 @@ import IV from "../utility/InputValidator.js";
 
 const Selector = {};
 
+Selector.cardPool = (state) => state.cardPool || [];
+
 Selector.currentPlayer = (state) =>
   Selector.player(state.currentPlayerId, state);
 
@@ -44,6 +46,8 @@ Selector.isInHand = (playerId, cardId, state) => {
 Selector.isInitiativePlayer = (playerId, state) => playerId === state.leaderId;
 
 Selector.isVerbose = (state) => state.isVerbose;
+
+Selector.leaderId = (state) => R.head(state.currentPlayerOrder);
 
 Selector.mctsRoot = (state) => state.mctsRoot;
 
@@ -131,7 +135,20 @@ Selector.nextStructureId = (state) => nextId(state.structureInstances);
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 // Player collections.
 
+Selector.camp = (playerId, state) => state.playerToCamp[playerId] || [];
+
+Selector.clientele = (playerId, state) =>
+  state.playerToClientele[playerId] || [];
+
 Selector.hand = (playerId, state) => state.playerToHand[playerId] || [];
+
+Selector.influence = (playerId, state) =>
+  state.playerToInfluence[playerId] || [];
+
+Selector.stockpile = (playerId, state) =>
+  state.playerToStockpile[playerId] || [];
+
+Selector.vault = (playerId, state) => state.playerToVault[playerId] || [];
 
 Object.freeze(Selector);
 

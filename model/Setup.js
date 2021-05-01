@@ -77,7 +77,7 @@ Setup.dealPoolCards = (store, players) => {
   );
 
   const leaderId = leaderIndex + 1;
-  store.dispatch(ActionCreator.setLeader(leaderId));
+  store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
 };
 
 Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {

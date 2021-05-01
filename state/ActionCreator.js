@@ -37,6 +37,11 @@ ActionCreator.addOrderCard = makeActionCreator(
   "orderCardState"
 );
 
+ActionCreator.addPoolCard = makeActionCreator(
+  ActionType.ADD_POOL_CARD,
+  "cardId"
+);
+
 ActionCreator.addSiteCard = makeActionCreator(
   ActionType.ADD_SITE_CARD,
   "siteCardState"
@@ -53,6 +58,11 @@ ActionCreator.addToPlayerArray = (arrayName, playerId, cardId) => ({
   playerId,
   cardId,
 });
+
+ActionCreator.setCardPool = makeActionCreator(
+  ActionType.SET_CARD_POOL,
+  "cardPool"
+);
 
 ActionCreator.setCurrentPhase = makeActionCreatorNilAllowed(
   ActionType.SET_CURRENT_PHASE,
@@ -80,8 +90,6 @@ ActionCreator.setJackDeck = makeActionCreator(
   ActionType.SET_JACK_DECK,
   "jackDeck"
 );
-
-ActionCreator.setLeader = makeActionCreator(ActionType.SET_LEADER, "leaderId");
 
 ActionCreator.setLeadRole = makeActionCreator(
   ActionType.SET_LEAD_ROLE,
@@ -185,8 +193,20 @@ ActionCreator.transferOrderToPool = makeActionCreator(
   ActionType.TRANSFER_ORDER_TO_POOL
 );
 
-ActionCreator.transferPoolToHand = makeActionCreator(
-  ActionType.TRANSFER_POOL_TO_HAND,
+ActionCreator.transferPoolToClientele = makeActionCreator(
+  ActionType.TRANSFER_POOL_TO_CLIENTELE,
+  "playerId",
+  "cardId"
+);
+
+ActionCreator.transferPoolToStockpile = makeActionCreator(
+  ActionType.TRANSFER_POOL_TO_STOCKPILE,
+  "playerId",
+  "cardId"
+);
+
+ActionCreator.transferStockpileToVault = makeActionCreator(
+  ActionType.TRANSFER_STOCKPILE_TO_VAULT,
   "playerId",
   "cardId"
 );
