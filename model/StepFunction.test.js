@@ -2,6 +2,7 @@ import Role from "../artifact/Role.js";
 import Step from "../artifact/Step.js";
 
 import ActionCreator from "../state/ActionCreator.js";
+import Selector from "../state/Selector.js";
 
 import StepFunction from "./StepFunction.js";
 import TestData from "./TestData.js";
@@ -9,6 +10,44 @@ import TestData from "./TestData.js";
 QUnit.module("StepFunction");
 
 const isInRange = (low, value, high) => low <= value && value <= high;
+
+QUnit.test("cleanup", (assert) => {
+  // Setup.
+  const stepKey = Step.CLEANUP;
+  const leaderId = 1;
+  const store = TestData.createStore();
+  store.dispatch(ActionCreator.setVerbose(true));
+  store.dispatch(ActionCreator.setDelay(TestData.DELAY));
+  store.dispatch(ActionCreator.setCurrentRound(1));
+  store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
+  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.transferHandToCamp(1, 2));
+  store.dispatch(ActionCreator.transferHandToCamp(3, 12));
+  store.dispatch(ActionCreator.transferHandToCamp(4, 17));
+
+  // Run.
+  const done = assert.async();
+  const callback = () => {
+    assert.ok(true, "test resumed from async operation");
+    // Verify.
+    const camp1 = Selector.camp(1, store.getState());
+    assert.ok(camp1);
+    assert.equal(camp1.length, 0);
+    const camp3 = Selector.camp(3, store.getState());
+    assert.ok(camp3);
+    assert.equal(camp3.length, 0);
+    const camp4 = Selector.camp(4, store.getState());
+    assert.ok(camp4);
+    assert.equal(camp4.length, 0);
+    const cardPool = Selector.cardPool(store.getState());
+    assert.ok(cardPool);
+    assert.equal(cardPool.length, 8);
+    assert.equal(cardPool.join(", "), "27, 28, 29, 30, 31, 2, 12, 17");
+    done();
+  };
+
+  StepFunction[stepKey](store).then(callback);
+});
 
 QUnit.test("declare role", (assert) => {
   // Setup.

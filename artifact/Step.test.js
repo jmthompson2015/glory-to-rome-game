@@ -28,10 +28,10 @@ QUnit.test("keys()", (assert) => {
 
   // Verify.
   assert.ok(result);
-  const length = 2;
+  const length = 3;
   assert.equal(result.length, length);
   assert.equal(R.head(result), Step.DECLARE_ROLE);
-  assert.equal(R.last(result), Step.PERFORM_ROLE);
+  assert.equal(R.last(result), Step.CLEANUP);
 });
 
 const StepTest = {};

@@ -1,6 +1,7 @@
 const Step = {
   DECLARE_ROLE: "declareRole",
   PERFORM_ROLE: "performRole",
+  CLEANUP: "cleanup",
 
   properties: {
     declareRole: {
@@ -10,6 +11,10 @@ const Step = {
     performRole: {
       name: "Perform Role Step",
       key: "performRole",
+    },
+    cleanup: {
+      name: "Cleanup Step",
+      key: "cleanup",
     },
   },
 };

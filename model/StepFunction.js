@@ -121,6 +121,19 @@ StepFunction[Step.PERFORM_ROLE] = (store) => {
     : Promise.resolve();
 };
 
+StepFunction[Step.CLEANUP] = (store) => {
+  const forEachFunction = (playerId) => {
+    const camp = Selector.camp(playerId, store.getState());
+    if (camp.length > 0) {
+      store.dispatch(ActionCreator.transferCampToPool(playerId, R.head(camp)));
+    }
+  };
+  const currentPlayerOrder = Selector.currentPlayerOrder(store.getState());
+  R.forEach(forEachFunction, currentPlayerOrder);
+
+  return Promise.resolve();
+};
+
 Object.freeze(StepFunction);
 
 export default StepFunction;

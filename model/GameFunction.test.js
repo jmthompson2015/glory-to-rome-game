@@ -22,7 +22,7 @@ QUnit.test("stepKeys()", (assert) => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.length, 2);
+  assert.equal(result.length, 3);
 });
 
 const GameFunctionTest = {};
