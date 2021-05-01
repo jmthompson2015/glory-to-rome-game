@@ -148,6 +148,21 @@ QUnit.test("influence()", (assert) => {
   assert.equal(result.length, 0);
 });
 
+QUnit.test("isLeader()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const players = createPlayers();
+  const action0 = ActionCreator.setPlayers(players);
+  const state1 = Reducer.root(state0, action0);
+  const playerId = 3;
+  const action1 = ActionCreator.setCurrentPlayer(playerId);
+  const state = Reducer.root(state1, action1);
+
+  // Run / Verify.
+  assert.equal(Selector.isLeader(1, state), false);
+  assert.equal(Selector.isLeader(3, state), true);
+});
+
 QUnit.test("leaderCard()", (assert) => {
   // Setup.
   const state0 = AppState.create();
@@ -174,10 +189,10 @@ QUnit.test("leaderId()", (assert) => {
   const action1 = ActionCreator.setCurrentPlayer(playerId);
   const state = Reducer.root(state1, action1);
 
-  // Run / Verify.
+  // Run.
   const result = Selector.leaderId(state);
 
-  // Run / Verify.
+  // Verify.
   assert.equal(result, playerId);
 });
 

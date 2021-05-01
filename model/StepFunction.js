@@ -15,49 +15,39 @@ import StrategyResolver from "./StrategyResolver.js";
 
 const StepFunction = {};
 
-const firstRoleCard = (roleKey, hand) => {
-  IV.validateNotNil("roleKey", roleKey);
-  IV.validateNotEmpty("hand", hand);
-  const filterFunction = (card) => card.cardType.roleKey === roleKey;
-  const roleCards = R.filter(filterFunction, hand);
-  IV.validateNotEmpty("roleCards", roleCards);
-
-  return R.head(roleCards).id;
-};
-
-const roleOptions = (playerId, state) => {
+const determineRoleOptions = (playerId, state) => {
   const handIds = Selector.hand(playerId, state);
-  const hand = Selector.orderCards(handIds, state);
-  const reduceFunction = (accum, card) => {
-    if (card && card.cardType && card.cardType.roleKey) {
-      return R.append(card.cardType.roleKey, accum);
-    }
-    return accum;
-  };
+  const leaderCardId = Selector.leaderCard(state).id;
+  let answer;
 
-  return R.uniq(R.reduce(reduceFunction, [Role.THINKER], hand));
+  if (Selector.isLeader(playerId, state)) {
+    answer = [leaderCardId, ...handIds];
+  } else {
+    const leadRoleKey = Selector.leadRole(state);
+    const filterFunction = (cardId) => {
+      const card = Selector.orderCard(cardId, state);
+
+      return card.cardType.roleKey === leadRoleKey;
+    };
+    const roleCardIds = R.filter(filterFunction, handIds);
+    answer = [leaderCardId, ...roleCardIds];
+  }
+
+  return answer;
 };
 
 const processRoleOptions = (playerId, store) => {
-  const options0 = roleOptions(playerId, store.getState());
-  const leaderId = Selector.leaderId(store.getState());
-  let options;
-  if (playerId === leaderId) {
-    options = options0;
-  } else {
-    const { leadRoleKey } = store.getState();
-    options = options0.includes(leadRoleKey)
-      ? [Role.THINKER, leadRoleKey]
-      : [Role.THINKER];
-  }
+  const options = determineRoleOptions(playerId, store.getState());
   const delay = Selector.delay(store.getState());
   const player = Selector.player(playerId, store.getState());
   const strategy = StrategyResolver.resolve(player.strategy);
 
   return strategy
     .chooseRoleOption(options, store.getState(), delay)
-    .then((roleKey) => {
-      IV.validateNotNil("roleKey", roleKey);
+    .then((cardId) => {
+      IV.validateNotNil("cardId", cardId);
+      const card = Selector.orderCard(cardId, store.getState());
+      const { roleKey } = card.cardType;
       const role = Role.value(roleKey);
       store.dispatch(
         ActionCreator.setUserMessage(
@@ -65,22 +55,20 @@ const processRoleOptions = (playerId, store) => {
         )
       );
 
-      if (playerId === leaderId) {
+      if (Selector.isLeader(playerId, store.getState())) {
         store.dispatch(ActionCreator.setLeadRole(roleKey));
       }
 
+      let answer = Promise.resolve();
+
       if (roleKey === Role.THINKER) {
         const roleFunction = RoleFunction[Role.THINKER];
-
-        return roleFunction.execute(playerId, store);
+        answer = roleFunction.execute(playerId, store);
+      } else {
+        store.dispatch(ActionCreator.transferHandToCamp(playerId, cardId));
       }
 
-      const handIds = Selector.hand(playerId, store.getState());
-      const hand = Selector.orderCards(handIds, store.getState());
-      const cardId = firstRoleCard(roleKey, hand);
-      store.dispatch(ActionCreator.transferHandToCamp(playerId, cardId));
-
-      return Promise.resolve();
+      return answer;
     });
 };
 

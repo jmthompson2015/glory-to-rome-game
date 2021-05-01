@@ -5,6 +5,14 @@ import SiteCard from "../artifact/SiteCard.js";
 
 const Selector = {};
 
+Selector.bonusCard = (cardId, state) => state.bonusCardInstances[cardId];
+
+Selector.bonusCards = (cardIds, state) => {
+  const mapFunction = (id) => state.bonusCardInstances[id];
+
+  return R.map(mapFunction, cardIds);
+};
+
 Selector.cardPool = (state) => state.cardPool || [];
 
 Selector.currentPlayer = (state) =>
@@ -48,6 +56,8 @@ Selector.isInHand = (playerId, cardId, state) => {
 
 Selector.isInitiativePlayer = (playerId, state) => playerId === state.leaderId;
 
+Selector.isLeader = (playerId, state) => playerId === Selector.leaderId(state);
+
 Selector.isVerbose = (state) => state.isVerbose;
 
 Selector.leaderCard = (state) => {
@@ -63,15 +73,9 @@ Selector.leaderCard = (state) => {
 
 Selector.leaderId = (state) => R.head(state.currentPlayerOrder);
 
+Selector.leadRole = (state) => state.leadRoleKey;
+
 Selector.mctsRoot = (state) => state.mctsRoot;
-
-Selector.bonusCard = (cardId, state) => state.bonusCardInstances[cardId];
-
-Selector.bonusCards = (cardIds, state) => {
-  const mapFunction = (id) => state.bonusCardInstances[id];
-
-  return R.map(mapFunction, cardIds);
-};
 
 Selector.orderCard = (cardId, state) => {
   IV.validateNotNil("cardId", cardId);
