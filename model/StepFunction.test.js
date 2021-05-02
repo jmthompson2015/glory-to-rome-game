@@ -158,7 +158,7 @@ QUnit.test("perform role Merchant", (assert) => {
   // TestData.printCardPool(store);
   store.dispatch(ActionCreator.transferOrderToHand(3, 31));
   store.dispatch(ActionCreator.transferHandToCamp(3, 31));
-  store.dispatch(ActionCreator.transferHandToStockpile(3, 11));
+  store.dispatch(ActionCreator.transferPoolToStockpile(3, 27));
 
   // Run.
   const done = assert.async();
@@ -176,7 +176,7 @@ QUnit.test("perform role Merchant", (assert) => {
     const vault3 = playerToVault[3] || [];
     assert.ok(vault3, `vault3 = ${JSON.stringify(vault3)}`);
     assert.equal(vault3.length, 1, `vault3.length = ${vault3.length}`);
-    assert.equal(vault3, 11);
+    assert.equal(vault3, 27);
     done();
   };
 

@@ -4,6 +4,8 @@ import IV from "../utility/InputValidator.js";
 
 import ActionType from "./ActionType.js";
 import AppState from "./AppState.js";
+import Selector from "./Selector.js";
+import StructureState from "./StructureState.js";
 
 const Reducer = {};
 
@@ -20,6 +22,45 @@ const log = (message, state) => {
   if (state.isVerbose) {
     console.log(message);
   }
+};
+
+const layFoundation = (state, playerId, foundationId, siteKey) => {
+  const oldHand = state.playerToHand[playerId] || [];
+  const newHand = R.without([foundationId], oldHand);
+  IV.validateNotIncludesNil("newHand", newHand);
+  const newPlayerToHand = { ...state.playerToHand, [playerId]: newHand };
+
+  const oldDeck = state.siteToDeck[siteKey] || [];
+  const siteId = R.head(oldDeck);
+  const newDeck = R.without([siteId], oldDeck);
+  IV.validateNotIncludesNil("newDeck", newDeck);
+  const newSiteToDeck = { ...state.siteToDeck, [siteKey]: newDeck };
+
+  const newId = Selector.nextStructureId(state);
+  const newStructure = StructureState.create({
+    id: newId,
+    foundationId,
+    siteId,
+  });
+  const newStructureInstances = {
+    ...state.structureInstances,
+    [newId]: newStructure,
+  };
+
+  const oldStructures = state.playerToStructures[playerId] || [];
+  const newStructures = [...oldStructures, newId];
+  const newPlayerToStructures = {
+    ...state.playerToStructures,
+    [playerId]: newStructures,
+  };
+
+  return {
+    ...state,
+    playerToHand: newPlayerToHand,
+    playerToStructures: newPlayerToStructures,
+    siteToDeck: newSiteToDeck,
+    structureInstances: newStructureInstances,
+  };
 };
 
 const setCurrentPlayer = (state, currentPlayerId) => {
@@ -58,6 +99,34 @@ const transferCampToPool = (state, playerId, cardId) => {
     ...state,
     playerToCamp: newPlayerToCamp,
     cardPool: newPool,
+  };
+};
+
+const transferHandToStructure = (state, playerId, cardId, structureId) => {
+  const oldHand = state.playerToHand[playerId] || [];
+  const newHand = R.without([cardId], oldHand);
+  IV.validateNotIncludesNil("newHand", newHand);
+  const newPlayerToHand = { ...state.playerToHand, [playerId]: newHand };
+
+  const oldStructure = state.structureInstances[structureId];
+  const oldMaterialIds = oldStructure.materialIds || [];
+  const newMaterialIds = [...oldMaterialIds, cardId];
+  IV.validateNotIncludesNil("newMaterialIds", newMaterialIds);
+  const newStructure = StructureState.create({
+    id: structureId,
+    foundationId: oldStructure.foundationId,
+    siteId: oldStructure.siteId,
+    materialIds: newMaterialIds,
+  });
+  const newStructureInstances = {
+    ...state.structureInstances,
+    [structureId]: newStructure,
+  };
+
+  return {
+    ...state,
+    playerToHand: newPlayerToHand,
+    structureInstances: newStructureInstances,
   };
 };
 
@@ -206,6 +275,18 @@ Reducer.root = (state, action) => {
         action.playerId,
         action.cardId
       );
+    case ActionType.LAY_FOUNDATION:
+      log(
+        `Reducer LAY_FOUNDATION playerId = ${action.playerId} ` +
+          `foundationId = ${action.foundationId} siteKey = ${action.siteKey}`,
+        state
+      );
+      return layFoundation(
+        state,
+        action.playerId,
+        action.foundationId,
+        action.siteKey
+      );
     case ActionType.SET_CARD_POOL:
       return { ...state, cardPool: action.cardPool };
     case ActionType.SET_CURRENT_PHASE:
@@ -315,56 +396,17 @@ Reducer.root = (state, action) => {
         action.playerId,
         action.cardId
       );
-    case ActionType.TRANSFER_HAND_TO_CLIENTELE:
+    case ActionType.TRANSFER_HAND_TO_STRUCTURE:
       log(
-        `Reducer TRANSFER_HAND_TO_CLIENTELE playerId = ${action.playerId} ` +
-          `cardId = ${action.cardId}`,
+        `Reducer TRANSFER_HAND_TO_STRUCTURE playerId = ${action.playerId} ` +
+          `cardId = ${action.cardId} structureId = ${action.structureId}`,
         state
       );
-      return transferBetweenArrays(
+      return transferHandToStructure(
         state,
-        "playerToHand",
-        "playerToClientele",
         action.playerId,
-        action.cardId
-      );
-    case ActionType.TRANSFER_HAND_TO_INFLUENCE:
-      log(
-        `Reducer TRANSFER_HAND_TO_INFLUENCE playerId = ${action.playerId} ` +
-          `cardId = ${action.cardId}`,
-        state
-      );
-      return transferBetweenArrays(
-        state,
-        "playerToHand",
-        "playerToInfluence",
-        action.playerId,
-        action.cardId
-      );
-    case ActionType.TRANSFER_HAND_TO_STOCKPILE:
-      log(
-        `Reducer TRANSFER_HAND_TO_STOCKPILE playerId = ${action.playerId} ` +
-          `cardId = ${action.cardId}`,
-        state
-      );
-      return transferBetweenArrays(
-        state,
-        "playerToHand",
-        "playerToStockpile",
-        action.playerId,
-        action.cardId
-      );
-    case ActionType.TRANSFER_HAND_TO_VAULT:
-      log(
-        `Reducer TRANSFER_HAND_TO_VAULT playerId = ${action.playerId} cardId = ${action.cardId}`,
-        state
-      );
-      return transferBetweenArrays(
-        state,
-        "playerToHand",
-        "playerToVault",
-        action.playerId,
-        action.cardId
+        action.cardId,
+        action.structureId
       );
     case ActionType.TRANSFER_JACK_TO_HAND:
       log(`Reducer TRANSFER_JACK_TO_HAND playerId = ${action.playerId}`, state);

@@ -59,6 +59,13 @@ ActionCreator.addToPlayerArray = (arrayName, playerId, cardId) => ({
   cardId,
 });
 
+ActionCreator.layFoundation = makeActionCreator(
+  ActionType.LAY_FOUNDATION,
+  "playerId",
+  "foundationId",
+  "siteKey"
+);
+
 ActionCreator.setCardPool = makeActionCreator(
   ActionType.SET_CARD_POOL,
   "cardPool"
@@ -155,28 +162,11 @@ ActionCreator.transferHandToCamp = makeActionCreator(
   "cardId"
 );
 
-ActionCreator.transferHandToClientele = makeActionCreator(
-  ActionType.TRANSFER_HAND_TO_CLIENTELE,
+ActionCreator.transferHandToStructure = makeActionCreator(
+  ActionType.TRANSFER_HAND_TO_STRUCTURE,
   "playerId",
-  "cardId"
-);
-
-ActionCreator.transferHandToInfluence = makeActionCreator(
-  ActionType.TRANSFER_HAND_TO_INFLUENCE,
-  "playerId",
-  "cardId"
-);
-
-ActionCreator.transferHandToStockpile = makeActionCreator(
-  ActionType.TRANSFER_HAND_TO_STOCKPILE,
-  "playerId",
-  "cardId"
-);
-
-ActionCreator.transferHandToVault = makeActionCreator(
-  ActionType.TRANSFER_HAND_TO_VAULT,
-  "playerId",
-  "cardId"
+  "cardId",
+  "structureId"
 );
 
 ActionCreator.transferJackToHand = makeActionCreator(
@@ -203,6 +193,13 @@ ActionCreator.transferPoolToStockpile = makeActionCreator(
   ActionType.TRANSFER_POOL_TO_STOCKPILE,
   "playerId",
   "cardId"
+);
+
+ActionCreator.transferStockpileToStructure = makeActionCreator(
+  ActionType.TRANSFER_STOCKPILE_TO_STRUCTURE,
+  "playerId",
+  "cardId",
+  "structureId"
 );
 
 ActionCreator.transferStockpileToVault = makeActionCreator(

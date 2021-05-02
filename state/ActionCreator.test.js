@@ -7,7 +7,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", (assert) => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 37);
+  assert.equal(actionTypeKeys.length, 36);
 
   // Run / Verify.
   actionTypeKeys.forEach((key) => {
@@ -101,6 +101,23 @@ QUnit.test("addToPlayerArray()", (assert) => {
   assert.equal(result.arrayName, "playerToHand");
   assert.equal(result.playerId, playerId);
   assert.equal(result.cardId, cardId);
+});
+
+QUnit.test("layFoundation()", (assert) => {
+  // Setup.
+  const playerId = 3;
+  const foundationId = 12;
+  const siteKey = 4;
+
+  // Run.
+  const result = ActionCreator.layFoundation(playerId, foundationId, siteKey);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.LAY_FOUNDATION);
+  assert.equal(result.playerId, playerId);
+  assert.equal(result.foundationId, foundationId);
+  assert.equal(result.siteKey, siteKey);
 });
 
 QUnit.test("setCurrentPhase()", (assert) => {
@@ -366,64 +383,25 @@ QUnit.test("transferHandToCamp()", (assert) => {
   assert.equal(result.cardId, cardId);
 });
 
-QUnit.test("transferHandToClientele()", (assert) => {
+QUnit.test("transferHandToStructure()", (assert) => {
   // Setup.
   const playerId = 3;
   const cardId = 12;
+  const structureId = 4;
 
   // Run.
-  const result = ActionCreator.transferHandToClientele(playerId, cardId);
+  const result = ActionCreator.transferHandToStructure(
+    playerId,
+    cardId,
+    structureId
+  );
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.type, ActionType.TRANSFER_HAND_TO_CLIENTELE);
+  assert.equal(result.type, ActionType.TRANSFER_HAND_TO_STRUCTURE);
   assert.equal(result.playerId, playerId);
   assert.equal(result.cardId, cardId);
-});
-
-QUnit.test("transferHandToInfluence()", (assert) => {
-  // Setup.
-  const playerId = 3;
-  const cardId = 12;
-
-  // Run.
-  const result = ActionCreator.transferHandToInfluence(playerId, cardId);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.type, ActionType.TRANSFER_HAND_TO_INFLUENCE);
-  assert.equal(result.playerId, playerId);
-  assert.equal(result.cardId, cardId);
-});
-
-QUnit.test("transferHandToStockpile()", (assert) => {
-  // Setup.
-  const playerId = 3;
-  const cardId = 12;
-
-  // Run.
-  const result = ActionCreator.transferHandToStockpile(playerId, cardId);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.type, ActionType.TRANSFER_HAND_TO_STOCKPILE);
-  assert.equal(result.playerId, playerId);
-  assert.equal(result.cardId, cardId);
-});
-
-QUnit.test("transferHandToVault()", (assert) => {
-  // Setup.
-  const playerId = 3;
-  const cardId = 12;
-
-  // Run.
-  const result = ActionCreator.transferHandToVault(playerId, cardId);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.type, ActionType.TRANSFER_HAND_TO_VAULT);
-  assert.equal(result.playerId, playerId);
-  assert.equal(result.cardId, cardId);
+  assert.equal(result.structureId, structureId);
 });
 
 QUnit.test("transferJackToHand()", (assert) => {

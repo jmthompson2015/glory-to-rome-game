@@ -1,5 +1,6 @@
 import BonusCard from "../artifact/BonusCard.js";
 import OrderCard from "../artifact/OrderCard.js";
+import SiteCard from "../artifact/SiteCard.js";
 import Version from "../artifact/Version.js";
 
 import AppState from "./AppState.js";
@@ -225,6 +226,58 @@ QUnit.test("addToPlayerArray()", (assert) => {
   assert.ok(Array.isArray(hand));
   assert.equal(hand.length, 1);
   assert.equal(hand[0], cardId);
+});
+
+QUnit.test("layFoundation()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const playerId = 3;
+  const foundationId = 1;
+  const foundationCard = OrderCardState.create({
+    id: foundationId,
+    cardKey: OrderCard.ACADEMY,
+  });
+  const action0 = ActionCreator.addOrderCard(foundationCard);
+  const state1 = Reducer.root(state0, action0);
+  const action1 = ActionCreator.addToPlayerArray(
+    "playerToHand",
+    playerId,
+    foundationId
+  );
+  const state2 = Reducer.root(state1, action1);
+
+  const siteId = 2;
+  const siteKey = SiteCard.BRICK;
+  const siteCard = SiteCardState.create({
+    id: siteId,
+    cardKey: siteKey,
+  });
+  const action2 = ActionCreator.addSiteCard(siteCard);
+  const state3 = Reducer.root(state2, action2);
+  const action3 = ActionCreator.setSiteToDeck(siteKey, [siteCard.id]);
+  const state = Reducer.root(state3, action3);
+  const action = ActionCreator.layFoundation(playerId, foundationId, siteKey);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const hand = result.playerToHand[playerId];
+  assert.ok(hand);
+  assert.equal(hand.length, 0, `hand.length = ${hand.length}`);
+  const siteDeck = result.siteToDeck[siteKey];
+  assert.ok(siteDeck);
+  assert.equal(siteDeck.length, 0, `siteDeck.length = ${siteDeck.length}`);
+  const structures = result.playerToStructures[playerId];
+  assert.ok(structures);
+  assert.equal(
+    structures.length,
+    1,
+    `structures.length = ${structures.length}`
+  );
+  const structureId = R.head(structures);
+  assert.equal(structureId, 1, `structureId = ${structureId}`);
 });
 
 QUnit.test("setCurrentPhase()", (assert) => {
@@ -534,11 +587,11 @@ QUnit.test("transferHandToCamp()", (assert) => {
   assert.equal(R.head(camp), cardId);
 });
 
-QUnit.test("transferHandToClientele()", (assert) => {
+QUnit.test("transferHandToStructure()", (assert) => {
   // Setup.
   const state0 = AppState.create();
   const playerId = 3;
-  const cardId = 1;
+  const cardId = 2;
   const cardKey = OrderCard.ACADEMY;
   const card = OrderCardState.create({ id: cardId, cardKey });
   const action0 = ActionCreator.addOrderCard(card);
@@ -548,39 +601,18 @@ QUnit.test("transferHandToClientele()", (assert) => {
     playerId,
     cardId
   );
-  const state = Reducer.root(state1, action1);
-  const action = ActionCreator.transferHandToClientele(playerId, cardId);
+  const state2 = Reducer.root(state1, action1);
 
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  const hand = result.playerToHand[playerId];
-  assert.ok(hand);
-  assert.equal(hand.length, 0);
-  const clientele = result.playerToClientele[playerId];
-  assert.ok(clientele);
-  assert.equal(clientele.length, 1);
-  assert.equal(R.head(clientele), cardId);
-});
-
-QUnit.test("transferHandToInfluence()", (assert) => {
-  // Setup.
-  const state0 = AppState.create();
-  const playerId = 3;
-  const cardId = 1;
-  const cardKey = OrderCard.ACADEMY;
-  const card = OrderCardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addOrderCard(card);
-  const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.addToPlayerArray(
-    "playerToHand",
+  const foundationId = 1;
+  const siteKey = SiteCard.BRICK;
+  const action2 = ActionCreator.layFoundation(playerId, foundationId, siteKey);
+  const state = Reducer.root(state2, action2);
+  const structureId = R.head(state.playerToStructures[playerId]);
+  const action = ActionCreator.transferHandToStructure(
     playerId,
-    cardId
+    cardId,
+    structureId
   );
-  const state = Reducer.root(state1, action1);
-  const action = ActionCreator.transferHandToInfluence(playerId, cardId);
 
   // Run.
   const result = Reducer.root(state, action);
@@ -589,73 +621,11 @@ QUnit.test("transferHandToInfluence()", (assert) => {
   assert.ok(result);
   const hand = result.playerToHand[playerId];
   assert.ok(hand);
-  assert.equal(hand.length, 0);
-  const influence = result.playerToInfluence[playerId];
-  assert.ok(influence);
-  assert.equal(influence.length, 1);
-  assert.equal(R.head(influence), cardId);
-});
-
-QUnit.test("transferHandToStockpile()", (assert) => {
-  // Setup.
-  const state0 = AppState.create();
-  const playerId = 3;
-  const cardId = 1;
-  const cardKey = OrderCard.ACADEMY;
-  const card = OrderCardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addOrderCard(card);
-  const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.addToPlayerArray(
-    "playerToHand",
-    playerId,
-    cardId
-  );
-  const state = Reducer.root(state1, action1);
-  const action = ActionCreator.transferHandToStockpile(playerId, cardId);
-
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  const hand = result.playerToHand[playerId];
-  assert.ok(hand);
-  assert.equal(hand.length, 0);
-  const stockpile = result.playerToStockpile[playerId];
-  assert.ok(stockpile);
-  assert.equal(stockpile.length, 1);
-  assert.equal(R.head(stockpile), cardId);
-});
-
-QUnit.test("transferHandToVault()", (assert) => {
-  // Setup.
-  const state0 = AppState.create();
-  const playerId = 3;
-  const cardId = 1;
-  const cardKey = OrderCard.ACADEMY;
-  const card = OrderCardState.create({ id: cardId, cardKey });
-  const action0 = ActionCreator.addOrderCard(card);
-  const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.addToPlayerArray(
-    "playerToHand",
-    playerId,
-    cardId
-  );
-  const state = Reducer.root(state1, action1);
-  const action = ActionCreator.transferHandToVault(playerId, cardId);
-
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  const hand = result.playerToHand[playerId];
-  assert.ok(hand);
-  assert.equal(hand.length, 0);
-  const vault = result.playerToVault[playerId];
-  assert.ok(vault);
-  assert.equal(vault.length, 1);
-  assert.equal(R.head(vault), cardId);
+  assert.equal(hand.length, 0, `hand.length = ${hand.length}`);
+  const structure = result.structureInstances[structureId];
+  assert.ok(structure);
+  assert.equal(structure.materialIds.length, 1);
+  assert.equal(R.head(structure.materialIds), cardId);
 });
 
 QUnit.test("transferJackToHand()", (assert) => {

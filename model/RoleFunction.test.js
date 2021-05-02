@@ -49,8 +49,8 @@ QUnit.test("Merchant execute()", (assert) => {
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentStep(stepKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  const cardId = R.last(Selector.hand(playerId, store.getState()));
-  store.dispatch(ActionCreator.transferHandToStockpile(playerId, cardId));
+  const cardId = R.last(Selector.cardPool(store.getState()));
+  store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
   const roleFunction = RoleFunction[Role.MERCHANT];
 
   // Run.
@@ -139,7 +139,8 @@ QUnit.test("Thinker execute() needs refill", (assert) => {
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   store.dispatch(ActionCreator.setCurrentStep(stepKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  store.dispatch(ActionCreator.transferHandToStockpile(playerId, 1));
+  const cardId = R.last(Selector.cardPool(store.getState()));
+  store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
   const roleFunction = RoleFunction[Role.THINKER];
 
   // Run.
