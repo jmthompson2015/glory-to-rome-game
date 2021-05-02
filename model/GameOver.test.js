@@ -1,5 +1,3 @@
-import SiteCard from "../artifact/SiteCard.js";
-
 import ActionCreator from "../state/ActionCreator.js";
 
 import GameOver from "./GameOver.js";
@@ -44,10 +42,7 @@ QUnit.test("isGameOver() empty draw deck", (assert) => {
 QUnit.test("isGameOver() empty site cards", (assert) => {
   // Setup.
   const store = TestData.createStore();
-  const forEachFunction = (siteKey) => {
-    store.dispatch(ActionCreator.setSiteToDeck(siteKey, []));
-  };
-  R.forEach(forEachFunction, SiteCard.keys());
+  store.dispatch(ActionCreator.setSiteDeck([]));
 
   // Run.
   const result = GameOver.isGameOver(store);

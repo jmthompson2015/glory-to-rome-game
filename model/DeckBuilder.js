@@ -1,4 +1,5 @@
 import OrderCard from "../artifact/OrderCard.js";
+import SiteCard from "../artifact/SiteCard.js";
 
 import OrderCardState from "../state/OrderCardState.js";
 import SiteCardState from "../state/SiteCardState.js";
@@ -42,17 +43,24 @@ DeckBuilder.buildOrderDeck = (store) => {
   return R.map(cardToId, array);
 };
 
-DeckBuilder.buildSiteDecks = (store, siteKey, playerCount) => {
-  const siteDeck = R.map(
-    cardToId,
-    createSiteCards(store, siteKey, playerCount, true)
-  );
-  const outOfTownDeck = R.map(
-    cardToId,
-    createSiteCards(store, siteKey, 6 - playerCount, false)
-  );
+DeckBuilder.buildOutOfTownSiteDeck = (store, playerCount) => {
+  const reduceFunction = (accum, card) =>
+    R.concat(accum, createSiteCards(store, card.key, 6 - playerCount));
+  const { versionKey } = store.getState();
+  const values = SiteCard.values(versionKey);
+  const array = R.reduce(reduceFunction, [], values);
 
-  return { siteDeck, outOfTownDeck };
+  return R.map(cardToId, array);
+};
+
+DeckBuilder.buildSiteDeck = (store, playerCount) => {
+  const reduceFunction = (accum, card) =>
+    R.concat(accum, createSiteCards(store, card.key, playerCount));
+  const { versionKey } = store.getState();
+  const values = SiteCard.values(versionKey);
+  const array = R.reduce(reduceFunction, [], values);
+
+  return R.map(cardToId, array);
 };
 
 Object.freeze(DeckBuilder);

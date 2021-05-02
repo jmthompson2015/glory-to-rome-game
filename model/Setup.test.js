@@ -24,17 +24,25 @@ QUnit.test("createSiteDecks()", (assert) => {
   store.dispatch(ActionCreator.setOrderDeck(orderDeck0));
 
   // Run.
-  Setup.createSiteDecks(store, players);
+  Setup.createSiteDecks(store, players.length);
 
   // Verify.
   const state = store.getState();
-  const { siteCardInstances, siteToDeck, siteToOutOfTownDeck } = state;
+  const { outOfTownSiteDeck, siteCardInstances, siteDeck } = state;
   assert.ok(siteCardInstances);
-  assert.equal(Object.keys(siteCardInstances).length, 36);
-  assert.ok(siteToDeck);
-  assert.equal(Object.keys(siteToDeck).length, 6);
-  assert.ok(siteToOutOfTownDeck);
-  assert.equal(Object.keys(siteToOutOfTownDeck).length, 6);
+  assert.equal(
+    Object.keys(siteCardInstances).length,
+    36,
+    `siteCardInstances length = ${siteCardInstances.length}`
+  );
+  assert.ok(siteDeck);
+  assert.equal(siteDeck.length, 12, `siteDeck.length = ${siteDeck.length}`);
+  assert.ok(outOfTownSiteDeck);
+  assert.equal(
+    outOfTownSiteDeck.length,
+    24,
+    `outOfTownSiteDeck.length = ${outOfTownSiteDeck.length}`
+  );
 });
 
 QUnit.test("dealOrderCards()", (assert) => {
@@ -114,11 +122,11 @@ QUnit.test("execute() Imperium", (assert) => {
     bonusCardInstances: bonusCards,
     orderCardInstances: orderCards,
     orderDeck,
+    outOfTownSiteDeck,
     playerInstances,
     playerToHand,
     siteCardInstances: siteCards,
-    siteToDeck,
-    siteToOutOfTownDeck,
+    siteDeck,
   } = state;
   assert.ok(bonusCards);
   assert.equal(
@@ -151,10 +159,10 @@ QUnit.test("execute() Imperium", (assert) => {
   assert.ok(jackDeck);
   assert.equal(jackDeck.length, 4, `jackDeck.length = ${jackDeck.length}`);
 
-  assert.ok(siteToDeck);
-  assert.equal(Object.keys(siteToDeck).length, 6);
-  assert.ok(siteToOutOfTownDeck);
-  assert.equal(Object.keys(siteToOutOfTownDeck).length, 6);
+  assert.ok(siteDeck);
+  assert.equal(Object.keys(siteDeck).length, 12);
+  assert.ok(outOfTownSiteDeck);
+  assert.equal(Object.keys(outOfTownSiteDeck).length, 24);
 
   const hand1 = playerToHand[1];
   assert.ok(hand1, `hand1 = ${hand1}`);
@@ -186,11 +194,11 @@ QUnit.test("execute() Republic", (assert) => {
     bonusCardInstances: bonusCards,
     orderCardInstances: orderCards,
     orderDeck,
+    outOfTownSiteDeck,
     playerInstances,
     playerToHand,
     siteCardInstances: siteCards,
-    siteToDeck,
-    siteToOutOfTownDeck,
+    siteDeck,
   } = state;
   assert.ok(bonusCards);
   assert.equal(
@@ -223,10 +231,10 @@ QUnit.test("execute() Republic", (assert) => {
   assert.ok(jackDeck);
   assert.equal(jackDeck.length, 6, `jackDeck.length = ${jackDeck.length}`);
 
-  assert.ok(siteToDeck);
-  assert.equal(Object.keys(siteToDeck).length, 6);
-  assert.ok(siteToOutOfTownDeck);
-  assert.equal(Object.keys(siteToOutOfTownDeck).length, 6);
+  assert.ok(siteDeck);
+  assert.equal(Object.keys(siteDeck).length, 12);
+  assert.ok(outOfTownSiteDeck);
+  assert.equal(Object.keys(outOfTownSiteDeck).length, 24);
 
   const hand1 = playerToHand[1];
   assert.ok(hand1, `hand1 = ${hand1}`);

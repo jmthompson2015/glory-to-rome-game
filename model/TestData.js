@@ -60,10 +60,12 @@ TestData.createStore = () => {
   store.dispatch(ActionCreator.setJackDeck(jackDeck));
 
   // Create the site decks.
-  Setup.createSiteDecks(store, players);
+  const playerCount = players.length;
+  Setup.createSiteDecks(store, playerCount);
 
   // Create Merchant Bonus cards.
-  const forEachFunction = (cardKey) => BonusCardState.create({ cardKey, store });
+  const forEachFunction = (cardKey) =>
+    BonusCardState.create({ cardKey, store });
   R.forEach(forEachFunction, BonusCard.keys().slice(1));
 
   // Deal cards to each player.

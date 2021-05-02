@@ -24,17 +24,15 @@ const log = (message, state) => {
   }
 };
 
-const layFoundation = (state, playerId, foundationId, siteKey) => {
+const layFoundation = (state, playerId, foundationId, siteId) => {
   const oldHand = state.playerToHand[playerId] || [];
   const newHand = R.without([foundationId], oldHand);
   IV.validateNotIncludesNil("newHand", newHand);
   const newPlayerToHand = { ...state.playerToHand, [playerId]: newHand };
 
-  const oldDeck = state.siteToDeck[siteKey] || [];
-  const siteId = R.head(oldDeck);
+  const oldDeck = state.siteDeck || [];
   const newDeck = R.without([siteId], oldDeck);
   IV.validateNotIncludesNil("newDeck", newDeck);
-  const newSiteToDeck = { ...state.siteToDeck, [siteKey]: newDeck };
 
   const newId = Selector.nextStructureId(state);
   const newStructure = StructureState.create({
@@ -58,7 +56,7 @@ const layFoundation = (state, playerId, foundationId, siteKey) => {
     ...state,
     playerToHand: newPlayerToHand,
     playerToStructures: newPlayerToStructures,
-    siteToDeck: newSiteToDeck,
+    siteDeck: newDeck,
     structureInstances: newStructureInstances,
   };
 };
@@ -229,8 +227,6 @@ Reducer.root = (state, action) => {
   let newGameRecords;
   let newPlayers;
   let newPlayerToStrategy;
-  let newSiteDeck;
-  let newSiteToDeck;
   let newStructures;
 
   switch (action.type) {
@@ -278,14 +274,14 @@ Reducer.root = (state, action) => {
     case ActionType.LAY_FOUNDATION:
       log(
         `Reducer LAY_FOUNDATION playerId = ${action.playerId} ` +
-          `foundationId = ${action.foundationId} siteKey = ${action.siteKey}`,
+          `foundationId = ${action.foundationId} siteId = ${action.siteId}`,
         state
       );
       return layFoundation(
         state,
         action.playerId,
         action.foundationId,
-        action.siteKey
+        action.siteId
       );
     case ActionType.SET_CARD_POOL:
       return { ...state, cardPool: action.cardPool };
@@ -319,6 +315,12 @@ Reducer.root = (state, action) => {
       return { ...state, mctsRoot: action.mctsRoot };
     case ActionType.SET_ORDER_DECK:
       return { ...state, orderDeck: action.orderDeck };
+    case ActionType.SET_OUT_OF_TOWN_SITE_DECK:
+      log(
+        `Reducer SET_OUT_OF_TOWN_SITE_DECK siteDeck = ${action.siteDeck}`,
+        state
+      );
+      return { ...state, outOfTownSiteDeck: action.siteDeck };
     case ActionType.SET_PLAYERS:
       log(
         `Reducer SET_PLAYERS players.length = ${action.players.length}`,
@@ -343,26 +345,12 @@ Reducer.root = (state, action) => {
     case ActionType.SET_ROUND:
       log(`Reducer SET_ROUND round = ${action.round}`, state);
       return { ...state, round: action.round };
-    case ActionType.SET_SITE_TO_DECK:
+    case ActionType.SET_SITE_DECK:
       log(
-        `Reducer SET_SITE_TO_DECK siteKey = ${action.siteKey} siteDeck = ${action.siteDeck}`,
+        `Reducer SET_SITE_DECK siteDeck = ${JSON.stringify(action.siteDeck)}`,
         state
       );
-      newSiteDeck = action.siteDeck || [];
-      newSiteToDeck = { ...state.siteToDeck, [action.siteKey]: newSiteDeck };
-      return { ...state, siteToDeck: newSiteToDeck };
-    case ActionType.SET_SITE_TO_OUT_OF_TOWN_DECK:
-      log(
-        `Reducer SET_SITE_TO_OUT_OF_TOWN_DECK siteKey = ${action.siteKey} ` +
-          `outOfTownDeck = ${action.outOfTownDeck}`,
-        state
-      );
-      newSiteDeck = action.outOfTownDeck || [];
-      newSiteToDeck = {
-        ...state.siteToDeck,
-        [action.siteKey]: newSiteDeck,
-      };
-      return { ...state, siteToOutOfTownDeck: newSiteToDeck };
+      return { ...state, siteDeck: action.siteDeck };
     case ActionType.SET_USER_MESSAGE:
       log(
         `Reducer SET_USER_MESSAGE userMessage = ${action.userMessage}`,

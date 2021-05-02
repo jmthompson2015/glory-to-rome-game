@@ -1,6 +1,5 @@
 import BonusCard from "../artifact/BonusCard.js";
 import OrderCard from "../artifact/OrderCard.js";
-import SiteCard from "../artifact/SiteCard.js";
 import Version from "../artifact/Version.js";
 
 import ActionCreator from "../state/ActionCreator.js";
@@ -14,22 +13,11 @@ const shuffle = (array) => array.sort(() => Math.random() - 0.5);
 
 const Setup = {};
 
-Setup.createSiteDecks = (store, players) => {
-  const playerCount = players.length;
-
-  const reduceFunction = (accum, siteKey) => {
-    const { siteDeck, outOfTownDeck } = DeckBuilder.buildSiteDecks(
-      store,
-      siteKey,
-      playerCount
-    );
-    store.dispatch(ActionCreator.setSiteToDeck(siteKey, siteDeck));
-    store.dispatch(
-      ActionCreator.setSiteToOutOfTownDeck(siteKey, outOfTownDeck)
-    );
-  };
-  const siteKeys = SiteCard.keys();
-  R.reduce(reduceFunction, [], siteKeys);
+Setup.createSiteDecks = (store, playerCount) => {
+  const siteDeck = DeckBuilder.buildSiteDeck(store, playerCount);
+  const outOfTownDeck = DeckBuilder.buildOutOfTownSiteDeck(store, playerCount);
+  store.dispatch(ActionCreator.setSiteDeck(siteDeck));
+  store.dispatch(ActionCreator.setOutOfTownSiteDeck(outOfTownDeck));
 };
 
 Setup.dealJackCards = (store, players) => {
@@ -97,10 +85,12 @@ Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {
   store.dispatch(ActionCreator.setJackDeck(jackDeck));
 
   // Create the site decks.
-  Setup.createSiteDecks(store, players);
+  const playerCount = players.length;
+  Setup.createSiteDecks(store, playerCount);
 
   // Create Merchant Bonus cards.
-  const forEachFunction = (cardKey) => BonusCardState.create({ cardKey, store });
+  const forEachFunction = (cardKey) =>
+    BonusCardState.create({ cardKey, store });
   R.forEach(forEachFunction, BonusCard.keys());
 
   // Deal cards to each player.

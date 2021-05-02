@@ -10,10 +10,10 @@ import Selector from "../state/Selector.js";
 import StrategyResolver from "./StrategyResolver.js";
 
 const computeShortfall = (playerId, state) => {
-  const hand = Selector.hand(playerId, state);
+  const handIds = Selector.handIds(playerId, state);
   const refillLimit = Selector.refillLimit(playerId, state);
 
-  return refillLimit - hand.length;
+  return refillLimit - handIds.length;
 };
 
 const determineThinkerOptions = (playerId, state) => {
@@ -156,7 +156,7 @@ const RoleFunction = {
   [Role.MERCHANT]: {
     execute: (playerId, store) => {
       // Take one material from Stockpile and place face-down in Vault.
-      const options = Selector.stockpile(playerId, store.getState());
+      const options = Selector.stockpileIds(playerId, store.getState());
       const player = Selector.player(playerId, store.getState());
       const strategy = StrategyResolver.resolve(player.strategy);
       const delay = Selector.delay(store.getState());
@@ -170,8 +170,8 @@ const RoleFunction = {
     },
     isLegal: (playerId, state) => {
       console.log(`RoleFunction MERCHANT isLegal()`);
-      const stockpile = Selector.stockpile(playerId, state);
-      return stockpile.length > 0;
+      const stockpileIds = Selector.stockpileIds(playerId, state);
+      return stockpileIds.length > 0;
     },
     label: (/* state */) => {
       console.log(`RoleFunction MERCHANT label()`);

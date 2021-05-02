@@ -28,7 +28,7 @@ QUnit.test("Laborer execute()", (assert) => {
     const state = store.getState();
     const poolIds = Selector.cardPool(state);
     assert.equal(poolIds.length, 4, `poolIds.length = ${poolIds.length}`);
-    const stockpileIds = Selector.stockpile(playerId, state);
+    const stockpileIds = Selector.stockpileIds(playerId, state);
     assert.equal(
       stockpileIds.length,
       1,
@@ -59,13 +59,13 @@ QUnit.test("Merchant execute()", (assert) => {
     assert.ok(true, "test resumed from async operation");
     // Verify.
     const state = store.getState();
-    const stockpileIds = Selector.stockpile(playerId, state);
+    const stockpileIds = Selector.stockpileIds(playerId, state);
     assert.equal(
       stockpileIds.length,
       0,
       `stockpileIds.length = ${stockpileIds.length}`
     );
-    const vaultIds = Selector.vault(playerId, state);
+    const vaultIds = Selector.vaultIds(playerId, state);
     assert.equal(vaultIds.length, 1, `vaultIds.length = ${vaultIds.length}`);
     done();
   };
@@ -92,7 +92,7 @@ QUnit.test("Patron execute()", (assert) => {
     const state = store.getState();
     const poolIds = Selector.cardPool(state);
     assert.equal(poolIds.length, 4, `poolIds.length = ${poolIds.length}`);
-    const clienteleIds = Selector.clientele(playerId, state);
+    const clienteleIds = Selector.clienteleIds(playerId, state);
     assert.equal(
       clienteleIds.length,
       1,
@@ -121,7 +121,7 @@ QUnit.test("Thinker execute()", (assert) => {
     assert.ok(true, "test resumed from async operation");
     // Verify.
     const state = store.getState();
-    const handIds = Selector.hand(playerId, state);
+    const handIds = Selector.handIds(playerId, state);
     assert.equal(handIds.length, 6, `handIds.length = ${handIds.length}`);
     done();
   };
@@ -149,7 +149,7 @@ QUnit.test("Thinker execute() needs refill", (assert) => {
     assert.ok(true, "test resumed from async operation");
     // Verify.
     const state = store.getState();
-    const handIds = Selector.hand(playerId, state);
+    const handIds = Selector.handIds(playerId, state);
     assert.equal(
       [5, 6].includes(handIds.length),
       true,
@@ -180,7 +180,7 @@ QUnit.test("Thinker execute() out of Jacks", (assert) => {
     assert.ok(true, "test resumed from async operation");
     // Verify.
     const state = store.getState();
-    const handIds = Selector.hand(playerId, state);
+    const handIds = Selector.handIds(playerId, state);
     assert.equal(handIds.length, 6, `handIds.length = ${handIds.length}`);
     done();
   };

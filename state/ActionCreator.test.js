@@ -107,17 +107,17 @@ QUnit.test("layFoundation()", (assert) => {
   // Setup.
   const playerId = 3;
   const foundationId = 12;
-  const siteKey = 4;
+  const siteId = 4;
 
   // Run.
-  const result = ActionCreator.layFoundation(playerId, foundationId, siteKey);
+  const result = ActionCreator.layFoundation(playerId, foundationId, siteId);
 
   // Verify.
   assert.ok(result);
   assert.equal(result.type, ActionType.LAY_FOUNDATION);
   assert.equal(result.playerId, playerId);
   assert.equal(result.foundationId, foundationId);
-  assert.equal(result.siteKey, siteKey);
+  assert.equal(result.siteId, siteId);
 });
 
 QUnit.test("setCurrentPhase()", (assert) => {
@@ -237,6 +237,19 @@ QUnit.test("setOrderDeck()", (assert) => {
   assert.equal(result.orderDeck, orderDeck);
 });
 
+QUnit.test("setOutOfTownSiteDeck()", (assert) => {
+  // Setup.
+  const siteDeck = 12;
+
+  // Run.
+  const result = ActionCreator.setOutOfTownSiteDeck(siteDeck);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.SET_OUT_OF_TOWN_SITE_DECK);
+  assert.equal(result.siteDeck, siteDeck);
+});
+
 QUnit.test("setPlayers()", (assert) => {
   // Setup.
   const player0 = PlayerState.create({ id: 1, name: "Alfred" });
@@ -271,34 +284,17 @@ QUnit.test("setPlayerStrategy()", (assert) => {
   assert.equal(result.strategy, strategy);
 });
 
-QUnit.test("setSiteToDeck()", (assert) => {
+QUnit.test("setSiteDeck()", (assert) => {
   // Setup.
-  const siteKey = 3;
   const siteDeck = 12;
 
   // Run.
-  const result = ActionCreator.setSiteToDeck(siteKey, siteDeck);
+  const result = ActionCreator.setSiteDeck(siteDeck);
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.type, ActionType.SET_SITE_TO_DECK);
-  assert.equal(result.siteKey, siteKey);
+  assert.equal(result.type, ActionType.SET_SITE_DECK);
   assert.equal(result.siteDeck, siteDeck);
-});
-
-QUnit.test("setSiteToOutOfTownDeck()", (assert) => {
-  // Setup.
-  const siteKey = 3;
-  const outOfTownDeck = 12;
-
-  // Run.
-  const result = ActionCreator.setSiteToOutOfTownDeck(siteKey, outOfTownDeck);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.type, ActionType.SET_SITE_TO_OUT_OF_TOWN_DECK);
-  assert.equal(result.siteKey, siteKey);
-  assert.equal(result.outOfTownDeck, outOfTownDeck);
 });
 
 QUnit.test("setUserMessage()", (assert) => {

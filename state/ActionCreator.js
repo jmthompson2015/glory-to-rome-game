@@ -63,7 +63,7 @@ ActionCreator.layFoundation = makeActionCreator(
   ActionType.LAY_FOUNDATION,
   "playerId",
   "foundationId",
-  "siteKey"
+  "siteId"
 );
 
 ActionCreator.setCardPool = makeActionCreator(
@@ -113,6 +113,11 @@ ActionCreator.setOrderDeck = makeActionCreator(
   "orderDeck"
 );
 
+ActionCreator.setOutOfTownSiteDeck = makeActionCreator(
+  ActionType.SET_OUT_OF_TOWN_SITE_DECK,
+  "siteDeck"
+);
+
 ActionCreator.setPlayers = makeActionCreator(ActionType.SET_PLAYERS, "players");
 
 ActionCreator.setPlayerStrategy = makeActionCreator(
@@ -121,16 +126,9 @@ ActionCreator.setPlayerStrategy = makeActionCreator(
   "strategy"
 );
 
-ActionCreator.setSiteToDeck = makeActionCreator(
-  ActionType.SET_SITE_TO_DECK,
-  "siteKey",
+ActionCreator.setSiteDeck = makeActionCreator(
+  ActionType.SET_SITE_DECK,
   "siteDeck"
-);
-
-ActionCreator.setSiteToOutOfTownDeck = makeActionCreator(
-  ActionType.SET_SITE_TO_OUT_OF_TOWN_DECK,
-  "siteKey",
-  "outOfTownDeck"
 );
 
 ActionCreator.setUserMessage = makeActionCreator(

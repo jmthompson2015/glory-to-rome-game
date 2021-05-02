@@ -254,9 +254,9 @@ QUnit.test("layFoundation()", (assert) => {
   });
   const action2 = ActionCreator.addSiteCard(siteCard);
   const state3 = Reducer.root(state2, action2);
-  const action3 = ActionCreator.setSiteToDeck(siteKey, [siteCard.id]);
+  const action3 = ActionCreator.setSiteDeck([siteCard.id]);
   const state = Reducer.root(state3, action3);
-  const action = ActionCreator.layFoundation(playerId, foundationId, siteKey);
+  const action = ActionCreator.layFoundation(playerId, foundationId, siteId);
 
   // Run.
   const result = Reducer.root(state, action);
@@ -266,7 +266,7 @@ QUnit.test("layFoundation()", (assert) => {
   const hand = result.playerToHand[playerId];
   assert.ok(hand);
   assert.equal(hand.length, 0, `hand.length = ${hand.length}`);
-  const siteDeck = result.siteToDeck[siteKey];
+  const { siteDeck } = result;
   assert.ok(siteDeck);
   assert.equal(siteDeck.length, 0, `siteDeck.length = ${siteDeck.length}`);
   const structures = result.playerToStructures[playerId];
@@ -406,6 +406,20 @@ QUnit.test("setOrderDeck()", (assert) => {
   assert.equal(result.orderDeck, orderDeck);
 });
 
+QUnit.test("setOutOfTownSiteDeck()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const siteDeck = 12;
+  const action = ActionCreator.setOutOfTownSiteDeck(siteDeck);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.outOfTownSiteDeck, siteDeck);
+});
+
 QUnit.test("setPlayers()", (assert) => {
   // Setup.
   const state = AppState.create();
@@ -439,34 +453,18 @@ QUnit.test("setPlayerStrategy()", (assert) => {
   assert.equal(result.playerToStrategy[playerId], strategy);
 });
 
-QUnit.test("setSiteToDeck()", (assert) => {
+QUnit.test("setSiteDeck()", (assert) => {
   // Setup.
   const state = AppState.create();
-  const siteKey = 3;
   const siteDeck = 12;
-  const action = ActionCreator.setSiteToDeck(siteKey, siteDeck);
+  const action = ActionCreator.setSiteDeck(siteDeck);
 
   // Run.
   const result = Reducer.root(state, action);
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.siteToDeck[siteKey], siteDeck);
-});
-
-QUnit.test("setSiteToOutOfTownDeck()", (assert) => {
-  // Setup.
-  const state = AppState.create();
-  const siteKey = 3;
-  const outOfTownDeck = 12;
-  const action = ActionCreator.setSiteToOutOfTownDeck(siteKey, outOfTownDeck);
-
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.siteToOutOfTownDeck[siteKey], outOfTownDeck);
+  assert.equal(result.siteDeck, siteDeck);
 });
 
 QUnit.test("setUserMessage()", (assert) => {

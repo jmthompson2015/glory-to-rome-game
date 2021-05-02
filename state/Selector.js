@@ -26,19 +26,11 @@ Selector.delay = (state) => state.delay;
 
 Selector.gameRecords = (state) => state.gameRecords;
 
-Selector.initiativePlayer = (state) => {
-  const id = state.leaderId;
-  return state.playerInstances[id];
-};
-
 Selector.isComputerPlayer = (playerId, state) => {
   const player = Selector.player(playerId, state);
 
   return player && player.isComputer;
 };
-
-Selector.isCurrentPlayer = (playerId, state) =>
-  playerId === state.currentPlayerId;
 
 Selector.isGameOver = (state) => state.isGameOver;
 
@@ -47,14 +39,6 @@ Selector.isHumanPlayer = (playerId, state) => {
 
   return player && !player.isComputer;
 };
-
-Selector.isInHand = (playerId, cardId, state) => {
-  const hand = Selector.hand(playerId, state);
-
-  return R.contains(cardId, hand);
-};
-
-Selector.isInitiativePlayer = (playerId, state) => playerId === state.leaderId;
 
 Selector.isLeader = (playerId, state) => playerId === Selector.leaderId(state);
 
@@ -86,11 +70,7 @@ Selector.orderCard = (cardId, state) => {
 Selector.orderCards = (cardIds, state) => {
   IV.validateNotIncludesNil("cardIds", cardIds);
   IV.validateNotNil("state", state);
-  const mapFunction = (id) => {
-    const answer = state.orderCardInstances[id];
-    IV.validateNotNil("card", answer);
-    return answer;
-  };
+  const mapFunction = (id) => state.orderCardInstances[id];
 
   return R.map(mapFunction, cardIds);
 };
@@ -98,16 +78,6 @@ Selector.orderCards = (cardIds, state) => {
 Selector.player = (playerId, state) => state.playerInstances[playerId];
 
 Selector.playerCount = (state) => Object.keys(state.playerInstances).length;
-
-Selector.playerForCard = (cardKey, state) => {
-  const filterFunction = (player) => {
-    const tableau = Selector.tableau(player.id, state);
-    return tableau.includes(cardKey);
-  };
-  const players = R.filter(filterFunction, Selector.players(state));
-
-  return players.length > 0 ? players[0] : undefined;
-};
 
 Selector.playerStrategy = (playerId, state) => state.playerToStrategy[playerId];
 
@@ -122,6 +92,15 @@ Selector.playersInOrder = (state) => {
 
 Selector.refillLimit = (/* playerId, state */) => 5;
 
+Selector.sitesByMaterial = (materialKey, state) => {
+  IV.validateNotNil("materialKey", materialKey);
+  IV.validateNotNil("state", state);
+  const filterFunction = (siteCard) =>
+    siteCard.cardType.materialKey === materialKey;
+
+  return R.filter(filterFunction, Object.values(state.siteCardInstances));
+};
+
 Selector.siteCard = (cardId, state) => state.siteCardInstances[cardId];
 
 Selector.siteCards = (cardIds, state) => {
@@ -130,15 +109,12 @@ Selector.siteCards = (cardIds, state) => {
   return R.map(mapFunction, cardIds);
 };
 
-Selector.sitesAvailable = (state) => {
-  const reduceFunction = (accum, siteKey) => {
-    const siteIds = state.siteToDeck[siteKey] || [];
+Selector.structures = (structureIds, state) => {
+  IV.validateNotIncludesNil("structureIds", structureIds);
+  IV.validateNotNil("state", state);
+  const mapFunction = (id) => state.structureInstances[id];
 
-    return siteIds.length > 0 ? R.append(siteKey, accum) : accum;
-  };
-  const siteKeys = SiteCard.keys();
-
-  return R.uniq(R.reduce(reduceFunction, [], siteKeys));
+  return R.map(mapFunction, structureIds);
 };
 
 Selector.userMessage = (state) => state.userMessage;
@@ -151,7 +127,7 @@ Selector.unfinishedStructures = (playerId, state) => {
     const siteCard = SiteCard.value(site.cardKey);
     return materialIds.length < siteCard.materialValue;
   };
-  const structureIds = Selector.structures(playerId, state);
+  const structureIds = Selector.structureIds(playerId, state);
 
   return R.filter(filterFunction, structureIds);
 };
@@ -176,24 +152,41 @@ Selector.nextStructureId = (state) => nextId(state.structureInstances);
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 // Player collections.
+Selector.campCards = (playerId, state) =>
+  Selector.orderCards(Selector.campIds(playerId, state));
 
-Selector.camp = (playerId, state) => state.playerToCamp[playerId] || [];
+Selector.campIds = (playerId, state) => state.playerToCamp[playerId] || [];
 
-Selector.clientele = (playerId, state) =>
+Selector.clienteleCards = (playerId, state) =>
+  Selector.orderCards(Selector.clienteleIds(playerId, state));
+
+Selector.clienteleIds = (playerId, state) =>
   state.playerToClientele[playerId] || [];
 
-Selector.hand = (playerId, state) => state.playerToHand[playerId] || [];
+Selector.handCards = (playerId, state) =>
+  Selector.orderCards(Selector.handIds(playerId, state));
 
-Selector.influence = (playerId, state) =>
+Selector.handIds = (playerId, state) => state.playerToHand[playerId] || [];
+
+Selector.influenceCards = (playerId, state) =>
+  Selector.orderCards(Selector.influenceIds(playerId, state));
+
+Selector.influenceIds = (playerId, state) =>
   state.playerToInfluence[playerId] || [];
 
-Selector.stockpile = (playerId, state) =>
+Selector.stockpileCards = (playerId, state) =>
+  Selector.orderCards(Selector.stockpileIds(playerId, state));
+
+Selector.stockpileIds = (playerId, state) =>
   state.playerToStockpile[playerId] || [];
 
-Selector.structures = (playerId, state) =>
+Selector.structureIds = (playerId, state) =>
   state.playerToStructures[playerId] || [];
 
-Selector.vault = (playerId, state) => state.playerToVault[playerId] || [];
+Selector.vaultCards = (playerId, state) =>
+  Selector.orderCards(Selector.handIds(playerId, state));
+
+Selector.vaultIds = (playerId, state) => state.playerToVault[playerId] || [];
 
 Object.freeze(Selector);
 

@@ -1,13 +1,5 @@
-import SiteCard from "../artifact/SiteCard.js";
-
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
-
-const siteCount = (siteToDeck) => {
-  const reduceFunction = (accum, siteKey) => accum + siteToDeck[siteKey].length;
-
-  return R.reduce(reduceFunction, 0, SiteCard.keys());
-};
 
 const GameOver = {};
 
@@ -39,7 +31,7 @@ GameOver.isGameOver = (store, roundLimit = 100) => {
   }
 
   // Did the site cards run out?
-  if (siteCount(store.getState().siteToDeck) === 0) {
+  if (store.getState().siteDeck.length === 0) {
     store.dispatch(ActionCreator.setUserMessage(`The site cards ran out.`));
     return true;
   }

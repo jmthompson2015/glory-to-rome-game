@@ -16,7 +16,7 @@ import StrategyResolver from "./StrategyResolver.js";
 const StepFunction = {};
 
 const determineRoleOptions = (playerId, state) => {
-  const handIds = Selector.hand(playerId, state);
+  const handIds = Selector.handIds(playerId, state);
   const leaderCardId = Selector.leaderCard(state).id;
   let answer;
 
@@ -102,7 +102,7 @@ const createTasks = (store) => {
   const { currentPlayerOrder, leadRoleKey } = store.getState();
   const roleFunction = RoleFunction[leadRoleKey];
   const reduceFunction = (accum, playerId) => {
-    const campIds = Selector.camp(playerId, store.getState());
+    const campIds = Selector.campIds(playerId, store.getState());
     const campCards = Selector.orderCards(campIds, store.getState());
     const roleKeys = R.map((c) => c.cardType.roleKey, campCards);
 
@@ -123,9 +123,11 @@ StepFunction[Step.PERFORM_ROLE] = (store) => {
 
 StepFunction[Step.CLEANUP] = (store) => {
   const forEachFunction = (playerId) => {
-    const camp = Selector.camp(playerId, store.getState());
-    if (camp.length > 0) {
-      store.dispatch(ActionCreator.transferCampToPool(playerId, R.head(camp)));
+    const campIds = Selector.campIds(playerId, store.getState());
+    if (campIds.length > 0) {
+      store.dispatch(
+        ActionCreator.transferCampToPool(playerId, R.head(campIds))
+      );
     }
   };
   const currentPlayerOrder = Selector.currentPlayerOrder(store.getState());

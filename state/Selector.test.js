@@ -1,4 +1,5 @@
 import BonusCard from "../artifact/BonusCard.js";
+import Material from "../artifact/Material.js";
 import OrderCard from "../artifact/OrderCard.js";
 import SiteCard from "../artifact/SiteCard.js";
 
@@ -72,13 +73,13 @@ const createPlayers = () => {
 };
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
-QUnit.test("camp()", (assert) => {
+QUnit.test("campIds()", (assert) => {
   // Setup.
   const state = AppState.create();
   const playerId = 3;
 
   // Run / Verify.
-  const result = Selector.camp(playerId, state);
+  const result = Selector.campIds(playerId, state);
 
   // Run / Verify.
   assert.ok(result);
@@ -86,13 +87,13 @@ QUnit.test("camp()", (assert) => {
   assert.equal(result.length, 0);
 });
 
-QUnit.test("clientele()", (assert) => {
+QUnit.test("clienteleIds()", (assert) => {
   // Setup.
   const state = AppState.create();
   const playerId = 3;
 
   // Run / Verify.
-  const result = Selector.clientele(playerId, state);
+  const result = Selector.clienteleIds(playerId, state);
 
   // Run / Verify.
   assert.ok(result);
@@ -111,7 +112,7 @@ QUnit.test("delay()", (assert) => {
   assert.equal(result, 1000);
 });
 
-QUnit.test("hand()", (assert) => {
+QUnit.test("handIds()", (assert) => {
   // Setup.
   const state0 = AppState.create();
   const playerId = 3;
@@ -124,7 +125,7 @@ QUnit.test("hand()", (assert) => {
   const state = Reducer.root(state0, action);
 
   // Run.
-  const result = Selector.hand(playerId, state);
+  const result = Selector.handIds(playerId, state);
 
   // Verify.
   assert.ok(result);
@@ -134,13 +135,13 @@ QUnit.test("hand()", (assert) => {
   assert.equal(result[0], cardId);
 });
 
-QUnit.test("influence()", (assert) => {
+QUnit.test("influenceIds()", (assert) => {
   // Setup.
   const state = AppState.create();
   const playerId = 3;
 
   // Run / Verify.
-  const result = Selector.influence(playerId, state);
+  const result = Selector.influenceIds(playerId, state);
 
   // Run / Verify.
   assert.ok(result);
@@ -461,37 +462,38 @@ QUnit.test("siteCards()", (assert) => {
   assert.equal(result2.cardKey, OrderCard.ATRIUM);
 });
 
-QUnit.test("sitesAvailable()", (assert) => {
+QUnit.test("sitesByMaterial()", (assert) => {
   // Setup.
   let state = AppState.create();
   const siteCardKeys = SiteCard.keys();
   for (let id = 1; id <= 3; id += 1) {
     const cardKey = siteCardKeys[id - 1];
     state = addSiteCard(id, cardKey, state);
-    const action = ActionCreator.setSiteToDeck(cardKey, [id]);
-    state = Reducer.root(state, action);
   }
+  const action = ActionCreator.setSiteDeck([1, 2, 3]);
+  state = Reducer.root(state, action);
+  const materialKey = Material.BRICK;
 
   // Run / Verify.
-  const result = Selector.sitesAvailable(state);
+  const result = Selector.sitesByMaterial(materialKey, state);
 
   // Run / Verify.
   assert.ok(result);
   assert.equal(Array.isArray(result), true);
-  assert.equal(result.length, 3);
-  const resultFirst = R.head(result);
-  assert.equal(resultFirst, SiteCard.BRICK);
-  const resultLast = R.last(result);
-  assert.equal(resultLast, SiteCard.MARBLE);
+  assert.equal(result.length, 1, `result.length = ${result.length}`);
+  const siteCard = R.head(result);
+  assert.ok(siteCard);
+  assert.equal(siteCard.id, 1);
+  assert.equal(siteCard.cardKey, SiteCard.BRICK);
 });
 
-QUnit.test("stockpile()", (assert) => {
+QUnit.test("stockpileIds()", (assert) => {
   // Setup.
   const state = AppState.create();
   const playerId = 3;
 
   // Run / Verify.
-  const result = Selector.stockpile(playerId, state);
+  const result = Selector.stockpileIds(playerId, state);
 
   // Run / Verify.
   assert.ok(result);
@@ -530,13 +532,13 @@ QUnit.test("unfinishedStructures()", (assert) => {
   assert.equal(R.head(result), 1);
 });
 
-QUnit.test("vault()", (assert) => {
+QUnit.test("vaultIds()", (assert) => {
   // Setup.
   const state = AppState.create();
   const playerId = 3;
 
   // Run / Verify.
-  const result = Selector.vault(playerId, state);
+  const result = Selector.vaultIds(playerId, state);
 
   // Run / Verify.
   assert.ok(result);

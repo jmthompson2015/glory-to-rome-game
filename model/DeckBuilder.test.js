@@ -1,4 +1,3 @@
-import SiteCard from "../artifact/SiteCard.js";
 import Version from "../artifact/Version.js";
 
 import ActionCreator from "../state/ActionCreator.js";
@@ -63,31 +62,42 @@ QUnit.test("buildOrderDeck() Republic", (assert) => {
   assert.equal(cardLast, 144);
 });
 
-QUnit.test("buildSiteDecks() Brick", (assert) => {
+QUnit.test("buildOutOfTownSiteDeck() 5", (assert) => {
   // Setup.
-  const siteKey = SiteCard.BRICK;
-  const playerCount = 4;
   const store = Redux.createStore(Reducer.root);
+  const playerCount = 5;
 
   // Run.
-  const result = DeckBuilder.buildSiteDecks(store, siteKey, playerCount);
+  const result = DeckBuilder.buildOutOfTownSiteDeck(store, playerCount);
 
   // Verify.
   assert.ok(result);
-  const { siteDeck, outOfTownDeck } = result;
-  assert.ok(siteDeck);
-  assert.equal(siteDeck.length, 4);
-  const cardFirst1 = R.head(siteDeck);
-  assert.equal(cardFirst1, 1);
-  const cardLast1 = R.last(siteDeck);
-  assert.equal(cardLast1, 4);
+  assert.equal(result.length, 36 - 6 * playerCount);
+  const cardFirst = R.head(result);
+  assert.ok(cardFirst);
+  assert.equal(cardFirst, 1);
+  const cardLast = R.last(result);
+  assert.ok(cardLast);
+  assert.equal(cardLast, 6);
+});
 
-  assert.ok(outOfTownDeck);
-  assert.equal(outOfTownDeck.length, 2);
-  const cardFirst2 = R.head(outOfTownDeck);
-  assert.equal(cardFirst2, 5);
-  const cardLast2 = R.last(outOfTownDeck);
-  assert.equal(cardLast2, 6);
+QUnit.test("buildSiteDeck() 5", (assert) => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root);
+  const playerCount = 5;
+
+  // Run.
+  const result = DeckBuilder.buildSiteDeck(store, playerCount);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 6 * playerCount);
+  const cardFirst = R.head(result);
+  assert.ok(cardFirst);
+  assert.equal(cardFirst, 1);
+  const cardLast = R.last(result);
+  assert.ok(cardLast);
+  assert.equal(cardLast, 30);
 });
 
 const DeckBuilderTest = {};

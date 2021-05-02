@@ -30,13 +30,13 @@ QUnit.test("cleanup", (assert) => {
   const callback = () => {
     assert.ok(true, "test resumed from async operation");
     // Verify.
-    const camp1 = Selector.camp(1, store.getState());
+    const camp1 = Selector.campIds(1, store.getState());
     assert.ok(camp1);
     assert.equal(camp1.length, 0);
-    const camp3 = Selector.camp(3, store.getState());
+    const camp3 = Selector.campIds(3, store.getState());
     assert.ok(camp3);
     assert.equal(camp3.length, 0);
-    const camp4 = Selector.camp(4, store.getState());
+    const camp4 = Selector.campIds(4, store.getState());
     assert.ok(camp4);
     assert.equal(camp4.length, 0);
     const cardPool = Selector.cardPool(store.getState());
