@@ -16,7 +16,7 @@ QUnit.test("cleanup", (assert) => {
   const stepKey = Step.CLEANUP;
   const leaderId = 1;
   const store = TestData.createStore();
-  store.dispatch(ActionCreator.setVerbose(true));
+  // store.dispatch(ActionCreator.setVerbose(true));
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
@@ -54,7 +54,7 @@ QUnit.test("declare role", (assert) => {
   const stepKey = Step.DECLARE_ROLE;
   const leaderId = 1;
   const store = TestData.createStore();
-  store.dispatch(ActionCreator.setVerbose(true));
+  // store.dispatch(ActionCreator.setVerbose(true));
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
@@ -82,7 +82,7 @@ QUnit.test("perform role Laborer", (assert) => {
   const stepKey = Step.PERFORM_ROLE;
   const leaderId = 1;
   const store = TestData.createStore();
-  store.dispatch(ActionCreator.setVerbose(true));
+  // store.dispatch(ActionCreator.setVerbose(true));
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));

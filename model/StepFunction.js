@@ -114,12 +114,10 @@ const createTasks = (store) => {
   return R.reduce(reduceFunction, Promise.resolve(), currentPlayerOrder);
 };
 
-StepFunction[Step.PERFORM_ROLE] = (store) => {
-  console.log(`leadRoleKey = ${store.getState().leadRoleKey}`);
-  return store.getState().leadRoleKey !== Role.THINKER
+StepFunction[Step.PERFORM_ROLE] = (store) =>
+  store.getState().leadRoleKey !== Role.THINKER
     ? createTasks(store)
     : Promise.resolve();
-};
 
 StepFunction[Step.CLEANUP] = (store) => {
   const forEachFunction = (playerId) => {

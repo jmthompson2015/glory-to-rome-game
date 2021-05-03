@@ -501,7 +501,7 @@ QUnit.test("stockpileIds()", (assert) => {
   assert.equal(result.length, 0);
 });
 
-QUnit.test("unfinishedStructures()", (assert) => {
+QUnit.test("unfinishedStructureIds()", (assert) => {
   // Setup.
   const state0 = AppState.create();
   const playerId = 3;
@@ -523,7 +523,7 @@ QUnit.test("unfinishedStructures()", (assert) => {
   const state = Reducer.root(state5, action5);
 
   // Run / Verify.
-  const result = Selector.unfinishedStructures(playerId, state);
+  const result = Selector.unfinishedStructureIds(playerId, state);
 
   // Run / Verify.
   assert.ok(result);
