@@ -27,10 +27,10 @@ const determineArchitectOptions = (playerId, state) => {
   if (handCards.length > 0) {
     const reduceFunction = (accum, orderCard) => {
       const { materialKey } = orderCard.cardType;
-      const sites = Selector.sitesByMaterial(materialKey, state);
+      const siteIds = Selector.siteIdsByMaterial(materialKey, state);
 
-      if (sites.length > 0) {
-        const siteCard = R.head(sites);
+      if (siteIds.length > 0) {
+        const siteCard = Selector.siteCard(R.head(siteIds), state);
         accum.push({
           type: options.LAY_FOUNDATION,
           foundationId: orderCard.id,
@@ -67,6 +67,56 @@ const determineArchitectOptions = (playerId, state) => {
   return answer;
 };
 
+const determineCraftsmanOptions = (playerId, state) => {
+  let answer = [];
+  const { options } = Role.value(Role.CRAFTSMAN);
+
+  const handCards = Selector.handCards(playerId, state);
+  const structureIds = Selector.unfinishedStructureIds(playerId, state);
+
+  if (handCards.length > 0) {
+    const reduceFunction = (accum, orderCard) => {
+      const { materialKey } = orderCard.cardType;
+      const siteIds = Selector.siteIdsByMaterial(materialKey, state);
+
+      if (siteIds.length > 0) {
+        const siteCard = Selector.siteCard(R.head(siteIds), state);
+        accum.push({
+          type: options.LAY_FOUNDATION,
+          foundationId: orderCard.id,
+          siteId: siteCard.id,
+        });
+      }
+      return accum;
+    };
+    answer = R.reduce(reduceFunction, [], handCards);
+  }
+
+  if (handCards.length > 0 && structureIds.length > 0) {
+    const reduceFunction = (accum, orderCard) => {
+      const { materialKey } = orderCard.cardType;
+      const structureIds2 = Selector.unfinishedStructureIdsByMaterial(
+        playerId,
+        materialKey,
+        state
+      );
+      const forEachFunction = (structureId) => {
+        accum.push({
+          type: options.BUILD_STRUCTURE,
+          cardId: orderCard.id,
+          structureId,
+        });
+      };
+      R.forEach(forEachFunction, structureIds2);
+      return accum;
+    };
+    const newOptions = R.reduce(reduceFunction, [], handCards);
+    answer = R.concat(answer, newOptions);
+  }
+
+  return answer;
+};
+
 const determineThinkerOptions = (playerId, state) => {
   const answer = [];
   const { options } = Role.value(Role.THINKER);
@@ -93,6 +143,24 @@ const performArchitectOption = (playerId, store) => (architectProps) => {
     store.dispatch(ActionCreator.layFoundation(playerId, foundationId, siteId));
   } else if (type === options.BUILD_STRUCTURE) {
     const { cardId, structureId } = architectProps;
+    store.dispatch(
+      ActionCreator.transferHandToStructure(playerId, cardId, structureId)
+    );
+  }
+};
+
+const performCraftsmanOption = (playerId, store) => (craftsmanProps) => {
+  IV.validateNotNil("playerId", playerId);
+  IV.validateNotNil("store", store);
+  IV.validateNotNil("craftsmanProps", craftsmanProps);
+  const { type } = craftsmanProps;
+  const { options } = Role.value(Role.CRAFTSMAN);
+
+  if (type === options.LAY_FOUNDATION) {
+    const { foundationId, siteId } = craftsmanProps;
+    store.dispatch(ActionCreator.layFoundation(playerId, foundationId, siteId));
+  } else if (type === options.BUILD_STRUCTURE) {
+    const { cardId, structureId } = craftsmanProps;
     store.dispatch(
       ActionCreator.transferHandToStructure(playerId, cardId, structureId)
     );
@@ -183,11 +251,22 @@ const RoleFunction = {
     },
   },
   [Role.CRAFTSMAN]: {
-    execute: (/* store */) => {
+    execute: (playerId, store) => {
       // Lay a foundation: Place a card from Hand and a Site card to Structure.
       // Add Material: Take a card from Hand and place it under the Structure.
       // Possibly also complete a Structure: Move Site from Structure to Influence.
       console.log(`RoleFunction CRAFTSMAN execute()`);
+      const options = determineCraftsmanOptions(playerId, store.getState());
+      const player = Selector.player(playerId, store.getState());
+      const strategy = StrategyResolver.resolve(player.strategy);
+      const delay = Selector.delay(store.getState());
+      return strategy
+        .chooseCraftsmanOption(options, store.getState(), delay)
+        .then(performCraftsmanOption(playerId, store))
+        .catch((error) => {
+          console.error(error.message);
+          throw error;
+        });
     },
     isLegal: (/* state */) => {
       console.log(`RoleFunction CRAFTSMAN isLegal()`);

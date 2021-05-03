@@ -94,16 +94,23 @@ Selector.playersInOrder = (state) => {
 
 Selector.refillLimit = (/* playerId, state */) => 5;
 
-Selector.sitesByMaterial = (materialKey, state) => {
+Selector.siteIdsByMaterial = (materialKey, state) => {
   IV.validateNotNil("materialKey", materialKey);
   IV.validateNotNil("state", state);
-  const filterFunction = (siteCard) =>
-    siteCard.cardType.materialKey === materialKey;
+  const filterFunction = (siteCardId) => {
+    const siteCard = Selector.siteCard(siteCardId, state);
+    return siteCard.cardType.materialKey === materialKey;
+  };
 
-  return R.filter(filterFunction, Object.values(state.siteCardInstances));
+  return R.filter(filterFunction, state.siteDeck);
 };
 
-Selector.siteCard = (cardId, state) => state.siteCardInstances[cardId];
+Selector.siteCard = (cardId, state) => {
+  IV.validateNotNil("cardId", cardId);
+  IV.validateNotNil("state", state);
+
+  return state.siteCardInstances[cardId];
+};
 
 Selector.siteCards = (cardIds, state) => {
   const mapFunction = (id) => state.siteCardInstances[id];

@@ -462,7 +462,7 @@ QUnit.test("siteCards()", (assert) => {
   assert.equal(result2.cardKey, OrderCard.ATRIUM);
 });
 
-QUnit.test("sitesByMaterial()", (assert) => {
+QUnit.test("siteIdsByMaterial()", (assert) => {
   // Setup.
   let state = AppState.create();
   const siteCardKeys = SiteCard.keys();
@@ -475,16 +475,15 @@ QUnit.test("sitesByMaterial()", (assert) => {
   const materialKey = Material.BRICK;
 
   // Run / Verify.
-  const result = Selector.sitesByMaterial(materialKey, state);
+  const result = Selector.siteIdsByMaterial(materialKey, state);
 
   // Run / Verify.
   assert.ok(result);
   assert.equal(Array.isArray(result), true);
   assert.equal(result.length, 1, `result.length = ${result.length}`);
-  const siteCard = R.head(result);
-  assert.ok(siteCard);
-  assert.equal(siteCard.id, 1);
-  assert.equal(siteCard.cardKey, SiteCard.BRICK);
+  const siteCardId = R.head(result);
+  assert.ok(siteCardId);
+  assert.equal(siteCardId, 1);
 });
 
 QUnit.test("stockpileIds()", (assert) => {
