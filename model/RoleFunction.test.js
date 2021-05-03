@@ -254,6 +254,54 @@ QUnit.test("Laborer execute()", (assert) => {
   roleFunction.execute(playerId, store).then(callback);
 });
 
+QUnit.test("Legionary execute()", (assert) => {
+  // Setup.
+  const stepKey = Step.PERFORM_ROLE;
+  const playerId = 1;
+  const store = TestData.createStore();
+  // store.dispatch(ActionCreator.setVerbose(true));
+  store.dispatch(ActionCreator.setDelay(TestData.DELAY));
+  store.dispatch(ActionCreator.setCurrentRound(1));
+  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPlayer(playerId));
+  const roleFunction = RoleFunction[Role.LEGIONARY];
+
+  // Run.
+  const done = assert.async();
+  const callback = () => {
+    assert.ok(true, "test resumed from async operation");
+    // Verify.
+    const state = store.getState();
+    const poolIds = Selector.cardPool(state);
+    assert.equal(
+      [4, 5].includes(poolIds.length),
+      true,
+      `poolIds.length = ${poolIds.length}`
+    );
+    const leftHandIds = Selector.handIds(2, state);
+    assert.equal(
+      [4, 5].includes(leftHandIds.length),
+      true,
+      `leftHandIds.length = ${leftHandIds.length}`
+    );
+    const rightHandIds = Selector.handIds(5, state);
+    assert.equal(
+      [4, 5].includes(rightHandIds.length),
+      true,
+      `rightHandIds.length = ${rightHandIds.length}`
+    );
+    const stockpileIds = Selector.stockpileIds(playerId, state);
+    assert.equal(
+      [0, 1, 2, 3].includes(stockpileIds.length),
+      true,
+      `stockpileIds.length = ${stockpileIds.length}`
+    );
+    done();
+  };
+
+  roleFunction.execute(playerId, store).then(callback);
+});
+
 QUnit.test("Merchant execute()", (assert) => {
   // Setup.
   const stepKey = Step.PERFORM_ROLE;

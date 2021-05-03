@@ -100,6 +100,30 @@ const transferCampToPool = (state, playerId, cardId) => {
   };
 };
 
+const transferHandToStockpile = (state, fromPlayerId, cardId, toPlayerId) => {
+  const oldFromHand = state.playerToHand[fromPlayerId] || [];
+  const newFromHand = R.without([cardId], oldFromHand);
+  IV.validateNotIncludesNil("newFromHand", newFromHand);
+  const newPlayerToHand = {
+    ...state.playerToHand,
+    [fromPlayerId]: newFromHand,
+  };
+
+  const oldStockpile = state.playerToStockpile[toPlayerId] || [];
+  const newStockpile = [...oldStockpile, cardId];
+  IV.validateNotIncludesNil("newStockpile", newStockpile);
+  const newPlayerToStockpile = {
+    ...state.playerToStockpile,
+    [toPlayerId]: newStockpile,
+  };
+
+  return {
+    ...state,
+    playerToHand: newPlayerToHand,
+    playerToStockpile: newPlayerToStockpile,
+  };
+};
+
 const transferHandToStructure = (state, playerId, cardId, structureId) => {
   const oldHand = state.playerToHand[playerId] || [];
   const newHand = R.without([cardId], oldHand);
@@ -383,6 +407,18 @@ Reducer.root = (state, action) => {
         "playerToCamp",
         action.playerId,
         action.cardId
+      );
+    case ActionType.TRANSFER_HAND_TO_STOCKPILE:
+      log(
+        `Reducer TRANSFER_HAND_TO_STOCKPILE fromPlayerId = ${action.fromPlayerId} ` +
+          `cardId = ${action.cardId} toPlayerId = ${action.toPlayerId}`,
+        state
+      );
+      return transferHandToStockpile(
+        state,
+        action.fromPlayerId,
+        action.cardId,
+        action.toPlayerId
       );
     case ActionType.TRANSFER_HAND_TO_STRUCTURE:
       log(

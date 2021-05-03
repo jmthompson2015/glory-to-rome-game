@@ -585,6 +585,46 @@ QUnit.test("transferHandToCamp()", (assert) => {
   assert.equal(R.head(camp), cardId);
 });
 
+QUnit.test("transferHandToStockpile()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const fromPlayerId = 2;
+  const toPlayerId = 3;
+  const cardId = 1;
+  const cardKey = OrderCard.ACADEMY;
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
+  const state1 = Reducer.root(state0, action0);
+  const action1 = ActionCreator.addToPlayerArray(
+    "playerToHand",
+    fromPlayerId,
+    cardId
+  );
+  const state = Reducer.root(state1, action1);
+  const action = ActionCreator.transferHandToStockpile(
+    fromPlayerId,
+    cardId,
+    toPlayerId
+  );
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const fromHand = result.playerToHand[fromPlayerId];
+  assert.ok(fromHand);
+  assert.equal(fromHand.length, 0, `fromHand.length = ${fromHand.length}`);
+  const toStockpile = result.playerToStockpile[toPlayerId];
+  assert.ok(toStockpile);
+  assert.equal(
+    toStockpile.length,
+    1,
+    `toStockpile.length = ${toStockpile.length}`
+  );
+  assert.equal(R.head(toStockpile), cardId);
+});
+
 QUnit.test("transferHandToStructure()", (assert) => {
   // Setup.
   const state0 = AppState.create();

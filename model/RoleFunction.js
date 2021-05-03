@@ -2,12 +2,15 @@
 
 import IV from "../utility/InputValidator.js";
 
+import Material from "../artifact/Material.js";
 import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
 
 import StrategyResolver from "./StrategyResolver.js";
+
+const modulo = (a, n) => ((a % n) + n) % n;
 
 const computeShortfall = (playerId, state) => {
   const handIds = Selector.handIds(playerId, state);
@@ -177,6 +180,60 @@ const performLaborerOption = (playerId, store) => (cardId) => {
   store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
 };
 
+const performLegionaryOption = (playerId, store) => (materialKey) => {
+  IV.validateNotNil("materialKey", materialKey);
+  const player = Selector.player(playerId, store.getState());
+  const userMessage = `${player.name} demands ${materialKey}.`;
+  store.dispatch(ActionCreator.setUserMessage(userMessage));
+  const currentPlayerOrder = Selector.currentPlayerOrder(store.getState());
+  const index = currentPlayerOrder.indexOf(playerId);
+  const filterFunction = (orderCard) =>
+    orderCard.cardType.materialKey === materialKey;
+
+  // Pool.
+  const poolIds = Selector.cardPool(store.getState());
+  const pool = Selector.orderCards(poolIds, store.getState());
+  const poolCards = R.filter(filterFunction, pool);
+
+  if (poolCards.length > 0) {
+    store.dispatch(
+      ActionCreator.transferPoolToStockpile(playerId, R.head(poolCards).id)
+    );
+  }
+
+  // Right neighbor.
+  const rightNeighborIndex = modulo(index - 1, currentPlayerOrder.length);
+  const rightNeighborId = currentPlayerOrder[rightNeighborIndex];
+  const rightHand = Selector.handCards(rightNeighborId, store.getState());
+  const rightCards = R.filter(filterFunction, rightHand);
+
+  if (rightCards.length > 0) {
+    store.dispatch(
+      ActionCreator.transferHandToStockpile(
+        rightNeighborId,
+        R.head(rightCards).id,
+        playerId
+      )
+    );
+  }
+
+  // Left neighbor.
+  const leftNeighborIndex = modulo(index + 1, currentPlayerOrder.length);
+  const leftNeighborId = currentPlayerOrder[leftNeighborIndex];
+  const leftHand = Selector.handCards(leftNeighborId, store.getState());
+  const leftCards = R.filter(filterFunction, leftHand);
+
+  if (leftCards.length > 0) {
+    store.dispatch(
+      ActionCreator.transferHandToStockpile(
+        leftNeighborId,
+        R.head(leftCards).id,
+        playerId
+      )
+    );
+  }
+};
+
 const performMerchantOption = (playerId, store) => (cardId) => {
   IV.validateNotNil("cardId", cardId);
   const player = Selector.player(playerId, store.getState());
@@ -301,9 +358,20 @@ const RoleFunction = {
     },
   },
   [Role.LEGIONARY]: {
-    execute: (/* store */) => {
+    execute: (playerId, store) => {
       // Demand materials: Take one from Pool, one from each neighbor and place in Stockpile.
       console.log(`RoleFunction LEGIONARY execute()`);
+      const options = Material.keys();
+      const player = Selector.player(playerId, store.getState());
+      const strategy = StrategyResolver.resolve(player.strategy);
+      const delay = Selector.delay(store.getState());
+      return strategy
+        .chooseLegionaryOption(options, store.getState(), delay)
+        .then(performLegionaryOption(playerId, store))
+        .catch((error) => {
+          console.error(error.message);
+          throw error;
+        });
     },
     isLegal: (/* state */) => {
       console.log(`RoleFunction LEGIONARY isLegal()`);

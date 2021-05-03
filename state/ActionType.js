@@ -28,6 +28,7 @@ ActionType.SET_VERSION = "setVersion";
 ActionType.SET_WINNER = "setWinner";
 ActionType.TRANSFER_CAMP_TO_POOL = "transferCampToPool";
 ActionType.TRANSFER_HAND_TO_CAMP = "transferHandToCamp";
+ActionType.TRANSFER_HAND_TO_STOCKPILE = "transferHandToStockpile";
 ActionType.TRANSFER_HAND_TO_STRUCTURE = "transferHandToStructure";
 ActionType.TRANSFER_JACK_TO_HAND = "transferJackToHand";
 ActionType.TRANSFER_ORDER_TO_HAND = "transferOrderToHand";

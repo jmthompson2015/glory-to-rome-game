@@ -33,6 +33,12 @@ RandomPlayerStrategy.chooseLaborerOption = (options, state, delay = DELAY) =>
     delayedResolve(answer, resolve, delay);
   });
 
+RandomPlayerStrategy.chooseLegionaryOption = (options, state, delay = DELAY) =>
+  new Promise((resolve) => {
+    const answer = options.length <= 1 ? options[0] : randomElement(options);
+    delayedResolve(answer, resolve, delay);
+  });
+
 RandomPlayerStrategy.chooseMerchantOption = (options, state, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);
