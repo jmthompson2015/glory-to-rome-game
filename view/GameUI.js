@@ -13,7 +13,7 @@ const createPoolCell = (state, resourceBase, width) => {
   const poolCards = Selector.orderCards(state.cardPool, state);
   const element = React.createElement(CardsUI, {
     key: `CardPool`,
-    cards: poolCards,
+    cardStates: poolCards,
     resourceBase,
     width,
   });
@@ -39,7 +39,7 @@ const createSitesCell0 = (title, siteCards0, isFaceup, resourceBase, width) => {
   const siteCards = R.map(mapFunction, Object.keys(siteMap));
   const element = React.createElement(CardsUI, {
     key: `SiteCards${title}`,
-    cards: siteCards,
+    cardStates: siteCards,
     isFaceup,
     resourceBase,
     width,

@@ -5,21 +5,25 @@ const { ReactUtilities: RU } = ReactComponent;
 
 class CardsUI extends React.PureComponent {
   render() {
-    const { cards, resourceBase, slicing, width } = this.props;
+    const { cardStates, resourceBase, slicing, width } = this.props;
 
-    const mapFunction = (card) => {
+    const mapFunction = (cardState) => {
       const element = React.createElement(CardImage, {
-        key: `CardImage${card.id}`,
-        card,
+        key: `CardImage${cardState.id}`,
+        cardState,
         resourceBase,
         slicing,
         width,
       });
 
-      return RU.createCell(element, `cardCell${card.id}`, "alignTop v-top");
+      return RU.createCell(
+        element,
+        `cardCell${cardState.id}`,
+        "alignTop v-top"
+      );
     };
 
-    const cardCells = R.map(mapFunction, cards);
+    const cardCells = R.map(mapFunction, cardStates);
     const row = RU.createRow(cardCells);
 
     return RU.createTable(row, "cardsUITable", "center");
@@ -27,7 +31,7 @@ class CardsUI extends React.PureComponent {
 }
 
 CardsUI.propTypes = {
-  cards: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  cardStates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
   resourceBase: PropTypes.string,
   slicing: PropTypes.shape(),

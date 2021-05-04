@@ -12,7 +12,7 @@ const state = store.getState();
 const handCards = Selector.handCards(playerId, state);
 
 const element = React.createElement(CardsUI, {
-  cards: handCards,
+  cardStates: handCards,
   resourceBase: Endpoint.LOCAL_RESOURCE,
   width: 150,
 });

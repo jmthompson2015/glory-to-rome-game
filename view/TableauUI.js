@@ -5,10 +5,10 @@ const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
 
 const createSlicing = (type) => ({ type, value: 0.2 });
 
-const createCell = (title, cards, resourceBase, width, slicing) => {
+const createCell = (title, cardStates, resourceBase, width, slicing) => {
   const element = React.createElement(CardsUI, {
     key: `CardsUI${title}`,
-    cards,
+    cardStates,
     resourceBase,
     slicing,
     width,

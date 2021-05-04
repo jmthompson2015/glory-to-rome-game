@@ -5,17 +5,17 @@ import Endpoint from "./Endpoint.js";
 
 const { ReactUtilities: RU } = ReactComponent;
 
-function createCardCell(card, sliceType) {
+function createCardCell(cardState, sliceType) {
   const slicing = sliceType ? { type: sliceType, value: 0.2 } : undefined;
   const element = React.createElement(CardImage, {
-    key: `CardImage${card.key}`,
-    card,
+    key: `CardImage${cardState.key}`,
+    cardState,
     resourceBase: Endpoint.LOCAL_RESOURCE,
     slicing,
     width: 200,
   });
 
-  return RU.createCell(element, `CardCell${card.cardKey}`, "pa1 v-top");
+  return RU.createCell(element, `CardCell${cardState.cardKey}`, "pa1 v-top");
 }
 
 const uniqueCardInstances = (cardInstances) => {

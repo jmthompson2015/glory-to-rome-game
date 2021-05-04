@@ -4,7 +4,21 @@ import BonusCard from "../artifact/BonusCard.js";
 import OrderCard from "../artifact/OrderCard.js";
 import SiteCard from "../artifact/SiteCard.js";
 
-class CardImage extends React.Component {
+const logLoadFailure = (src) => {
+  let lastIndex = src.lastIndexOf("/");
+  lastIndex = src.lastIndexOf("/", lastIndex - 1);
+  const filename = src.substring(lastIndex + 1);
+  console.error(`HeroCardImage failed to load ${filename}`);
+};
+
+class CardImage extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    const { width } = this.props;
+    this.height = width * 1.4;
+  }
+
   componentDidMount() {
     this.paint();
   }
@@ -14,109 +28,103 @@ class CardImage extends React.Component {
   }
 
   canvasId() {
-    const { card } = this.props;
+    const { cardState } = this.props;
 
-    return `CardImageCanvas${card.id}${card.cardKey}`;
+    return `CardImageCanvas${cardState.id}${cardState.cardKey}`;
   }
 
   createSrc() {
-    const { card, resourceBase, version } = this.props;
+    const { cardState, resourceBase, version } = this.props;
     const image =
-      OrderCard.image(card.cardType, version, card.isFaceup) ||
-      SiteCard.image(card.cardType, version, card.isFaceup) ||
-      BonusCard.image(card.cardType, version, card.isFaceup);
+      OrderCard.image(cardState.cardType, version, cardState.isFaceup) ||
+      SiteCard.image(cardState.cardType, version, cardState.isFaceup) ||
+      BonusCard.image(cardState.cardType, version, cardState.isFaceup);
 
     return resourceBase + image;
-  }
-
-  height() {
-    const { width } = this.props;
-
-    return width * 1.4;
-  }
-
-  logLoadFailure(src) {
-    this.height(); // dummy
-    let lastIndex = src.lastIndexOf("/");
-    lastIndex = src.lastIndexOf("/", lastIndex - 1);
-    const filename = src.substring(lastIndex + 1);
-    console.error(`HeroCardImage failed to load ${filename}`);
   }
 
   paint() {
     const { slicing, width } = this.props;
     const canvas = document.getElementById(this.canvasId());
     const context = canvas.getContext("2d");
-    const height = this.height();
     const src = this.createSrc();
     const image = new Image();
     image.onload = () => {
-      if (slicing === undefined) {
-        context.drawImage(image, 0, 0, width, height);
-      } else if (slicing.type === "bottom") {
-        const sy = image.naturalHeight * (1.0 - slicing.value);
-        const sWidth = image.naturalWidth;
-        const sHeight = image.naturalHeight * slicing.value;
-        const dWidth = width;
-        const dHeight = height * slicing.value;
-        context.drawImage(image, 0, sy, sWidth, sHeight, 0, 0, dWidth, dHeight);
-      } else if (slicing.type === "left") {
-        const sWidth = image.naturalWidth * slicing.value;
-        const sHeight = image.naturalHeight;
-        const dWidth = width * slicing.value;
-        const dHeight = height;
-        context.drawImage(image, 0, 0, sWidth, sHeight, 0, 0, dWidth, dHeight);
-      } else if (slicing.type === "right") {
-        const sx = image.naturalWidth * (1.0 - slicing.value);
-        const sWidth = image.naturalWidth * slicing.value;
-        const sHeight = image.naturalHeight;
-        const dWidth = width * slicing.value;
-        const dHeight = height;
-        context.drawImage(image, sx, 0, sWidth, sHeight, 0, 0, dWidth, dHeight);
-      } else if (slicing.type === "top") {
-        const sWidth = image.naturalWidth;
-        const sHeight = image.naturalHeight * slicing.value;
-        const dWidth = width;
-        const dHeight = height * slicing.value;
-        context.drawImage(image, 0, 0, sWidth, sHeight, 0, 0, dWidth, dHeight);
+      if (R.isNil(slicing)) {
+        context.drawImage(image, 0, 0, width, this.height);
+      } else {
+        let sx = 0;
+        let sy = 0;
+        let sWidth = image.naturalWidth;
+        let sHeight = image.naturalHeight;
+        let dWidth = width;
+        let dHeight = this.height;
+
+        if (slicing.type === "bottom") {
+          sy = image.naturalHeight * (1.0 - slicing.value);
+          sHeight = image.naturalHeight * slicing.value;
+          dHeight = this.height * slicing.value;
+        } else if (slicing.type === "left") {
+          sWidth = image.naturalWidth * slicing.value;
+          dWidth = width * slicing.value;
+        } else if (slicing.type === "right") {
+          sx = image.naturalWidth * (1.0 - slicing.value);
+          sWidth = image.naturalWidth * slicing.value;
+          dWidth = width * slicing.value;
+        } else if (slicing.type === "top") {
+          sHeight = image.naturalHeight * slicing.value;
+          dHeight = this.height * slicing.value;
+        }
+
+        context.drawImage(
+          image,
+          sx,
+          sy,
+          sWidth,
+          sHeight,
+          0,
+          0,
+          dWidth,
+          dHeight
+        );
       }
     };
-    image.onerror = this.logLoadFailure;
+    image.onerror = logLoadFailure;
     image.src = src;
   }
 
   render() {
-    const { card, slicing, width } = this.props;
-    let canvasHeight;
-    let canvasWidth;
+    const { cardState, slicing, width } = this.props;
+    let canvasWidth = width;
+    let canvasHeight = this.height;
 
-    if (slicing === undefined) {
-      canvasWidth = width;
-      canvasHeight = this.height();
-    } else if (["bottom", "top"].includes(slicing.type)) {
-      canvasWidth = width;
-      canvasHeight = this.height() * slicing.value;
-    } else if (["left", "right"].includes(slicing.type)) {
-      canvasWidth = width * slicing.value;
-      canvasHeight = this.height();
+    if (!R.isNil(slicing)) {
+      if (["bottom", "top"].includes(slicing.type)) {
+        canvasHeight = this.height * slicing.value;
+      } else if (["left", "right"].includes(slicing.type)) {
+        canvasWidth = width * slicing.value;
+      }
     }
     const canvasId = this.canvasId();
 
     return ReactDOMFactories.canvas({
       key: canvasId,
-      height: canvasHeight,
       id: canvasId,
-      title: card.name,
+      height: canvasHeight,
+      title: cardState.name,
       width: canvasWidth,
     });
   }
 }
 
 CardImage.propTypes = {
-  card: PropTypes.shape().isRequired,
+  cardState: PropTypes.shape().isRequired,
   resourceBase: PropTypes.string.isRequired,
 
-  slicing: PropTypes.shape(),
+  slicing: PropTypes.shape({
+    type: PropTypes.oneOf(["bottom", "left", "right", "top"]).isRequired,
+    value: PropTypes.number.isRequired,
+  }),
   version: PropTypes.string,
   width: PropTypes.number,
 };
