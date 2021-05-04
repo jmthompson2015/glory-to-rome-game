@@ -1,5 +1,3 @@
-import IV from "../utility/InputValidator.js";
-
 import Material from "./Material.js";
 
 const BonusCard = {
@@ -79,7 +77,6 @@ BonusCard.image = (card, version = "v2.0") => {
   let answer;
 
   if (BonusCard.keys().includes(card.key)) {
-    IV.validateNotNil("card", card);
     answer = card.image.replace("{version}", version);
   }
 

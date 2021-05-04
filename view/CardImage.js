@@ -20,11 +20,11 @@ class CardImage extends React.Component {
   }
 
   createSrc() {
-    const { card, isFaceUp, resourceBase, version } = this.props;
+    const { card, resourceBase, version } = this.props;
     const image =
-      OrderCard.image(card.cardType, version, isFaceUp) ||
-      SiteCard.image(card.cardType, version, isFaceUp) ||
-      BonusCard.image(card.cardType, version, isFaceUp);
+      OrderCard.image(card.cardType, version, card.isFaceup) ||
+      SiteCard.image(card.cardType, version, card.isFaceup) ||
+      BonusCard.image(card.cardType, version, card.isFaceup);
 
     return resourceBase + image;
   }
@@ -116,14 +116,12 @@ CardImage.propTypes = {
   card: PropTypes.shape().isRequired,
   resourceBase: PropTypes.string.isRequired,
 
-  isFaceUp: PropTypes.bool,
   slicing: PropTypes.shape(),
   version: PropTypes.string,
   width: PropTypes.number,
 };
 
 CardImage.defaultProps = {
-  isFaceUp: true,
   slicing: undefined,
   version: undefined,
   width: 200,

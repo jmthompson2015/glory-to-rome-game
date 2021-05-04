@@ -14,7 +14,7 @@ import Setup from "./Setup.js";
 
 const TestData = {};
 
-const createPlayers = () => {
+TestData.createPlayers = () => {
   const player1 = PlayerState.create({
     id: 1,
     name: "Alfred", // Pennyworth
@@ -43,7 +43,7 @@ TestData.DELAY = 100;
 
 TestData.createStore = () => {
   const store = Redux.createStore(Reducer.root);
-  const players = createPlayers();
+  const players = TestData.createPlayers();
 
   // From Setup.execute(); don't shuffle for repeatability.
   store.dispatch(ActionCreator.setPlayers(players));

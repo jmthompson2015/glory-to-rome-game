@@ -3,12 +3,13 @@ import Endpoint from "./Endpoint.js";
 
 const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
 
-const createCell = (title, cards, resourceBase, width, slicing, isFaceUp) => {
+const createSlicing = (type) => ({ type, value: 0.2 });
+
+const createCell = (title, cards, resourceBase, width, slicing) => {
   const element = React.createElement(CardsUI, {
     key: `CardsUI${title}`,
     cards,
     resourceBase,
-    isFaceUp,
     slicing,
     width,
   });
@@ -18,15 +19,17 @@ const createCell = (title, cards, resourceBase, width, slicing, isFaceUp) => {
     element,
     isExpanded: true,
     title,
+    titleClass: "b bg-gray f5 ph1 pt1 tc",
   });
 
-  return RU.createCell(cardsPane, `CardsCell${title}`);
+  return RU.createCell(cardsPane, `CardsCell${title}`, "tc");
 };
 
 class TableauUI extends React.PureComponent {
   render() {
     const {
       campCards,
+      className,
       clienteleCards,
       handCards,
       influenceCards,
@@ -44,7 +47,7 @@ class TableauUI extends React.PureComponent {
       clienteleCards,
       resourceBase,
       width,
-      { type: "left", value: 0.2 }
+      createSlicing("left")
     );
     const handCell = createCell("Hand", handCards, resourceBase, width);
     const influenceCell = createCell(
@@ -52,14 +55,14 @@ class TableauUI extends React.PureComponent {
       influenceCards,
       resourceBase,
       width,
-      { type: "top", value: 0.2 }
+      createSlicing("top")
     );
     const stockpileCell = createCell(
       "Stockpile",
       stockpileCards,
       resourceBase,
       width,
-      { type: "bottom", value: 0.2 }
+      createSlicing("bottom")
     );
     const structureCell = createCell(
       "Structure",
@@ -72,16 +75,13 @@ class TableauUI extends React.PureComponent {
       vaultCards,
       resourceBase,
       width,
-      {
-        type: "right",
-        value: 0.2,
-      },
-      false
+      createSlicing("right")
     );
 
     const middleCell = RU.createCell(
       RU.createTable(RU.createRow([clienteleCell, campCell, vaultCell])),
-      "middleCell"
+      "middleCell",
+      "tc"
     );
 
     const rows = [
@@ -96,9 +96,11 @@ class TableauUI extends React.PureComponent {
 
     return React.createElement(CollapsiblePane, {
       key: `TableauPane${player.id}`,
+      className,
       element: tableauTable,
       isExpanded: true,
       title: player.name,
+      titleClass: "b bg-light-gray f5 ph1 pt1 tc",
     });
   }
 }
@@ -107,6 +109,7 @@ TableauUI.propTypes = {
   player: PropTypes.shape().isRequired,
 
   campCards: PropTypes.arrayOf(PropTypes.shape()),
+  className: PropTypes.string,
   clienteleCards: PropTypes.arrayOf(PropTypes.shape()),
   handCards: PropTypes.arrayOf(PropTypes.shape()),
   influenceCards: PropTypes.arrayOf(PropTypes.shape()),
@@ -119,6 +122,7 @@ TableauUI.propTypes = {
 
 TableauUI.defaultProps = {
   campCards: [],
+  className: undefined,
   clienteleCards: [],
   handCards: [],
   influenceCards: [],

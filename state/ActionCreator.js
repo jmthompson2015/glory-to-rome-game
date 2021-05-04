@@ -108,6 +108,12 @@ ActionCreator.setMctsRoot = makeActionCreator(
   "mctsRoot"
 );
 
+ActionCreator.setOrderCardFaceup = makeActionCreator(
+  ActionType.SET_ORDER_CARD_FACEUP,
+  "cardId",
+  "isFaceup"
+);
+
 ActionCreator.setOrderDeck = makeActionCreator(
   ActionType.SET_ORDER_DECK,
   "orderDeck"
@@ -124,6 +130,12 @@ ActionCreator.setPlayerStrategy = makeActionCreator(
   ActionType.SET_PLAYER_STRATEGY,
   "playerId",
   "strategy"
+);
+
+ActionCreator.setSiteCardFaceup = makeActionCreator(
+  ActionType.SET_SITE_CARD_FACEUP,
+  "cardId",
+  "isFaceup"
 );
 
 ActionCreator.setSiteDeck = makeActionCreator(

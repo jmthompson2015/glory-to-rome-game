@@ -5,13 +5,12 @@ const { ReactUtilities: RU } = ReactComponent;
 
 class CardsUI extends React.PureComponent {
   render() {
-    const { cards, isFaceUp, resourceBase, slicing, width } = this.props;
+    const { cards, resourceBase, slicing, width } = this.props;
 
     const mapFunction = (card) => {
       const element = React.createElement(CardImage, {
         key: `CardImage${card.id}`,
         card,
-        isFaceUp,
         resourceBase,
         slicing,
         width,
@@ -30,14 +29,12 @@ class CardsUI extends React.PureComponent {
 CardsUI.propTypes = {
   cards: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
-  isFaceUp: PropTypes.bool,
   resourceBase: PropTypes.string,
   slicing: PropTypes.shape(),
   width: PropTypes.number,
 };
 
 CardsUI.defaultProps = {
-  isFaceUp: true,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: undefined,
   width: 200,

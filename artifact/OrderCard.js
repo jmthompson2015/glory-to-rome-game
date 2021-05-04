@@ -510,11 +510,11 @@ R.forEach((cardKey) => {
   }
 }, OrderCard.keys());
 
-OrderCard.image = (card, version = "v2.0", isFaceUp = true) => {
+OrderCard.image = (card, version = "v2.0", isFaceup = true) => {
   let answer;
 
   if (OrderCard.keys().includes(card.key)) {
-    answer = isFaceUp
+    answer = isFaceup
       ? card.image.replace("{version}", version)
       : CARD_BACK.replace("{version}", version);
   }

@@ -59,16 +59,17 @@ R.forEach((cardKey) => {
   }
   if (R.isNil(card.image)) {
     card.image = `resource/{version}/siteCard/${card.name}_Site.png`;
+    card.imageBack = `resource/{version}/siteCard/${card.name}_SiteBack.png`;
   }
 }, SiteCard.keys());
 
-SiteCard.image = (card, version = "v2.0", isFaceUp = true) => {
+SiteCard.image = (card, version = "v2.0", isFaceup = true) => {
   let answer;
 
   if (SiteCard.keys().includes(card.key)) {
-    answer = isFaceUp
+    answer = isFaceup
       ? card.image.replace("{version}", version)
-      : card.image.replace("{version}", version).replace(".png", "Back.png");
+      : card.imageBack.replace("{version}", version);
   }
 
   return answer;

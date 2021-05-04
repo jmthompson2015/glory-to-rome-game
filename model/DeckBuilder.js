@@ -8,17 +8,17 @@ const cardToId = (card) => card.id;
 
 const DeckBuilder = {};
 
-const createOrderCards = (store, cardKey, count, isFaceUp = false) => {
+const createOrderCards = (store, cardKey, count, isFaceup = false) => {
   const reduceFunction = (accum) =>
-    R.append(OrderCardState.create({ cardKey, isFaceUp, store }), accum);
+    R.append(OrderCardState.create({ cardKey, isFaceup, store }), accum);
   const counters = R.repeat(1, count);
 
   return R.reduce(reduceFunction, [], counters);
 };
 
-const createSiteCards = (store, cardKey, count, isFaceUp = false) => {
+const createSiteCards = (store, cardKey, count, isFaceup = false) => {
   const reduceFunction = (accum) =>
-    R.append(SiteCardState.create({ cardKey, isFaceUp, store }), accum);
+    R.append(SiteCardState.create({ cardKey, isFaceup, store }), accum);
   const counters = R.repeat(1, count);
 
   return R.reduce(reduceFunction, [], counters);
@@ -35,7 +35,7 @@ DeckBuilder.buildJackDeck = (store) => {
 
 DeckBuilder.buildOrderDeck = (store) => {
   const reduceFunction = (accum, card) =>
-    R.concat(accum, createOrderCards(store, card.key, card.count));
+    R.concat(accum, createOrderCards(store, card.key, card.count, true));
   const { versionKey } = store.getState();
   const values = OrderCard.valuesByVersion(versionKey);
   const array = R.reduce(reduceFunction, [], values);
@@ -55,7 +55,7 @@ DeckBuilder.buildOutOfTownSiteDeck = (store, playerCount) => {
 
 DeckBuilder.buildSiteDeck = (store, playerCount) => {
   const reduceFunction = (accum, card) =>
-    R.concat(accum, createSiteCards(store, card.key, playerCount));
+    R.concat(accum, createSiteCards(store, card.key, playerCount, true));
   const { versionKey } = store.getState();
   const values = SiteCard.values(versionKey);
   const array = R.reduce(reduceFunction, [], values);
