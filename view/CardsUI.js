@@ -19,7 +19,7 @@ class CardsUI extends React.PureComponent {
       return RU.createCell(
         element,
         `cardCell${cardState.id}`,
-        "alignTop v-top"
+        "alignTop ph1 v-top"
       );
     };
 

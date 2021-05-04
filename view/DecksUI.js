@@ -18,7 +18,7 @@ class DecksUI extends React.PureComponent {
       const topCard = R.head(deck);
       const key = `deckCell${deck.length}${topCard.id}`;
 
-      return RU.createCell(element, key, "alignTop v-top");
+      return RU.createCell(element, key, "alignTop ph1 v-top");
     };
 
     const deckCells = R.map(mapFunction, decks);
