@@ -40,7 +40,7 @@ class CardImage extends React.PureComponent {
       SiteCard.image(cardState.cardType, version, cardState.isFaceup) ||
       BonusCard.image(cardState.cardType, version, cardState.isFaceup);
 
-    return resourceBase + image;
+    return `${resourceBase}${image}`;
   }
 
   paint() {

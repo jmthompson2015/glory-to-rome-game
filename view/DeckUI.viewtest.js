@@ -5,7 +5,7 @@ import Selector from "../state/Selector.js";
 import Setup from "../model/Setup.js";
 import TestData from "../model/TestData.js";
 
-import GameUI from "./GameUI.js";
+import DeckUI from "./DeckUI.js";
 import Endpoint from "./Endpoint.js";
 
 const store = Redux.createStore(Reducer.root);
@@ -15,8 +15,11 @@ const cardId = R.head(Selector.orderDeck(store.getState()));
 store.dispatch(ActionCreator.setOrderCardFaceup(cardId, false));
 const state = store.getState();
 
-const element = React.createElement(GameUI, {
+const deck = Selector.orderCards(Selector.orderDeck(state), state);
+
+const element = React.createElement(DeckUI, {
+  deck,
   resourceBase: Endpoint.LOCAL_RESOURCE,
-  state,
+  width: 200,
 });
 ReactDOM.render(element, document.getElementById("panel"));

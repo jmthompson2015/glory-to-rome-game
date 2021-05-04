@@ -77,6 +77,8 @@ Selector.orderCards = (cardIds, state) => {
   return R.map(mapFunction, cardIds);
 };
 
+Selector.orderDeck = (state) => state.orderDeck;
+
 Selector.outOfTownSiteDeck = (state) => state.outOfTownSiteDeck;
 
 Selector.player = (playerId, state) => state.playerInstances[playerId];
@@ -96,6 +98,23 @@ Selector.playersInOrder = (state) => {
 
 Selector.refillLimit = (/* playerId, state */) => 5;
 
+Selector.siteCard = (cardId, state) => {
+  IV.validateNotNil("cardId", cardId);
+  IV.validateNotNil("state", state);
+
+  return state.siteCardInstances[cardId];
+};
+
+Selector.siteCards = (cardIds, state) => {
+  IV.validateIsArray("cardIds", cardIds);
+  IV.validateNotNil("state", state);
+  const mapFunction = (id) => state.siteCardInstances[id];
+
+  return R.map(mapFunction, cardIds);
+};
+
+Selector.siteDeck = (state) => state.siteDeck;
+
 Selector.siteIdsByMaterial = (materialKey, state) => {
   IV.validateNotNil("materialKey", materialKey);
   IV.validateNotNil("state", state);
@@ -106,21 +125,6 @@ Selector.siteIdsByMaterial = (materialKey, state) => {
 
   return R.filter(filterFunction, state.siteDeck);
 };
-
-Selector.siteCard = (cardId, state) => {
-  IV.validateNotNil("cardId", cardId);
-  IV.validateNotNil("state", state);
-
-  return state.siteCardInstances[cardId];
-};
-
-Selector.siteCards = (cardIds, state) => {
-  const mapFunction = (id) => state.siteCardInstances[id];
-
-  return R.map(mapFunction, cardIds);
-};
-
-Selector.siteDeck = (state) => state.siteDeck;
 
 Selector.structure = (structureId, state) => {
   IV.validateNotNil("structureId", structureId);

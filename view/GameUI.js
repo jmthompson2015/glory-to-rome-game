@@ -1,6 +1,9 @@
+import Material from "../artifact/Material.js";
 import Selector from "../state/Selector.js";
 
 import CardsUI from "./CardsUI.js";
+import DeckUI from "./DeckUI.js";
+import DecksUI from "./DecksUI.js";
 import Endpoint from "./Endpoint.js";
 import TableauUI from "./TableauUI.js";
 
@@ -8,6 +11,44 @@ const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
 
 const BACKGROUND = ["bg-maroon", "bg-green", "bg-navy", "bg-olive", "bg-teal"];
 const WIDTH = 150;
+
+const createJackDeckCell = (state, resourceBase, width) => {
+  const deck = Selector.orderCards(state.jackDeck, state);
+  const element = React.createElement(DeckUI, {
+    key: `JackDeck`,
+    deck,
+    resourceBase,
+    width,
+  });
+  const cardsPane = React.createElement(CollapsiblePane, {
+    key: `JackDeckPane`,
+    element,
+    isExpanded: true,
+    title: "Jack Deck",
+    titleClass: "b bg-light-gray f5 ph1 pt1 tc",
+  });
+
+  return RU.createCell(cardsPane, "JackDeckCell", "tc");
+};
+
+const createOrderDeckCell = (state, resourceBase, width) => {
+  const deck = Selector.orderCards(state.orderDeck, state);
+  const element = React.createElement(DeckUI, {
+    key: `OrderDeck`,
+    deck,
+    resourceBase,
+    width,
+  });
+  const cardsPane = React.createElement(CollapsiblePane, {
+    key: `OrderDeckPane`,
+    element,
+    isExpanded: true,
+    title: "Order Deck",
+    titleClass: "b bg-light-gray f5 ph1 pt1 tc",
+  });
+
+  return RU.createCell(cardsPane, "OrderDeckCell", "tc");
+};
 
 const createPoolCell = (state, resourceBase, width) => {
   const poolCards = Selector.orderCards(state.cardPool, state);
@@ -29,30 +70,33 @@ const createPoolCell = (state, resourceBase, width) => {
 };
 
 const createSitesCell0 = (title, siteCards0, isFaceup, resourceBase, width) => {
-  const reduceFunction = (accum, siteCard) => {
-    const oldSites = accum[siteCard.cardKey] || [];
-    const newSites = [...oldSites, siteCard];
-    return { ...accum, [siteCard.cardKey]: newSites };
+  const reduceFunction = (accum, materialKey) => {
+    const deck = R.filter(
+      (c) => c.cardType.materialKey === materialKey,
+      siteCards0
+    );
+    accum.push(deck);
+    return accum;
   };
-  const siteMap = R.reduce(reduceFunction, {}, siteCards0);
-  const mapFunction = (siteKey) => R.head(siteMap[siteKey]);
-  const siteCards = R.map(mapFunction, Object.keys(siteMap));
-  const element = React.createElement(CardsUI, {
-    key: `SiteCards${title}`,
-    cardStates: siteCards,
+  const siteDecks = R.reduce(reduceFunction, [], Material.keys());
+
+  const element = React.createElement(DecksUI, {
+    key: `SiteDecks${title}`,
+    countFillStyle: "black",
+    decks: siteDecks,
     isFaceup,
     resourceBase,
     width,
   });
-  const cardsPane = React.createElement(CollapsiblePane, {
-    key: `SiteCardsPane${title}`,
+  const decksPane = React.createElement(CollapsiblePane, {
+    key: `SiteDecksPane${title}`,
     element,
     isExpanded: true,
     title,
     titleClass: "b bg-light-gray f5 ph1 pt1 tc",
   });
 
-  return RU.createCell(cardsPane, `SiteCardsCell${title}`, "tc");
+  return RU.createCell(decksPane, `SiteCardsCell${title}`, "tc");
 };
 
 const createSitesCell = (state, resourceBase) => {
@@ -102,13 +146,22 @@ class GameUI extends React.PureComponent {
     };
     const playerIds = Object.keys(state.playerInstances);
     const playerToTableau = R.reduce(reduceFunction, {}, playerIds);
+    const jackDeckCell = createJackDeckCell(state, resourceBase, WIDTH);
+    const orderDeckCell = createOrderDeckCell(state, resourceBase, WIDTH);
     const poolCell = createPoolCell(state, resourceBase, WIDTH);
     const sitesCell = createSitesCell(state, resourceBase);
     const ootSitesCell = createOutOfTownSitesCell(state, resourceBase);
     const mapFunction = (playerId) =>
       RU.createCell(playerToTableau[playerId], `tableauCell${playerId}`);
     const cells0 = R.map(mapFunction, playerIds);
-    const cells = [...cells0, poolCell, sitesCell, ootSitesCell];
+    const cells = [
+      ...cells0,
+      orderDeckCell,
+      jackDeckCell,
+      poolCell,
+      sitesCell,
+      ootSitesCell,
+    ];
 
     return RU.createFlexboxWrap(cells, "GameUI", "tc");
   }
