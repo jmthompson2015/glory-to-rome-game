@@ -89,8 +89,9 @@ Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {
   Setup.createSiteDecks(store, playerCount);
 
   // Create Merchant Bonus cards.
-  const forEachFunction = (cardKey) =>
+  const forEachFunction = (cardKey) => {
     BonusCardState.create({ cardKey, store });
+  };
   R.forEach(forEachFunction, BonusCard.keys());
 
   // Deal cards to each player.

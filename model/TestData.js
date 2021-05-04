@@ -64,9 +64,10 @@ TestData.createStore = () => {
   Setup.createSiteDecks(store, playerCount);
 
   // Create Merchant Bonus cards.
-  const forEachFunction = (cardKey) =>
+  const forEachFunction = (cardKey) => {
     BonusCardState.create({ cardKey, store });
-  R.forEach(forEachFunction, BonusCard.keys().slice(1));
+  };
+  R.forEach(forEachFunction, BonusCard.keys());
 
   // Deal cards to each player.
   Setup.dealOrderCards(store, players);

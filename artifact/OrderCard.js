@@ -2,6 +2,8 @@ import Material from "./Material.js";
 import Role from "./Role.js";
 import Version from "./Version.js";
 
+const CARD_BACK = `resource/{version}/orderCard/OrderCardBack.png`;
+
 const OrderCard = {
   ACADEMY: "academy",
   AMPHITHEATRE: "amphitheatre",
@@ -283,11 +285,13 @@ OrderCard.properties = {
   jack1: {
     name: "Jack",
     ability: "Lead or follow any role",
+    image: `resource/{version}/bonusCard/JackQuill.png`,
     key: "jack1",
   },
   jack2: {
     name: "Jack",
     ability: "Lead or follow any role",
+    image: `resource/{version}/bonusCard/JackSword.png`,
     key: "jack2",
   },
   latrine: {
@@ -303,6 +307,7 @@ OrderCard.properties = {
   leader: {
     name: "Leader",
     ability: "LEAD a role from your hand or THINK and draw new cards",
+    image: `resource/{version}/bonusCard/Leader.png`,
     roleKey: Role.THINKER,
     key: "leader",
   },
@@ -499,7 +504,23 @@ R.forEach((cardKey) => {
   if (R.isNil(card.count)) {
     card.count = 3;
   }
+  if (R.isNil(card.image)) {
+    const name = card.name.replace(" ", "");
+    card.image = `resource/{version}/orderCard/${name}.png`;
+  }
 }, OrderCard.keys());
+
+OrderCard.image = (card, version = "v2.0", isFaceUp = true) => {
+  let answer;
+
+  if (OrderCard.keys().includes(card.key)) {
+    answer = isFaceUp
+      ? card.image.replace("{version}", version)
+      : CARD_BACK.replace("{version}", version);
+  }
+
+  return answer;
+};
 
 OrderCard.keysByVersion = (versionKey) =>
   R.map((c) => c.key, OrderCard.valuesByVersion(versionKey));

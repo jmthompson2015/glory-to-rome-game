@@ -52,6 +52,28 @@ SiteCard.keys = () => Object.keys(SiteCard.properties);
 
 SiteCard.values = () => Object.values(SiteCard.properties);
 
+R.forEach((cardKey) => {
+  const card = SiteCard.properties[cardKey];
+  if (R.isNil(card.count)) {
+    card.count = 6;
+  }
+  if (R.isNil(card.image)) {
+    card.image = `resource/{version}/siteCard/${card.name}_Site.png`;
+  }
+}, SiteCard.keys());
+
+SiteCard.image = (card, version = "v2.0", isFaceUp = true) => {
+  let answer;
+
+  if (SiteCard.keys().includes(card.key)) {
+    answer = isFaceUp
+      ? card.image.replace("{version}", version)
+      : card.image.replace("{version}", version).replace(".png", "Back.png");
+  }
+
+  return answer;
+};
+
 SiteCard.value = (key) => SiteCard.properties[key];
 
 Object.freeze(SiteCard);

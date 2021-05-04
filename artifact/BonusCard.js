@@ -1,3 +1,5 @@
+import IV from "../utility/InputValidator.js";
+
 import Material from "./Material.js";
 
 const BonusCard = {
@@ -64,6 +66,25 @@ BonusCard.properties = {
 BonusCard.keys = () => Object.keys(BonusCard.properties);
 
 BonusCard.values = () => Object.values(BonusCard.properties);
+
+R.forEach((cardKey) => {
+  const card = BonusCard.properties[cardKey];
+  if (R.isNil(card.image)) {
+    const name = card.name.replace(" (", "_").replace(")", "").replace(" ", "");
+    card.image = `resource/{version}/bonusCard/${name}.png`;
+  }
+}, BonusCard.keys());
+
+BonusCard.image = (card, version = "v2.0") => {
+  let answer;
+
+  if (BonusCard.keys().includes(card.key)) {
+    IV.validateNotNil("card", card);
+    answer = card.image.replace("{version}", version);
+  }
+
+  return answer;
+};
 
 BonusCard.value = (key) => BonusCard.properties[key];
 

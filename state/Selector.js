@@ -13,6 +13,8 @@ Selector.bonusCards = (cardIds, state) => {
   return R.map(mapFunction, cardIds);
 };
 
+Selector.bonusDeck = (state) => state.bonusDeck;
+
 Selector.cardPool = (state) => state.cardPool || [];
 
 Selector.currentPlayer = (state) =>
@@ -214,7 +216,7 @@ Selector.structureIds = (playerId, state) =>
   state.playerToStructures[playerId] || [];
 
 Selector.vaultCards = (playerId, state) =>
-  Selector.orderCards(Selector.handIds(playerId, state), state);
+  Selector.orderCards(Selector.vaultIds(playerId, state), state);
 
 Selector.vaultIds = (playerId, state) => state.playerToVault[playerId] || [];
 
