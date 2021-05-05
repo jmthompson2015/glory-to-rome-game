@@ -5,6 +5,7 @@ import Version from "../artifact/Version.js";
 import ActionCreator from "../state/ActionCreator.js";
 import BonusCardState from "../state/BonusCardState.js";
 import OrderCardState from "../state/OrderCardState.js";
+import Selector from "../state/Selector.js";
 
 import DeckBuilder from "./DeckBuilder.js";
 
@@ -67,6 +68,12 @@ Setup.dealPoolCards = (store, players) => {
 
   const leaderId = leaderIndex + 1;
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
+  const player = Selector.player(leaderId, store.getState());
+
+  if (!R.isNil(player)) {
+    const message = `First Leader is ${player.name}`;
+    store.dispatch(ActionCreator.setUserMessage(message));
+  }
 };
 
 Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {
@@ -104,6 +111,15 @@ Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {
 
   // Deal an order card into the pool for each player, and determine the leader.
   Setup.dealPoolCards(store, players);
+
+  // Give the Leader card to the first player.
+  store.dispatch(
+    ActionCreator.addToPlayerArray(
+      "playerToHand",
+      Selector.leaderId(store.getState()),
+      store.getState().leaderCardId
+    )
+  );
 };
 
 Object.freeze(Setup);

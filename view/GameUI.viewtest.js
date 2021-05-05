@@ -9,6 +9,7 @@ import GameUI from "./GameUI.js";
 import Endpoint from "./Endpoint.js";
 
 const store = Redux.createStore(Reducer.root);
+store.dispatch(ActionCreator.setVerbose(true));
 const players = TestData.createPlayers();
 Setup.execute(store, players);
 const cardId = R.head(Selector.orderDeck(store.getState()));

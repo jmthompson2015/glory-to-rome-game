@@ -166,10 +166,18 @@ QUnit.test("execute() Imperium", (assert) => {
 
   const hand1 = playerToHand[1];
   assert.ok(hand1, `hand1 = ${hand1}`);
-  assert.equal(hand1.length, 5);
+  assert.equal(
+    [5, 6].includes(hand1.length),
+    true,
+    `hand1.length = ${hand1.length}`
+  );
   const hand2 = playerToHand[2];
   assert.ok(hand2, `hand2 = ${hand2}`);
-  assert.equal(hand2.length, 5);
+  assert.equal(
+    [5, 6].includes(hand2.length),
+    true,
+    `hand2.length = ${hand2.length}`
+  );
 
   assert.equal(
     [1, 2].includes(currentPlayerId),
@@ -238,10 +246,18 @@ QUnit.test("execute() Republic", (assert) => {
 
   const hand1 = playerToHand[1];
   assert.ok(hand1, `hand1 = ${hand1}`);
-  assert.equal(hand1.length, 5);
+  assert.equal(
+    [5, 6].includes(hand1.length),
+    true,
+    `hand1.length = ${hand1.length}`
+  );
   const hand2 = playerToHand[2];
   assert.ok(hand2, `hand2 = ${hand2}`);
-  assert.equal(hand2.length, 5);
+  assert.equal(
+    [5, 6].includes(hand2.length),
+    true,
+    `hand2.length = ${hand2.length}`
+  );
 
   assert.equal(
     [1, 2].includes(currentPlayerId),

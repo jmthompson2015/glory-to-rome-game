@@ -643,6 +643,42 @@ QUnit.test("transferHandToCamp()", (assert) => {
   assert.equal(R.head(camp), cardId);
 });
 
+QUnit.test("transferHandToHand()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const fromPlayerId = 2;
+  const toPlayerId = 3;
+  const cardId = 1;
+  const cardKey = OrderCard.ACADEMY;
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
+  const state1 = Reducer.root(state0, action0);
+  const action1 = ActionCreator.addToPlayerArray(
+    "playerToHand",
+    fromPlayerId,
+    cardId
+  );
+  const state = Reducer.root(state1, action1);
+  const action = ActionCreator.transferHandToHand(
+    fromPlayerId,
+    cardId,
+    toPlayerId
+  );
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const fromHand = result.playerToHand[fromPlayerId];
+  assert.ok(fromHand);
+  assert.equal(fromHand.length, 0, `fromHand.length = ${fromHand.length}`);
+  const toHand = result.playerToHand[toPlayerId];
+  assert.ok(toHand);
+  assert.equal(toHand.length, 1, `toHand.length = ${toHand.length}`);
+  assert.equal(R.head(toHand), cardId);
+});
+
 QUnit.test("transferHandToStockpile()", (assert) => {
   // Setup.
   const state0 = AppState.create();

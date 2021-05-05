@@ -172,6 +172,13 @@ ActionCreator.transferHandToCamp = makeActionCreator(
   "cardId"
 );
 
+ActionCreator.transferHandToHand = makeActionCreator(
+  ActionType.TRANSFER_HAND_TO_HAND,
+  "fromPlayerId",
+  "cardId",
+  "toPlayerId"
+);
+
 ActionCreator.transferHandToStockpile = makeActionCreator(
   ActionType.TRANSFER_HAND_TO_STOCKPILE,
   "fromPlayerId",

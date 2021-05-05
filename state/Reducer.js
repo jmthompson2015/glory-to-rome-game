@@ -2,14 +2,20 @@
 
 import IV from "../utility/InputValidator.js";
 
+import OrderCard from "../artifact/OrderCard.js";
+
 import ActionType from "./ActionType.js";
 import AppState from "./AppState.js";
-import OrderCardState from "./OrderCardState.js";
 import Selector from "./Selector.js";
-import SiteCardState from "./SiteCardState.js";
 import StructureState from "./StructureState.js";
 
 const Reducer = {};
+
+const log = (message, state) => {
+  if (state.isVerbose) {
+    console.log(message);
+  }
+};
 
 const addToArray = (state, arrayName, playerId, cardId) => {
   const map = state[arrayName] || {};
@@ -20,10 +26,15 @@ const addToArray = (state, arrayName, playerId, cardId) => {
   return { ...state, [arrayName]: newPlayer2To };
 };
 
-const log = (message, state) => {
-  if (state.isVerbose) {
-    console.log(message);
-  }
+const addOrderCard = (state, cardState) => {
+  IV.validateNotNil("state", state);
+  IV.validateNotNil("cardState", cardState);
+  const cardId = cardState.id;
+  const newCards = { ...state.orderCardInstances, [cardId]: cardState };
+
+  return cardState.cardKey === OrderCard.LEADER
+    ? { ...state, leaderCardId: cardId, orderCardInstances: newCards }
+    : { ...state, orderCardInstances: newCards };
 };
 
 const layFoundation = (state, playerId, foundationId, siteId) => {
@@ -118,6 +129,23 @@ const transferCampToPool = (state, playerId, cardId) => {
     playerToCamp: newPlayerToCamp,
     cardPool: newPool,
   };
+};
+
+const transferHandToHand = (state, fromPlayerId, cardId, toPlayerId) => {
+  const oldFromHand = state.playerToHand[fromPlayerId] || [];
+  const newFromHand = R.without([cardId], oldFromHand);
+  IV.validateNotIncludesNil("newFromHand", newFromHand);
+
+  const oldToHand = state.playerToHand[toPlayerId] || [];
+  const newToHand = [...oldToHand, cardId];
+  IV.validateNotIncludesNil("newToHand", newToHand);
+  const newPlayerToHand = {
+    ...state.playerToHand,
+    [fromPlayerId]: newFromHand,
+    [toPlayerId]: newToHand,
+  };
+
+  return { ...state, playerToHand: newPlayerToHand };
 };
 
 const transferHandToStockpile = (state, fromPlayerId, cardId, toPlayerId) => {
@@ -288,11 +316,13 @@ Reducer.root = (state, action) => {
       ];
       return { ...state, gameRecords: newGameRecords };
     case ActionType.ADD_ORDER_CARD:
-      newCards = {
-        ...state.orderCardInstances,
-        [action.orderCardState.id]: action.orderCardState,
-      };
-      return { ...state, orderCardInstances: newCards };
+      log(
+        `Reducer ADD_ORDER_CARD orderCardState = ${JSON.stringify(
+          action.orderCardState
+        )}`,
+        state
+      );
+      return addOrderCard(state, action.orderCardState);
     case ActionType.ADD_POOL_CARD:
       newCards = [...state.cardPool, action.cardId];
       return { ...state, cardPool: newCards };
@@ -364,6 +394,12 @@ Reducer.root = (state, action) => {
       );
       return setOrderCardFaceup(state, action.cardId, action.isFaceup);
     case ActionType.SET_ORDER_DECK:
+      log(
+        `Reducer SET_ORDER_DECK orderDeck = ${JSON.stringify(
+          action.orderDeck
+        )}`,
+        state
+      );
       return { ...state, orderDeck: action.orderDeck };
     case ActionType.SET_OUT_OF_TOWN_SITE_DECK:
       log(
@@ -439,6 +475,18 @@ Reducer.root = (state, action) => {
         "playerToCamp",
         action.playerId,
         action.cardId
+      );
+    case ActionType.TRANSFER_HAND_TO_HAND:
+      log(
+        `Reducer TRANSFER_HAND_TO_HAND fromPlayerId = ${action.fromPlayerId} ` +
+          `cardId = ${action.cardId} toPlayerId = ${action.toPlayerId}`,
+        state
+      );
+      return transferHandToHand(
+        state,
+        action.fromPlayerId,
+        action.cardId,
+        action.toPlayerId
       );
     case ActionType.TRANSFER_HAND_TO_STOCKPILE:
       log(

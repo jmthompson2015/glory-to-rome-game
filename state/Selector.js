@@ -8,6 +8,8 @@ const Selector = {};
 Selector.bonusCard = (cardId, state) => state.bonusCardInstances[cardId];
 
 Selector.bonusCards = (cardIds, state) => {
+  IV.validateIsArray("cardIds", cardIds);
+  IV.validateNotNil("state", state);
   const mapFunction = (id) => state.bonusCardInstances[id];
 
   return R.map(mapFunction, cardIds);
@@ -29,6 +31,8 @@ Selector.delay = (state) => state.delay;
 Selector.gameRecords = (state) => state.gameRecords;
 
 Selector.isComputerPlayer = (playerId, state) => {
+  IV.validateNotNil("playerId", playerId);
+  IV.validateNotNil("state", state);
   const player = Selector.player(playerId, state);
 
   return player && player.isComputer;
@@ -37,6 +41,8 @@ Selector.isComputerPlayer = (playerId, state) => {
 Selector.isGameOver = (state) => state.isGameOver;
 
 Selector.isHumanPlayer = (playerId, state) => {
+  IV.validateNotNil("playerId", playerId);
+  IV.validateNotNil("state", state);
   const player = Selector.player(playerId, state);
 
   return player && !player.isComputer;
@@ -56,6 +62,8 @@ Selector.leaderCard = (state) => {
 
   return cards.length > 0 ? cards[0] : null;
 };
+
+Selector.leaderCardId = (state) => state.leaderCardId;
 
 Selector.leaderId = (state) => R.head(state.currentPlayerOrder);
 
@@ -90,6 +98,7 @@ Selector.playerStrategy = (playerId, state) => state.playerToStrategy[playerId];
 Selector.players = (state) => Object.values(state.playerInstances);
 
 Selector.playersInOrder = (state) => {
+  IV.validateNotNil("state", state);
   const { currentPlayerOrder, playerInstances } = state;
   const mapFunction = (id) => playerInstances[id];
 
@@ -144,6 +153,8 @@ Selector.structures = (structureIds, state) => {
 Selector.userMessage = (state) => state.userMessage;
 
 Selector.unfinishedStructureIds = (playerId, state) => {
+  IV.validateNotNil("playerId", playerId);
+  IV.validateNotNil("state", state);
   const filterFunction = (structureId) => {
     const structure = state.structureInstances[structureId];
     const { materialIds, siteId } = structure;
@@ -157,6 +168,9 @@ Selector.unfinishedStructureIds = (playerId, state) => {
 };
 
 Selector.unfinishedStructureIdsByMaterial = (playerId, materialKey, state) => {
+  IV.validateNotNil("playerId", playerId);
+  IV.validateNotNil("materialKey", materialKey);
+  IV.validateNotNil("state", state);
   const filterFunction = (structureId) => {
     const structure = state.structureInstances[structureId];
     const { siteId } = structure;

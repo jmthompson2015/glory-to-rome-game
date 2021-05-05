@@ -131,6 +131,14 @@ StepFunction[Step.CLEANUP] = (store) => {
   const currentPlayerOrder = Selector.currentPlayerOrder(store.getState());
   R.forEach(forEachFunction, currentPlayerOrder);
 
+  // Give the next player the Leader card.
+  const fromPlayerId = currentPlayerOrder[0];
+  const cardId = Selector.leaderCardId(store.getState());
+  const toPlayerId = currentPlayerOrder[1];
+  store.dispatch(
+    ActionCreator.transferHandToHand(fromPlayerId, cardId, toPlayerId)
+  );
+
   return Promise.resolve();
 };
 
