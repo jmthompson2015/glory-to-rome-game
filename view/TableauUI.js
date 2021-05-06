@@ -5,10 +5,17 @@ const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
 
 const createSlicing = (type) => ({ type, value: 0.2 });
 
-const createCell = (title, cardStates, resourceBase, width, slicing) => {
+const createCell = (
+  title,
+  cardStates,
+  playerId,
+  resourceBase,
+  width,
+  slicing
+) => {
   const element = React.createElement(CardsUI, {
-    key: `CardsUI${title}`,
     cardStates,
+    customKey: `CardsUI${title}-${playerId}`,
     resourceBase,
     slicing,
     width,
@@ -41,18 +48,32 @@ class TableauUI extends React.PureComponent {
       width,
     } = this.props;
 
-    const campCell = createCell("Camp", campCards, resourceBase, width);
+    const campCell = createCell(
+      "Camp",
+      campCards,
+      player.id,
+      resourceBase,
+      width
+    );
     const clienteleCell = createCell(
       "Clientele",
       clienteleCards,
+      player.id,
       resourceBase,
       width,
       createSlicing("left")
     );
-    const handCell = createCell("Hand", handCards, resourceBase, width);
+    const handCell = createCell(
+      "Hand",
+      handCards,
+      player.id,
+      resourceBase,
+      width
+    );
     const influenceCell = createCell(
       "Influence",
       influenceCards,
+      player.id,
       resourceBase,
       width,
       createSlicing("top")
@@ -60,6 +81,7 @@ class TableauUI extends React.PureComponent {
     const stockpileCell = createCell(
       "Stockpile",
       stockpileCards,
+      player.id,
       resourceBase,
       width,
       createSlicing("bottom")
@@ -67,12 +89,14 @@ class TableauUI extends React.PureComponent {
     const structureCell = createCell(
       "Structure",
       structures,
+      player.id,
       resourceBase,
       width
     );
     const vaultCell = createCell(
       "Vault",
       vaultCards,
+      player.id,
       resourceBase,
       width,
       createSlicing("right")
