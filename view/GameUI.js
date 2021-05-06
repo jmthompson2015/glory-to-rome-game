@@ -5,6 +5,7 @@ import CardsUI from "./CardsUI.js";
 import DeckUI from "./DeckUI.js";
 import DecksUI from "./DecksUI.js";
 import Endpoint from "./Endpoint.js";
+import StatusBarUI from "./StatusBarUI.js";
 import TableauUI from "./TableauUI.js";
 
 const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
@@ -135,35 +136,55 @@ const createTableau = (playerId, resourceBase, className, state) =>
     width: WIDTH,
   });
 
+const createCardArea = (resourceBase, state) => {
+  const reduceFunction = (accum, playerId) => {
+    const className = BACKGROUND[playerId - 1];
+    const tableau = createTableau(playerId, resourceBase, className, state);
+    return { ...accum, [playerId]: tableau };
+  };
+  const playerIds = Object.keys(state.playerInstances);
+  const playerToTableau = R.reduce(reduceFunction, {}, playerIds);
+
+  const orderDeckCell = createOrderDeckCell(state, resourceBase, WIDTH);
+  const jackDeckCell = createJackDeckCell(state, resourceBase, WIDTH);
+  const poolCell = createPoolCell(state, resourceBase, WIDTH);
+  const sitesCell = createSitesCell(state, resourceBase);
+  const ootSitesCell = createOutOfTownSitesCell(state, resourceBase);
+
+  const mapFunction = (playerId) =>
+    RU.createCell(playerToTableau[playerId], `tableauCell${playerId}`);
+  const cells0 = R.map(mapFunction, playerIds);
+  const cells = [
+    ...cells0,
+    orderDeckCell,
+    jackDeckCell,
+    poolCell,
+    sitesCell,
+    ootSitesCell,
+  ];
+
+  return RU.createFlexboxWrap(cells, "cardArea", "tc");
+};
+
+// /////////////////////////////////////////////////////////////////////////////
 class GameUI extends React.PureComponent {
   render() {
     const { resourceBase, state } = this.props;
 
-    const reduceFunction = (accum, playerId) => {
-      const className = BACKGROUND[playerId - 1];
-      const tableau = createTableau(playerId, resourceBase, className, state);
-      return { ...accum, [playerId]: tableau };
-    };
-    const playerIds = Object.keys(state.playerInstances);
-    const playerToTableau = R.reduce(reduceFunction, {}, playerIds);
-    const jackDeckCell = createJackDeckCell(state, resourceBase, WIDTH);
-    const orderDeckCell = createOrderDeckCell(state, resourceBase, WIDTH);
-    const poolCell = createPoolCell(state, resourceBase, WIDTH);
-    const sitesCell = createSitesCell(state, resourceBase);
-    const ootSitesCell = createOutOfTownSitesCell(state, resourceBase);
-    const mapFunction = (playerId) =>
-      RU.createCell(playerToTableau[playerId], `tableauCell${playerId}`);
-    const cells0 = R.map(mapFunction, playerIds);
-    const cells = [
-      ...cells0,
-      orderDeckCell,
-      jackDeckCell,
-      poolCell,
-      sitesCell,
-      ootSitesCell,
+    const player = Selector.currentPlayer(state);
+    const statusBar = React.createElement(StatusBarUI, {
+      round: Selector.currentRound(state),
+      playerName: player ? player.name : undefined,
+      userMessage: Selector.userMessage(state),
+    });
+    const cardArea = createCardArea(resourceBase, state);
+
+    const rows = [
+      RU.createRow(RU.createCell(statusBar), "statusBarRow"),
+      RU.createRow(RU.createCell(cardArea), "cardAreaRow"),
     ];
 
-    return RU.createFlexboxWrap(cells, "GameUI", "tc");
+    return RU.createTable(rows, "GameUI", "tc");
   }
 }
 
