@@ -86,7 +86,7 @@ const setCurrentPlayer = (state, currentPlayerId) => {
   return { ...state, currentPlayerId, currentPlayerOrder };
 };
 
-const setOrderCardFaceup = (state, cardId, isFaceup) => {
+const setOrderFaceup = (state, cardId, isFaceup) => {
   const oldCard = state.orderCardInstances[cardId];
   IV.validateNotNil("oldCard", oldCard);
   const newCard = { ...oldCard, isFaceup };
@@ -95,10 +95,28 @@ const setOrderCardFaceup = (state, cardId, isFaceup) => {
   return { ...state, orderCardInstances: newCardInstances };
 };
 
-const setSiteCardFaceup = (state, cardId, isFaceup) => {
+const setOrderHighlighted = (state, cardId, isHighlighted) => {
+  const oldCard = state.orderCardInstances[cardId];
+  IV.validateNotNil("oldCard", oldCard);
+  const newCard = { ...oldCard, isHighlighted };
+  const newCardInstances = { ...state.orderCardInstances, [cardId]: newCard };
+
+  return { ...state, orderCardInstances: newCardInstances };
+};
+
+const setSiteFaceup = (state, cardId, isFaceup) => {
   const oldCard = state.siteCardInstances[cardId];
   IV.validateNotNil("oldCard", oldCard);
   const newCard = { ...oldCard, isFaceup };
+  const newCardInstances = { ...state.siteCardInstances, [cardId]: newCard };
+
+  return { ...state, siteCardInstances: newCardInstances };
+};
+
+const setSiteHighlighted = (state, cardId, isHighlighted) => {
+  const oldCard = state.siteCardInstances[cardId];
+  IV.validateNotNil("oldCard", oldCard);
+  const newCard = { ...oldCard, isHighlighted };
   const newCardInstances = { ...state.siteCardInstances, [cardId]: newCard };
 
   return { ...state, siteCardInstances: newCardInstances };
@@ -387,12 +405,6 @@ Reducer.root = (state, action) => {
     case ActionType.SET_MCTS_ROOT:
       log(`Reducer SET_MCTS_ROOT mctsRoot = ${action.mctsRoot}`, state);
       return { ...state, mctsRoot: action.mctsRoot };
-    case ActionType.SET_ORDER_CARD_FACEUP:
-      log(
-        `Reducer SET_ORDER_CARD_FACEUP cardId = ${action.cardId} isFaceup ? ${action.isFaceup}`,
-        state
-      );
-      return setOrderCardFaceup(state, action.cardId, action.isFaceup);
     case ActionType.SET_ORDER_DECK:
       log(
         `Reducer SET_ORDER_DECK orderDeck = ${JSON.stringify(
@@ -401,6 +413,19 @@ Reducer.root = (state, action) => {
         state
       );
       return { ...state, orderDeck: action.orderDeck };
+    case ActionType.SET_ORDER_FACEUP:
+      log(
+        `Reducer SET_ORDER_FACEUP cardId = ${action.cardId} isFaceup ? ${action.isFaceup}`,
+        state
+      );
+      return setOrderFaceup(state, action.cardId, action.isFaceup);
+    case ActionType.SET_ORDER_HIGHLIGHTED:
+      log(
+        `Reducer SET_ORDER_HIGHLIGHTED cardId = ${action.cardId} isHighlighted ? ` +
+          `${action.isHighlighted}`,
+        state
+      );
+      return setOrderHighlighted(state, action.cardId, action.isHighlighted);
     case ActionType.SET_OUT_OF_TOWN_SITE_DECK:
       log(
         `Reducer SET_OUT_OF_TOWN_SITE_DECK siteDeck = ${action.siteDeck}`,
@@ -431,18 +456,25 @@ Reducer.root = (state, action) => {
     case ActionType.SET_ROUND:
       log(`Reducer SET_ROUND round = ${action.round}`, state);
       return { ...state, round: action.round };
-    case ActionType.SET_SITE_CARD_FACEUP:
-      log(
-        `Reducer SET_SITE_CARD_FACEUP cardId = ${action.cardId} isFaceup ? ${action.isFaceup}`,
-        state
-      );
-      return setSiteCardFaceup(state, action.cardId, action.isFaceup);
     case ActionType.SET_SITE_DECK:
       log(
         `Reducer SET_SITE_DECK siteDeck = ${JSON.stringify(action.siteDeck)}`,
         state
       );
       return { ...state, siteDeck: action.siteDeck };
+    case ActionType.SET_SITE_FACEUP:
+      log(
+        `Reducer SET_SITE_FACEUP cardId = ${action.cardId} isFaceup ? ${action.isFaceup}`,
+        state
+      );
+      return setSiteFaceup(state, action.cardId, action.isFaceup);
+    case ActionType.SET_SITE_HIGHLIGHTED:
+      log(
+        `Reducer SET_SITE_HIGHLIGHTED cardId = ${action.cardId} isHighlighted ? ` +
+          `${action.isHighlighted}`,
+        state
+      );
+      return setSiteHighlighted(state, action.cardId, action.isHighlighted);
     case ActionType.SET_USER_MESSAGE:
       log(
         `Reducer SET_USER_MESSAGE userMessage = ${action.userMessage}`,

@@ -13,7 +13,7 @@ store.dispatch(ActionCreator.setVerbose(true));
 const players = TestData.createPlayers();
 Setup.execute(store, players);
 const cardId = R.head(Selector.orderDeck(store.getState()));
-store.dispatch(ActionCreator.setOrderCardFaceup(cardId, false));
+store.dispatch(ActionCreator.setOrderFaceup(cardId, false));
 const state = store.getState();
 
 const element = React.createElement(GameUI, {

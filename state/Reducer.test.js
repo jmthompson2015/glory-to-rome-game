@@ -453,7 +453,7 @@ QUnit.test("setPlayerStrategy()", (assert) => {
   assert.equal(result.playerToStrategy[playerId], strategy);
 });
 
-QUnit.test("setOrderCardFaceup()", (assert) => {
+QUnit.test("setOrderFaceup()", (assert) => {
   // Setup.
   const state0 = AppState.create();
   const cardKey = OrderCard.ACADEMY;
@@ -465,7 +465,7 @@ QUnit.test("setOrderCardFaceup()", (assert) => {
   assert.equal(cardState.isFaceup, true);
   const action0 = ActionCreator.addOrderCard(cardState);
   const state = Reducer.root(state0, action0);
-  const action = ActionCreator.setOrderCardFaceup(cardId, false);
+  const action = ActionCreator.setOrderFaceup(cardId, false);
 
   // Run.
   const result = Reducer.root(state, action);
@@ -482,7 +482,36 @@ QUnit.test("setOrderCardFaceup()", (assert) => {
   assert.equal(card.isFaceup, false);
 });
 
-QUnit.test("setSiteCardFaceup()", (assert) => {
+QUnit.test("setOrderHighlighted()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const cardKey = OrderCard.ACADEMY;
+  const cardId = Selector.nextOrderCardId(state0);
+  const cardState = OrderCardState.create({
+    id: cardId,
+    cardKey,
+  });
+  assert.equal(cardState.isHighlighted, false);
+  const action0 = ActionCreator.addOrderCard(cardState);
+  const state = Reducer.root(state0, action0);
+  const action = ActionCreator.setOrderHighlighted(cardId, true);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const cards = Object.values(result.orderCardInstances);
+  assert.ok(cards);
+  assert.equal(cards.length, 1);
+  const card = R.head(cards);
+  assert.ok(card);
+  assert.equal(card.id, cardId);
+  assert.equal(card.cardKey, cardKey);
+  assert.equal(card.isHighlighted, true);
+});
+
+QUnit.test("setSiteFaceup()", (assert) => {
   // Setup.
   const state0 = AppState.create();
   const cardKey = SiteCard.BRICK;
@@ -494,7 +523,7 @@ QUnit.test("setSiteCardFaceup()", (assert) => {
   assert.equal(cardState.isFaceup, true);
   const action0 = ActionCreator.addSiteCard(cardState);
   const state = Reducer.root(state0, action0);
-  const action = ActionCreator.setSiteCardFaceup(cardId, false);
+  const action = ActionCreator.setSiteFaceup(cardId, false);
 
   // Run.
   const result = Reducer.root(state, action);
@@ -509,6 +538,35 @@ QUnit.test("setSiteCardFaceup()", (assert) => {
   assert.equal(card.id, cardId);
   assert.equal(card.cardKey, cardKey);
   assert.equal(card.isFaceup, false);
+});
+
+QUnit.test("setSiteHighlighted()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const cardKey = SiteCard.BRICK;
+  const cardId = Selector.nextSiteCardId(state0);
+  const cardState = SiteCardState.create({
+    id: cardId,
+    cardKey,
+  });
+  assert.equal(cardState.isHighlighted, false);
+  const action0 = ActionCreator.addSiteCard(cardState);
+  const state = Reducer.root(state0, action0);
+  const action = ActionCreator.setSiteHighlighted(cardId, true);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const cards = Object.values(result.siteCardInstances);
+  assert.ok(cards);
+  assert.equal(cards.length, 1);
+  const card = R.head(cards);
+  assert.ok(card);
+  assert.equal(card.id, cardId);
+  assert.equal(card.cardKey, cardKey);
+  assert.equal(card.isHighlighted, true);
 });
 
 QUnit.test("setSiteDeck()", (assert) => {

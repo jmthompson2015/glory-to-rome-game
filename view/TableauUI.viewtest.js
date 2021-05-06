@@ -23,9 +23,9 @@ store.dispatch(
 );
 
 store.dispatch(ActionCreator.addToPlayerArray("playerToVault", playerId, 50));
-store.dispatch(ActionCreator.setOrderCardFaceup(50, false));
+store.dispatch(ActionCreator.setOrderFaceup(50, false));
 store.dispatch(ActionCreator.addToPlayerArray("playerToVault", playerId, 53));
-store.dispatch(ActionCreator.setOrderCardFaceup(53, false));
+store.dispatch(ActionCreator.setOrderFaceup(53, false));
 
 store.dispatch(
   ActionCreator.addToPlayerArray("playerToStockpile", playerId, 56)

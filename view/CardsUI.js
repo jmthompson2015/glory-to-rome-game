@@ -1,16 +1,27 @@
-import CardImage from "./CardImage.js";
+import CardUI from "./CardUI.js";
 import Endpoint from "./Endpoint.js";
 
 const { ReactUtilities: RU } = ReactComponent;
 
+const createIdSuffix = (card) =>
+  `${card.id}-${card.cardKey}-${card.isFaceup}-${card.isHighlighted}`;
+
 class CardsUI extends React.PureComponent {
+  createId(cardState) {
+    const { customKey } = this.props;
+
+    return `${customKey}-${createIdSuffix(cardState)}`;
+  }
+
   render() {
-    const { cardStates, resourceBase, slicing, width } = this.props;
+    const { cardStates, onClick, resourceBase, slicing, width } = this.props;
 
     const mapFunction = (cardState) => {
-      const element = React.createElement(CardImage, {
-        key: `CardImage${cardState.id}`,
+      const customKey = this.createId(cardState);
+      const element = React.createElement(CardUI, {
         cardState,
+        customKey,
+        onClick,
         resourceBase,
         slicing,
         width,
@@ -18,7 +29,7 @@ class CardsUI extends React.PureComponent {
 
       return RU.createCell(
         element,
-        `cardCell${cardState.id}`,
+        `cardCell-${createIdSuffix(cardState)}`,
         "alignTop ph1 v-top"
       );
     };
@@ -33,12 +44,16 @@ class CardsUI extends React.PureComponent {
 CardsUI.propTypes = {
   cardStates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
+  customKey: PropTypes.string,
+  onClick: PropTypes.func,
   resourceBase: PropTypes.string,
   slicing: PropTypes.shape(),
   width: PropTypes.number,
 };
 
 CardsUI.defaultProps = {
+  customKey: "CardsUI",
+  onClick: () => {},
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: undefined,
   width: 200,

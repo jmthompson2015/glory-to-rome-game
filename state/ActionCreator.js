@@ -108,15 +108,21 @@ ActionCreator.setMctsRoot = makeActionCreator(
   "mctsRoot"
 );
 
-ActionCreator.setOrderCardFaceup = makeActionCreator(
-  ActionType.SET_ORDER_CARD_FACEUP,
+ActionCreator.setOrderDeck = makeActionCreator(
+  ActionType.SET_ORDER_DECK,
+  "orderDeck"
+);
+
+ActionCreator.setOrderFaceup = makeActionCreator(
+  ActionType.SET_ORDER_FACEUP,
   "cardId",
   "isFaceup"
 );
 
-ActionCreator.setOrderDeck = makeActionCreator(
-  ActionType.SET_ORDER_DECK,
-  "orderDeck"
+ActionCreator.setOrderHighlighted = makeActionCreator(
+  ActionType.SET_ORDER_HIGHLIGHTED,
+  "cardId",
+  "isHighlighted"
 );
 
 ActionCreator.setOutOfTownSiteDeck = makeActionCreator(
@@ -132,15 +138,21 @@ ActionCreator.setPlayerStrategy = makeActionCreator(
   "strategy"
 );
 
-ActionCreator.setSiteCardFaceup = makeActionCreator(
-  ActionType.SET_SITE_CARD_FACEUP,
+ActionCreator.setSiteDeck = makeActionCreator(
+  ActionType.SET_SITE_DECK,
+  "siteDeck"
+);
+
+ActionCreator.setSiteFaceup = makeActionCreator(
+  ActionType.SET_SITE_FACEUP,
   "cardId",
   "isFaceup"
 );
 
-ActionCreator.setSiteDeck = makeActionCreator(
-  ActionType.SET_SITE_DECK,
-  "siteDeck"
+ActionCreator.setSiteHighlighted = makeActionCreator(
+  ActionType.SET_SITE_HIGHLIGHTED,
+  "cardId",
+  "isHighlighted"
 );
 
 ActionCreator.setUserMessage = makeActionCreator(

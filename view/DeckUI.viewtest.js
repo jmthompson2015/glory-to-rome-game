@@ -12,7 +12,7 @@ const store = Redux.createStore(Reducer.root);
 const players = TestData.createPlayers();
 Setup.execute(store, players);
 const cardId = R.head(Selector.orderDeck(store.getState()));
-store.dispatch(ActionCreator.setOrderCardFaceup(cardId, false));
+store.dispatch(ActionCreator.setOrderFaceup(cardId, false));
 const state = store.getState();
 
 const deck = Selector.orderCards(Selector.orderDeck(state), state);
