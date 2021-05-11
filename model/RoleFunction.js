@@ -1,176 +1,69 @@
-/* eslint no-console: ["error", { allow: ["error","log"] }] */
+/* eslint no-console: ["error", { allow: ["error","info"] }] */
 
 import IV from "../utility/InputValidator.js";
 
-import Material from "../artifact/Material.js";
 import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
 
-import StrategyResolver from "./StrategyResolver.js";
+import MG from "./MoveGenerator.js";
+import SR from "./StrategyResolver.js";
 
 const modulo = (a, n) => ((a % n) + n) % n;
 
-const computeShortfall = (playerId, state) => {
-  const handIds = Selector.handIds(playerId, state);
-  const refillLimit = Selector.refillLimit(playerId, state);
-
-  return refillLimit - handIds.length;
-};
-
-const determineArchitectOptions = (playerId, state) => {
-  let answer = [];
-  const { options } = Role.value(Role.ARCHITECT);
-
-  const handCards = Selector.handCards(playerId, state);
-  const stockpileCards = Selector.stockpileCards(playerId, state);
-  const structureIds = Selector.unfinishedStructureIds(playerId, state);
-
-  if (handCards.length > 0) {
-    const reduceFunction = (accum, orderCard) => {
-      const { materialKey } = orderCard.cardType;
-      const siteIds = Selector.siteIdsByMaterial(materialKey, state);
-
-      if (siteIds.length > 0) {
-        const siteCard = Selector.siteCard(R.head(siteIds), state);
-        accum.push({
-          type: options.LAY_FOUNDATION,
-          foundationId: orderCard.id,
-          siteId: siteCard.id,
-        });
-      }
-      return accum;
-    };
-    answer = R.reduce(reduceFunction, [], handCards);
-  }
-
-  if (stockpileCards.length > 0 && structureIds.length > 0) {
-    const reduceFunction = (accum, stockpileCard) => {
-      const { materialKey } = stockpileCard.cardType;
-      const structureIds2 = Selector.unfinishedStructureIdsByMaterial(
-        playerId,
-        materialKey,
-        state
-      );
-      const forEachFunction = (structureId) => {
-        accum.push({
-          type: options.BUILD_STRUCTURE,
-          cardId: stockpileCard.id,
-          structureId,
-        });
-      };
-      R.forEach(forEachFunction, structureIds2);
-      return accum;
-    };
-    const newOptions = R.reduce(reduceFunction, [], stockpileCards);
-    answer = R.concat(answer, newOptions);
-  }
-
-  return answer;
-};
-
-const determineCraftsmanOptions = (playerId, state) => {
-  let answer = [];
-  const { options } = Role.value(Role.CRAFTSMAN);
-
-  const handCards = Selector.handCards(playerId, state);
-  const structureIds = Selector.unfinishedStructureIds(playerId, state);
-
-  if (handCards.length > 0) {
-    const reduceFunction = (accum, orderCard) => {
-      const { materialKey } = orderCard.cardType;
-      const siteIds = Selector.siteIdsByMaterial(materialKey, state);
-
-      if (siteIds.length > 0) {
-        const siteCard = Selector.siteCard(R.head(siteIds), state);
-        accum.push({
-          type: options.LAY_FOUNDATION,
-          foundationId: orderCard.id,
-          siteId: siteCard.id,
-        });
-      }
-      return accum;
-    };
-    answer = R.reduce(reduceFunction, [], handCards);
-  }
-
-  if (handCards.length > 0 && structureIds.length > 0) {
-    const reduceFunction = (accum, orderCard) => {
-      const { materialKey } = orderCard.cardType;
-      const structureIds2 = Selector.unfinishedStructureIdsByMaterial(
-        playerId,
-        materialKey,
-        state
-      );
-      const forEachFunction = (structureId) => {
-        accum.push({
-          type: options.BUILD_STRUCTURE,
-          cardId: orderCard.id,
-          structureId,
-        });
-      };
-      R.forEach(forEachFunction, structureIds2);
-      return accum;
-    };
-    const newOptions = R.reduce(reduceFunction, [], handCards);
-    answer = R.concat(answer, newOptions);
-  }
-
-  return answer;
-};
-
-const determineThinkerOptions = (playerId, state) => {
-  const answer = [];
-  const { options } = Role.value(Role.THINKER);
-
-  if (state.jackDeck.length > 0) {
-    answer.push(options.DRAW_JACK);
-  }
-
-  const shortfall = computeShortfall(playerId, state);
-  answer.push(shortfall > 0 ? options.REFILL_HAND : options.DRAW_CARD);
-
-  return answer;
-};
-
-const performArchitectOption = (playerId, store) => (architectProps) => {
+const performArchitectOption = (playerId, store) => (moveState) => {
   IV.validateNotNil("playerId", playerId);
   IV.validateNotNil("store", store);
-  IV.validateNotNil("architectProps", architectProps);
-  const { type } = architectProps;
+  IV.validateNotNil("moveState", moveState);
+  const { moveKey } = moveState;
   const { options } = Role.value(Role.ARCHITECT);
 
-  if (type === options.LAY_FOUNDATION) {
-    const { foundationId, siteId } = architectProps;
-    store.dispatch(ActionCreator.layFoundation(playerId, foundationId, siteId));
-  } else if (type === options.BUILD_STRUCTURE) {
-    const { cardId, structureId } = architectProps;
+  if (moveKey === options.LAY_FOUNDATION) {
+    const { cardId, materialKey } = moveState;
+    const siteIds = Selector.siteIdsByMaterial(materialKey, store.getState());
+    const siteId = R.head(siteIds);
+    IV.validateNotNil("cardId", cardId);
+    IV.validateNotNil("siteId", siteId);
+    store.dispatch(ActionCreator.layFoundation(playerId, cardId, siteId));
+  } else if (moveKey === options.BUILD_STRUCTURE) {
+    const { cardId, structureId } = moveState;
+    IV.validateNotNil("cardId", cardId);
+    IV.validateNotNil("structureId", structureId);
     store.dispatch(
       ActionCreator.transferHandToStructure(playerId, cardId, structureId)
     );
   }
 };
 
-const performCraftsmanOption = (playerId, store) => (craftsmanProps) => {
+const performCraftsmanOption = (playerId, store) => (moveState) => {
   IV.validateNotNil("playerId", playerId);
   IV.validateNotNil("store", store);
-  IV.validateNotNil("craftsmanProps", craftsmanProps);
-  const { type } = craftsmanProps;
+  IV.validateNotNil("moveState", moveState);
+  const { moveKey } = moveState;
   const { options } = Role.value(Role.CRAFTSMAN);
 
-  if (type === options.LAY_FOUNDATION) {
-    const { foundationId, siteId } = craftsmanProps;
-    store.dispatch(ActionCreator.layFoundation(playerId, foundationId, siteId));
-  } else if (type === options.BUILD_STRUCTURE) {
-    const { cardId, structureId } = craftsmanProps;
+  if (moveKey === options.LAY_FOUNDATION) {
+    const { cardId, materialKey } = moveState;
+    const siteId = R.head(
+      Selector.siteIdsByMaterial(materialKey, store.getState())
+    );
+    IV.validateNotNil("cardId", cardId);
+    IV.validateNotNil("siteId", siteId);
+    store.dispatch(ActionCreator.layFoundation(playerId, cardId, siteId));
+  } else if (moveKey === options.BUILD_STRUCTURE) {
+    const { cardId, structureId } = moveState;
+    IV.validateNotNil("cardId", cardId);
+    IV.validateNotNil("structureId", structureId);
     store.dispatch(
       ActionCreator.transferHandToStructure(playerId, cardId, structureId)
     );
   }
 };
 
-const performLaborerOption = (playerId, store) => (cardId) => {
+const performLaborerOption = (playerId, store) => (moveState) => {
+  IV.validateNotNil("moveState", moveState);
+  const { cardId } = moveState;
   IV.validateNotNil("cardId", cardId);
   const player = Selector.player(playerId, store.getState());
   const card = Selector.orderCard(cardId, store.getState());
@@ -180,8 +73,11 @@ const performLaborerOption = (playerId, store) => (cardId) => {
   store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
 };
 
-const performLegionaryOption = (playerId, store) => (materialKey) => {
-  IV.validateNotNil("materialKey", materialKey);
+const performLegionaryOption = (playerId, store) => (moveState) => {
+  IV.validateNotNil("moveState", moveState);
+  const { cardId } = moveState;
+  IV.validateNotNil("cardId", cardId);
+  const { materialKey } = Selector.orderCard(cardId, store.getState()).cardType;
   const player = Selector.player(playerId, store.getState());
   const userMessage = `${player.name} demands ${materialKey}.`;
   store.dispatch(ActionCreator.setUserMessage(userMessage));
@@ -234,17 +130,26 @@ const performLegionaryOption = (playerId, store) => (materialKey) => {
   }
 };
 
-const performMerchantOption = (playerId, store) => (cardId) => {
-  IV.validateNotNil("cardId", cardId);
+const performMerchantOption = (playerId, store) => (moveState) => {
+  IV.validateNotNil("moveState", moveState);
+  const { cardId, materialKey } = moveState;
   const player = Selector.player(playerId, store.getState());
-  const card = Selector.orderCard(cardId, store.getState());
-  const { materialKey } = card.cardType;
-  const userMessage = `${player.name} chose to sell ${materialKey}.`;
-  store.dispatch(ActionCreator.setUserMessage(userMessage));
-  store.dispatch(ActionCreator.transferStockpileToVault(playerId, cardId));
+
+  if (cardId) {
+    IV.validateNotNil("cardId", cardId);
+    const message = `${player.name} chose to sell ${materialKey}.`;
+    store.dispatch(ActionCreator.setUserMessage(message));
+    store.dispatch(ActionCreator.transferStockpileToVault(playerId, cardId));
+  } else {
+    const message = `${player.name} can't play Merchant.`;
+    console.error(`cardId = ${cardId} message = ${message}`);
+    store.dispatch(ActionCreator.setUserMessage(message));
+  }
 };
 
-const performPatronOption = (playerId, store) => (cardId) => {
+const performPatronOption = (playerId, store) => (moveState) => {
+  IV.validateNotNil("moveState", moveState);
+  const { cardId } = moveState;
   IV.validateNotNil("cardId", cardId);
   const player = Selector.player(playerId, store.getState());
   const card = Selector.orderCard(cardId, store.getState());
@@ -261,18 +166,22 @@ const performThinkerOption = (playerId, store) => (thinkerOption) => {
   const { options } = Role.value(Role.THINKER);
   const userMessage = `${player.name} chose to ${thinkerOption}.`;
   store.dispatch(ActionCreator.setUserMessage(userMessage));
-  const shortfall = computeShortfall(playerId, store.getState());
+  const shortfall = Selector.handShortfall(playerId, store.getState());
 
   switch (thinkerOption) {
     case options.DRAW_JACK:
-      store.dispatch(ActionCreator.transferJackToHand(playerId));
+      if (!R.isEmpty(store.getState().jackDeck)) {
+        store.dispatch(ActionCreator.transferJackToHand(playerId));
+      }
       break;
     case options.REFILL_HAND:
       for (let i = 0; i < shortfall; i += 1) {
+        IV.validateNotEmpty("orderDeck", store.getState().orderDeck);
         store.dispatch(ActionCreator.transferOrderToHand(playerId));
       }
       break;
     case options.DRAW_CARD:
+      IV.validateNotEmpty("orderDeck", store.getState().orderDeck);
       store.dispatch(ActionCreator.transferOrderToHand(playerId));
       break;
     default:
@@ -287,24 +196,20 @@ const RoleFunction = {
       // Lay a foundation: Place a card from Hand and a Site card to Structure.
       // Add Material: Take a card from Stockpile and place it under the Structure.
       // Possibly also complete a Structure: Move Site from Structure to Influence.
-      console.log(`RoleFunction ARCHITECT execute()`);
-      const options = determineArchitectOptions(playerId, store.getState());
-      const player = Selector.player(playerId, store.getState());
-      const strategy = StrategyResolver.resolve(player.strategy);
-      const delay = Selector.delay(store.getState());
-      return strategy
-        .chooseArchitectOption(options, store.getState(), delay)
-        .then(performArchitectOption(playerId, store))
-        .catch((error) => {
-          console.error(error.message);
-          throw error;
-        });
-    },
-    isLegal: (/* state */) => {
-      console.log(`RoleFunction ARCHITECT isLegal()`);
-    },
-    label: (/* state */) => {
-      console.log(`RoleFunction ARCHITECT label()`);
+      console.info(`RoleFunction ARCHITECT execute()`);
+      const options = MG.generateArchitectOptions(playerId, store.getState());
+      let answer = Promise.resolve();
+
+      if (!R.isEmpty(options)) {
+        const player = Selector.player(playerId, store.getState());
+        const strategy = SR.resolve(player.strategy);
+        const delay = Selector.delay(store.getState());
+        answer = strategy
+          .chooseArchitectOption(options, store.getState(), delay)
+          .then(performArchitectOption(playerId, store));
+      }
+
+      return answer;
     },
   },
   [Role.CRAFTSMAN]: {
@@ -312,122 +217,96 @@ const RoleFunction = {
       // Lay a foundation: Place a card from Hand and a Site card to Structure.
       // Add Material: Take a card from Hand and place it under the Structure.
       // Possibly also complete a Structure: Move Site from Structure to Influence.
-      console.log(`RoleFunction CRAFTSMAN execute()`);
-      const options = determineCraftsmanOptions(playerId, store.getState());
-      const player = Selector.player(playerId, store.getState());
-      const strategy = StrategyResolver.resolve(player.strategy);
-      const delay = Selector.delay(store.getState());
-      return strategy
-        .chooseCraftsmanOption(options, store.getState(), delay)
-        .then(performCraftsmanOption(playerId, store))
-        .catch((error) => {
-          console.error(error.message);
-          throw error;
-        });
-    },
-    isLegal: (/* state */) => {
-      console.log(`RoleFunction CRAFTSMAN isLegal()`);
-    },
-    label: (/* state */) => {
-      console.log(`RoleFunction CRAFTSMAN label()`);
+      console.info(`RoleFunction CRAFTSMAN execute()`);
+      const options = MG.generateCraftsmanOptions(playerId, store.getState());
+      let answer = Promise.resolve();
+
+      if (!R.isEmpty(options)) {
+        const player = Selector.player(playerId, store.getState());
+        const strategy = SR.resolve(player.strategy);
+        const delay = Selector.delay(store.getState());
+        answer = strategy
+          .chooseCraftsmanOption(options, store.getState(), delay)
+          .then(performCraftsmanOption(playerId, store));
+      }
+
+      return answer;
     },
   },
   [Role.LABORER]: {
     execute: (playerId, store) => {
       // Take a card from Pool and place it in Stockpile.
-      console.log(`RoleFunction LABORER execute()`);
-      const options = Selector.cardPool(store.getState());
-      const player = Selector.player(playerId, store.getState());
-      const strategy = StrategyResolver.resolve(player.strategy);
-      const delay = Selector.delay(store.getState());
-      return strategy
-        .chooseLaborerOption(options, store.getState(), delay)
-        .then(performLaborerOption(playerId, store))
-        .catch((error) => {
-          console.error(error.message);
-          throw error;
-        });
-    },
-    isLegal: (playerId, state) => {
-      console.log(`RoleFunction LABORER isLegal()`);
-      const cardPool = Selector.cardPool(state);
-      return cardPool.length > 0;
-    },
-    label: (/* state */) => {
-      console.log(`RoleFunction LABORER label()`);
+      console.info(`RoleFunction LABORER execute()`);
+      const options = MG.generateLaborerOptions(playerId, store.getState());
+      let answer = Promise.resolve();
+
+      if (!R.isEmpty(options)) {
+        const player = Selector.player(playerId, store.getState());
+        const strategy = SR.resolve(player.strategy);
+        const delay = Selector.delay(store.getState());
+        answer = strategy
+          .chooseLaborerOption(options, store.getState(), delay)
+          .then(performLaborerOption(playerId, store));
+      }
+
+      return answer;
     },
   },
   [Role.LEGIONARY]: {
     execute: (playerId, store) => {
       // Demand materials: Take one from Pool, one from each neighbor and place in Stockpile.
-      console.log(`RoleFunction LEGIONARY execute()`);
-      const options = Material.keys();
-      const player = Selector.player(playerId, store.getState());
-      const strategy = StrategyResolver.resolve(player.strategy);
-      const delay = Selector.delay(store.getState());
-      return strategy
-        .chooseLegionaryOption(options, store.getState(), delay)
-        .then(performLegionaryOption(playerId, store))
-        .catch((error) => {
-          console.error(error.message);
-          throw error;
-        });
-    },
-    isLegal: (/* state */) => {
-      console.log(`RoleFunction LEGIONARY isLegal()`);
-    },
-    label: (/* state */) => {
-      console.log(`RoleFunction LEGIONARY label()`);
+      console.info(`RoleFunction LEGIONARY execute()`);
+      const options = MG.generateLegionaryOptions(playerId, store.getState());
+      let answer = Promise.resolve();
+
+      if (!R.isEmpty(options)) {
+        const player = Selector.player(playerId, store.getState());
+        const strategy = SR.resolve(player.strategy);
+        const delay = Selector.delay(store.getState());
+        answer = strategy
+          .chooseLegionaryOption(options, store.getState(), delay)
+          .then(performLegionaryOption(playerId, store));
+      }
+
+      return answer;
     },
   },
   [Role.MERCHANT]: {
     execute: (playerId, store) => {
       // Take one material from Stockpile and place face-down in Vault.
-      console.log(`RoleFunction MERCHANT execute()`);
-      const options = Selector.stockpileIds(playerId, store.getState());
-      const player = Selector.player(playerId, store.getState());
-      const strategy = StrategyResolver.resolve(player.strategy);
-      const delay = Selector.delay(store.getState());
-      return strategy
-        .chooseMerchantOption(options, store.getState(), delay)
-        .then(performMerchantOption(playerId, store))
-        .catch((error) => {
-          console.error(error.message);
-          throw error;
-        });
-    },
-    isLegal: (playerId, state) => {
-      console.log(`RoleFunction MERCHANT isLegal()`);
-      const stockpileIds = Selector.stockpileIds(playerId, state);
-      return stockpileIds.length > 0;
-    },
-    label: (/* state */) => {
-      console.log(`RoleFunction MERCHANT label()`);
+      console.info(`RoleFunction MERCHANT execute()`);
+      const options = MG.generateMerchantOptions(playerId, store.getState());
+      let answer = Promise.resolve();
+
+      if (!R.isEmpty(options)) {
+        const player = Selector.player(playerId, store.getState());
+        const strategy = SR.resolve(player.strategy);
+        const delay = Selector.delay(store.getState());
+        answer = strategy
+          .chooseMerchantOption(options, store.getState(), delay)
+          .then(performMerchantOption(playerId, store));
+      }
+
+      return answer;
     },
   },
   [Role.PATRON]: {
     execute: (playerId, store) => {
       // Take a card from the Pool and place it in Clientele.
-      console.log(`RoleFunction PATRON execute()`);
-      const options = Selector.cardPool(store.getState());
-      const player = Selector.player(playerId, store.getState());
-      const strategy = StrategyResolver.resolve(player.strategy);
-      const delay = Selector.delay(store.getState());
-      return strategy
-        .choosePatronOption(options, store.getState(), delay)
-        .then(performPatronOption(playerId, store))
-        .catch((error) => {
-          console.error(error.message);
-          throw error;
-        });
-    },
-    isLegal: (playerId, state) => {
-      console.log(`RoleFunction PATRON isLegal()`);
-      const cardPool = Selector.cardPool(state);
-      return cardPool.length > 0;
-    },
-    label: (/* state */) => {
-      console.log(`RoleFunction PATRON label()`);
+      console.info(`RoleFunction PATRON execute()`);
+      const options = MG.generatePatronOptions(playerId, store.getState());
+      let answer = Promise.resolve();
+
+      if (!R.isEmpty(options)) {
+        const player = Selector.player(playerId, store.getState());
+        const strategy = SR.resolve(player.strategy);
+        const delay = Selector.delay(store.getState());
+        answer = strategy
+          .choosePatronOption(options, store.getState(), delay)
+          .then(performPatronOption(playerId, store));
+      }
+
+      return answer;
     },
   },
   [Role.THINKER]: {
@@ -437,27 +316,26 @@ const RoleFunction = {
       // Draw as many Order cards from the draw pile as you need to fill to your hand
       // refill size (normally five).
       // Draw one additional Order card (if you are at or above your hand refill size).
-      console.log(`RoleFunction THINKER execute()`);
-      const options = determineThinkerOptions(playerId, store.getState());
+      console.info(`RoleFunction THINKER execute()`);
+      const options = MG.generateThinkerOptions(playerId, store.getState());
       const player = Selector.player(playerId, store.getState());
-      const strategy = StrategyResolver.resolve(player.strategy);
+      const strategy = SR.resolve(player.strategy);
       const delay = Selector.delay(store.getState());
       return strategy
         .chooseThinkerOption(options, store.getState(), delay)
-        .then(performThinkerOption(playerId, store))
-        .catch((error) => {
-          console.error(error.message);
-          throw error;
-        });
-    },
-    isLegal: (/* state */) => {
-      console.log(`RoleFunction THINKER isLegal()`);
-      return true;
-    },
-    label: (/* state */) => {
-      console.log(`RoleFunction THINKER label()`);
+        .then(performThinkerOption(playerId, store));
     },
   },
+};
+
+RoleFunction.execute = (roleKey, playerId, store) => {
+  IV.validateNotNil("roleKey", roleKey);
+  IV.validateNotNil("playerId", playerId);
+  IV.validateNotNil("store", store);
+  const roleFunction = RoleFunction[roleKey];
+  IV.validateNotNil("roleFunction", roleFunction);
+
+  return roleFunction.execute(playerId, store);
 };
 
 Object.freeze(RoleFunction);

@@ -19,12 +19,28 @@ Selector.bonusDeck = (state) => state.bonusDeck;
 
 Selector.cardPool = (state) => state.cardPool || [];
 
+Selector.computeInfluence = (playerId, state) => {
+  const reduceFunction = (accum, id) => {
+    const card = Selector.orderCard(id, state);
+    return accum + card.materialValue;
+  };
+  const influenceIds = Selector.influenceIds(playerId, state);
+
+  return R.reduce(reduceFunction, 2, influenceIds);
+};
+
 Selector.currentPlayer = (state) =>
   Selector.player(state.currentPlayerId, state);
+
+Selector.currentPlayerId = (state) => state.currentPlayerId;
+
+Selector.currentPhaseKey = (state) => state.currentPhaseKey;
 
 Selector.currentPlayerOrder = (state) => state.currentPlayerOrder;
 
 Selector.currentRound = (state) => state.currentRound;
+
+Selector.currentStepKey = (state) => state.currentStepKey;
 
 Selector.delay = (state) => state.delay;
 
@@ -107,6 +123,13 @@ Selector.playersInOrder = (state) => {
 
 Selector.refillLimit = (/* playerId, state */) => 5;
 
+Selector.handShortfall = (playerId, state) => {
+  const handIds = Selector.handIds(playerId, state);
+  const refillLimit = Selector.refillLimit(playerId, state);
+
+  return refillLimit - handIds.length;
+};
+
 Selector.siteCard = (cardId, state) => {
   IV.validateNotNil("cardId", cardId);
   IV.validateNotNil("state", state);
@@ -181,6 +204,8 @@ Selector.unfinishedStructureIdsByMaterial = (playerId, materialKey, state) => {
 
   return R.filter(filterFunction, structureIds);
 };
+
+Selector.winner = (state) => Selector.player(state.winnerId, state);
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 const nextId = (instanceMap) => {

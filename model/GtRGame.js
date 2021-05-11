@@ -1,3 +1,5 @@
+/* eslint no-console: ["error", { allow: ["error","info"] }] */
+
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
 
@@ -22,7 +24,13 @@ GtRGame.execute = (store) => {
   };
 
   // Run.
-  return RoundRunner.execute(props, store, engine);
+  return RoundRunner.execute(props, store, engine)
+    .then(() => {
+      console.info("Game ends.");
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
 };
 
 Object.freeze(GtRGame);

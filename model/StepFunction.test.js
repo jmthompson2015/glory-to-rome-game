@@ -66,10 +66,10 @@ QUnit.test("declare role", (assert) => {
     assert.ok(true, "test resumed from async operation");
     // Verify.
     const camp = store.getState().playerToCamp[leaderId] || [];
-    assert.ok(camp);
+    assert.ok(camp, `camp = ${JSON.stringify(camp)}`);
     if (camp.length > 0) {
-      assert.equal(camp.length, 1);
-      assert.equal([1, 4].includes(R.head(camp)), true);
+      assert.equal(camp.length, 1, `camp.length = ${camp.length}`);
+      assert.equal([2, 3, 4, 5, 6].includes(R.head(camp)), true);
     }
     done();
   };

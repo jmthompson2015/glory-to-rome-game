@@ -101,6 +101,18 @@ QUnit.test("clienteleIds()", (assert) => {
   assert.equal(result.length, 0);
 });
 
+QUnit.test("computeInfluence()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const playerId = 3;
+
+  // Run / Verify.
+  const result = Selector.computeInfluence(playerId, state);
+
+  // Run / Verify.
+  assert.equal(result, 2);
+});
+
 QUnit.test("delay()", (assert) => {
   // Setup.
   const state = AppState.create();
