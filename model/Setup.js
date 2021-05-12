@@ -67,6 +67,7 @@ Setup.dealPoolCards = (store, players) => {
   );
 
   const leaderId = leaderIndex + 1;
+  store.dispatch(ActionCreator.setLeader(leaderId));
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
   const player = Selector.player(leaderId, store.getState());
 

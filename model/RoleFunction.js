@@ -1,4 +1,4 @@
-/* eslint no-console: ["error", { allow: ["error","info"] }] */
+/* eslint no-console: ["error", { allow: ["error","log"] }] */
 
 import IV from "../utility/InputValidator.js";
 
@@ -196,7 +196,9 @@ const RoleFunction = {
       // Lay a foundation: Place a card from Hand and a Site card to Structure.
       // Add Material: Take a card from Stockpile and place it under the Structure.
       // Possibly also complete a Structure: Move Site from Structure to Influence.
-      console.info(`RoleFunction ARCHITECT execute()`);
+      if (store.getState().isVerbose) {
+        console.log(`RoleFunction ARCHITECT execute()`);
+      }
       const options = MG.generateArchitectOptions(playerId, store.getState());
       let answer = Promise.resolve();
 
@@ -217,7 +219,9 @@ const RoleFunction = {
       // Lay a foundation: Place a card from Hand and a Site card to Structure.
       // Add Material: Take a card from Hand and place it under the Structure.
       // Possibly also complete a Structure: Move Site from Structure to Influence.
-      console.info(`RoleFunction CRAFTSMAN execute()`);
+      if (store.getState().isVerbose) {
+        console.log(`RoleFunction CRAFTSMAN execute()`);
+      }
       const options = MG.generateCraftsmanOptions(playerId, store.getState());
       let answer = Promise.resolve();
 
@@ -236,7 +240,9 @@ const RoleFunction = {
   [Role.LABORER]: {
     execute: (playerId, store) => {
       // Take a card from Pool and place it in Stockpile.
-      console.info(`RoleFunction LABORER execute()`);
+      if (store.getState().isVerbose) {
+        console.log(`RoleFunction LABORER execute()`);
+      }
       const options = MG.generateLaborerOptions(playerId, store.getState());
       let answer = Promise.resolve();
 
@@ -255,7 +261,9 @@ const RoleFunction = {
   [Role.LEGIONARY]: {
     execute: (playerId, store) => {
       // Demand materials: Take one from Pool, one from each neighbor and place in Stockpile.
-      console.info(`RoleFunction LEGIONARY execute()`);
+      if (store.getState().isVerbose) {
+        console.log(`RoleFunction LEGIONARY execute()`);
+      }
       const options = MG.generateLegionaryOptions(playerId, store.getState());
       let answer = Promise.resolve();
 
@@ -274,7 +282,9 @@ const RoleFunction = {
   [Role.MERCHANT]: {
     execute: (playerId, store) => {
       // Take one material from Stockpile and place face-down in Vault.
-      console.info(`RoleFunction MERCHANT execute()`);
+      if (store.getState().isVerbose) {
+        console.log(`RoleFunction MERCHANT execute()`);
+      }
       const options = MG.generateMerchantOptions(playerId, store.getState());
       let answer = Promise.resolve();
 
@@ -293,7 +303,9 @@ const RoleFunction = {
   [Role.PATRON]: {
     execute: (playerId, store) => {
       // Take a card from the Pool and place it in Clientele.
-      console.info(`RoleFunction PATRON execute()`);
+      if (store.getState().isVerbose) {
+        console.log(`RoleFunction PATRON execute()`);
+      }
       const options = MG.generatePatronOptions(playerId, store.getState());
       let answer = Promise.resolve();
 
@@ -316,7 +328,9 @@ const RoleFunction = {
       // Draw as many Order cards from the draw pile as you need to fill to your hand
       // refill size (normally five).
       // Draw one additional Order card (if you are at or above your hand refill size).
-      console.info(`RoleFunction THINKER execute()`);
+      if (store.getState().isVerbose) {
+        console.log(`RoleFunction THINKER execute()`);
+      }
       const options = MG.generateThinkerOptions(playerId, store.getState());
       const player = Selector.player(playerId, store.getState());
       const strategy = SR.resolve(player.strategy);

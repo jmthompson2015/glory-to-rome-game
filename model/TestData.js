@@ -40,7 +40,7 @@ TestData.createPlayers = () => {
   return [player1, player2, player3, player4, player5];
 };
 
-TestData.DELAY = 100;
+TestData.DELAY = 50;
 
 TestData.createStore = () => {
   const store = Redux.createStore(Reducer.root);

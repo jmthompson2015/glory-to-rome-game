@@ -5,7 +5,7 @@ import Selector from "../state/Selector.js";
 
 import GameFunction from "./GameFunction.js";
 
-const { RoundRunner, SinglePhaseRunner, StepRunner, TurnRunner } = GameEngine;
+const { RoundRunner, PhaseRunner, SingleStepRunner, TurnRunner } = GameEngine;
 
 const GtRGame = {};
 
@@ -18,9 +18,9 @@ GtRGame.execute = (store) => {
     selector: Selector,
   };
   const engine = {
-    phaseRunner: SinglePhaseRunner,
+    phaseRunner: PhaseRunner,
     turnRunner: TurnRunner,
-    stepRunner: StepRunner,
+    stepRunner: SingleStepRunner,
   };
 
   // Run.

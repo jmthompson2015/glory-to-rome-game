@@ -168,7 +168,7 @@ QUnit.test("isLeader()", (assert) => {
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
   const playerId = 3;
-  const action1 = ActionCreator.setCurrentPlayer(playerId);
+  const action1 = ActionCreator.setLeader(playerId);
   const state = Reducer.root(state1, action1);
 
   // Run / Verify.
@@ -199,7 +199,7 @@ QUnit.test("leaderId()", (assert) => {
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
   const playerId = 3;
-  const action1 = ActionCreator.setCurrentPlayer(playerId);
+  const action1 = ActionCreator.setLeader(playerId);
   const state = Reducer.root(state1, action1);
 
   // Run.
@@ -329,7 +329,7 @@ QUnit.test("playersInOrder() 1", (assert) => {
   const players = createPlayers();
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.setCurrentPlayer(1);
+  const action1 = ActionCreator.setLeader(1);
   const state = Reducer.root(state1, action1);
 
   // Run.
@@ -352,7 +352,7 @@ QUnit.test("playersInOrder() 2", (assert) => {
   const players = createPlayers();
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.setCurrentPlayer(2);
+  const action1 = ActionCreator.setLeader(2);
   const state = Reducer.root(state1, action1);
 
   // Run.
@@ -375,7 +375,7 @@ QUnit.test("playersInOrder() 3", (assert) => {
   const players = createPlayers();
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.setCurrentPlayer(3);
+  const action1 = ActionCreator.setLeader(3);
   const state = Reducer.root(state1, action1);
 
   // Run.
@@ -398,7 +398,7 @@ QUnit.test("playersInOrder() 4", (assert) => {
   const players = createPlayers();
   const action0 = ActionCreator.setPlayers(players);
   const state1 = Reducer.root(state0, action0);
-  const action1 = ActionCreator.setCurrentPlayer(4);
+  const action1 = ActionCreator.setLeader(4);
   const state = Reducer.root(state1, action1);
 
   // Run.

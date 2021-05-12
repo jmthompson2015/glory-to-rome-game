@@ -1,166 +1,125 @@
-/* eslint no-console: ["error", { allow: ["error","info","log","warn"] }] */
+/* eslint no-console: ["error", { allow: ["log"] }] */
 
 import IV from "../utility/InputValidator.js";
-import PU from "../utility/PromiseUtilities.js";
 
 import Role from "../artifact/Role.js";
-import Step from "../artifact/Step.js";
+import Phase from "../artifact/Phase.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
 
-import GameOver from "./GameOver.js";
 import MoveGenerator from "./MoveGenerator.js";
 import RoleFunction from "./RoleFunction.js";
 import StrategyResolver from "./StrategyResolver.js";
 
 const StepFunction = {};
 
-const processRoleOptions = (playerId, store) => {
-  const options = MoveGenerator.generateRoleOptions(playerId, store.getState());
+const performMove = (playerId, store) => (moveState) => {
+  IV.validateNotNil("moveState", moveState);
+  const { cardId, roleKey } = moveState;
+  IV.validateNotNil("cardId", cardId);
+  IV.validateNotNil("roleKey", roleKey);
+  const card = Selector.orderCard(cardId, store.getState());
+  IV.validateNotNil("card", card);
+  const role = Role.value(roleKey);
+  IV.validateNotNil("role", role);
+  const player = Selector.player(playerId, store.getState());
+  store.dispatch(
+    ActionCreator.setUserMessage(`${player.name} chose the ${role.name} role.`)
+  );
 
-  if (!R.isEmpty(options)) {
-    const delay = Selector.delay(store.getState());
-    const player = Selector.player(playerId, store.getState());
-    const strategy = StrategyResolver.resolve(player.strategy);
-
-    return strategy
-      .chooseRoleOption(options, store.getState(), delay)
-      .then((moveState) => {
-        if (R.isNil(moveState)) {
-          console.log(
-            `StepFunction.processRoleOptions() playerId = ${playerId} moveState = ${JSON.stringify(
-              moveState
-            )}`
-          );
-          console.log(
-            `StepFunction.processRoleOptions() playerId = ${playerId} options = ${JSON.stringify(
-              options
-            )}`
-          );
-          console.error(`moveState = ${JSON.stringify(moveState)}`);
-        }
-
-        IV.validateNotNil("moveState", moveState);
-        const { cardId } = moveState;
-        IV.validateNotNil("cardId", cardId);
-        const card = Selector.orderCard(cardId, store.getState());
-        IV.validateNotNil("card", card);
-        let answer;
-
-        const { roleKey } = moveState;
-
-        if (R.isNil(roleKey)) {
-          console.error(`roleKey = ${roleKey} card = ${JSON.stringify(card)}`);
-        }
-
-        IV.validateNotNil("roleKey", roleKey);
-        const role = Role.value(roleKey);
-        IV.validateNotNil("role", role);
-        store.dispatch(
-          ActionCreator.setUserMessage(
-            `${player.name} chose the ${role.name} role.`
-          )
-        );
-
-        if (Selector.isLeader(playerId, store.getState())) {
-          store.dispatch(ActionCreator.setLeadRole(roleKey));
-        }
-
-        answer = Promise.resolve();
-
-        if (roleKey === Role.THINKER) {
-          const roleFunction = RoleFunction[Role.THINKER];
-          answer = roleFunction.execute(playerId, store);
-        } else {
-          store.dispatch(ActionCreator.transferHandToCamp(playerId, cardId));
-        }
-
-        return answer;
-      });
+  if (Selector.isLeader(playerId, store.getState())) {
+    store.dispatch(ActionCreator.setLeadRole(roleKey));
   }
 
-  return Promise.resolve();
-};
-
-StepFunction[Step.DECLARE_ROLE] = (store) => {
   let answer = Promise.resolve();
 
-  if (!GameOver.isGameOver(store)) {
-    const { currentPlayerId, currentPlayerOrder } = store.getState();
-
-    answer = processRoleOptions(currentPlayerId, store).then(() => {
-      const { leadRoleKey } = store.getState();
-
-      if (leadRoleKey !== Role.THINKER) {
-        // Declare role for other players.
-        const reduceFunction = (accum, playerId) => {
-          const promise = processRoleOptions(playerId, store);
-
-          return R.append(promise, accum);
-        };
-        const tasks = R.reduce(reduceFunction, [], currentPlayerOrder.slice(1));
-        answer = PU.allSequential(tasks);
-      }
-    });
+  if (roleKey === Role.THINKER) {
+    const roleFunction = RoleFunction[Role.THINKER];
+    answer = roleFunction.execute(playerId, store);
+  } else {
+    store.dispatch(ActionCreator.transferHandToCamp(playerId, cardId));
   }
 
   return answer;
 };
 
-const createTasks = (store) => {
-  // Perform role for each player.
-  const { currentPlayerOrder, leadRoleKey } = store.getState();
-  const roleFunction = RoleFunction[leadRoleKey];
-  const reduceFunction = (accum, playerId) => {
-    const campIds = Selector.campIds(playerId, store.getState());
-    const campCards = Selector.orderCards(campIds, store.getState());
-    const roleKeys = R.map((c) => c.cardType.roleKey, campCards);
-
-    return roleKeys.length > 0
-      ? accum.then(() => roleFunction.execute(playerId, store))
-      : accum;
-  };
-
-  console.info("StepFunction.createTasks() ends");
-  return R.reduce(reduceFunction, Promise.resolve(), currentPlayerOrder);
-};
-
-StepFunction[Step.PERFORM_ROLE] = (store) => {
-  if (!GameOver.isGameOver(store)) {
-    return store.getState().leadRoleKey !== Role.THINKER
-      ? createTasks(store)
-      : Promise.resolve();
+// /////////////////////////////////////////////////////////////////////////////
+StepFunction.declareRole = (store) => {
+  if (store.getState().isVerbose) {
+    console.log(`StepFunction.declareRole()`);
   }
+  const playerId = Selector.currentPlayerId(store.getState());
+  let answer = Promise.resolve();
 
-  console.info("StepFunction[PERFORM_ROLE] ends");
-  return Promise.resolve();
-};
-
-StepFunction[Step.CLEANUP] = (store) => {
-  if (!GameOver.isGameOver(store)) {
-    const forEachFunction = (playerId) => {
-      const campIds = Selector.campIds(playerId, store.getState());
-      if (campIds.length > 0) {
-        store.dispatch(
-          ActionCreator.transferCampToPool(playerId, R.head(campIds))
-        );
-      }
-    };
-    const currentPlayerOrder = Selector.currentPlayerOrder(store.getState());
-    R.forEach(forEachFunction, currentPlayerOrder);
-
-    // Give the next player the Leader card.
-    const fromPlayerId = currentPlayerOrder[0];
-    const cardId = Selector.leaderCardId(store.getState());
-    const toPlayerId = currentPlayerOrder[1];
-    store.dispatch(
-      ActionCreator.transferHandToHand(fromPlayerId, cardId, toPlayerId)
+  if (
+    Selector.isLeader(playerId, store.getState()) ||
+    Selector.leadRole(store.getState()) !== Role.THINKER
+  ) {
+    const options = MoveGenerator.generateRoleOptions(
+      playerId,
+      store.getState()
     );
+
+    if (!R.isEmpty(options)) {
+      const delay = Selector.delay(store.getState());
+      const player = Selector.player(playerId, store.getState());
+      const strategy = StrategyResolver.resolve(player.strategy);
+      answer = strategy
+        .chooseRoleOption(options, store.getState(), delay)
+        .then(performMove(playerId, store));
+    }
+  }
+  return answer;
+};
+
+StepFunction.performRole = (store) => {
+  if (store.getState().isVerbose) {
+    console.log(`StepFunction.performRole()`);
+  }
+  const leadRoleKey = Selector.leadRole(store.getState());
+  const roleFunction = RoleFunction[leadRoleKey];
+  const playerId = Selector.currentPlayerId(store.getState());
+  const campIds = Selector.campIds(playerId, store.getState());
+
+  return !R.isEmpty(campIds)
+    ? roleFunction.execute(playerId, store)
+    : Promise.resolve();
+};
+
+StepFunction.cleanup = (store) => {
+  if (store.getState().isVerbose) {
+    console.log(`StepFunction.cleanup()`);
+  }
+  const playerId = Selector.currentPlayerId(store.getState());
+  const campIds = Selector.campIds(playerId, store.getState());
+
+  if (!R.isEmpty(campIds)) {
+    store.dispatch(ActionCreator.transferCampToPool(playerId, R.head(campIds)));
   }
 
-  console.info("StepFunction[CLEANUP] ends");
   return Promise.resolve();
+};
+
+StepFunction.execute = (store) => {
+  const phaseKey = Selector.currentPhaseKey(store.getState());
+  let answer = Promise.resolve();
+
+  switch (phaseKey) {
+    case Phase.DECLARE_ROLE:
+      answer = StepFunction.declareRole(store);
+      break;
+    case Phase.PERFORM_ROLE:
+      answer = StepFunction.performRole(store);
+      break;
+    case Phase.CLEANUP:
+      answer = StepFunction.cleanup(store);
+      break;
+    default:
+      throw new Error(`Unknown phaseKey = ${phaseKey}`);
+  }
+
+  return answer;
 };
 
 Object.freeze(StepFunction);

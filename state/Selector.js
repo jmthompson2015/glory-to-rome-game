@@ -81,7 +81,7 @@ Selector.leaderCard = (state) => {
 
 Selector.leaderCardId = (state) => state.leaderCardId;
 
-Selector.leaderId = (state) => R.head(state.currentPlayerOrder);
+Selector.leaderId = (state) => state.leaderId;
 
 Selector.leadRole = (state) => state.leadRoleKey;
 

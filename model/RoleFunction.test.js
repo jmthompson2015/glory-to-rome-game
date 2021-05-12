@@ -1,6 +1,6 @@
 import Material from "../artifact/Material.js";
+import Phase from "../artifact/Phase.js";
 import Role from "../artifact/Role.js";
-import Step from "../artifact/Step.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
@@ -12,13 +12,13 @@ QUnit.module("RoleFunction");
 
 QUnit.test("Architect execute() Build Structure", (assert) => {
   // Setup.
-  const stepKey = Step.PERFORM_ROLE;
+  const phaseKey = Phase.PERFORM_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   // store.dispatch(ActionCreator.setVerbose(true));
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const roleFunction = RoleFunction[Role.ARCHITECT];
   // Lay a foundation.
@@ -83,12 +83,12 @@ QUnit.test("Architect execute() Build Structure", (assert) => {
 
 QUnit.test("Architect execute() Lay Foundation", (assert) => {
   // Setup.
-  const stepKey = Step.PERFORM_ROLE;
+  const phaseKey = Phase.PERFORM_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const roleFunction = RoleFunction[Role.ARCHITECT];
 
@@ -124,13 +124,13 @@ QUnit.test("Architect execute() Lay Foundation", (assert) => {
 
 QUnit.test("Craftsman execute() Build Structure", (assert) => {
   // Setup.
-  const stepKey = Step.PERFORM_ROLE;
+  const phaseKey = Phase.PERFORM_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   // store.dispatch(ActionCreator.setVerbose(true));
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const roleFunction = RoleFunction[Role.CRAFTSMAN];
   // Lay a foundation.
@@ -198,12 +198,12 @@ QUnit.test("Craftsman execute() Build Structure", (assert) => {
 
 QUnit.test("Craftsman execute() Lay Foundation", (assert) => {
   // Setup.
-  const stepKey = Step.PERFORM_ROLE;
+  const phaseKey = Phase.PERFORM_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const roleFunction = RoleFunction[Role.CRAFTSMAN];
 
@@ -239,12 +239,12 @@ QUnit.test("Craftsman execute() Lay Foundation", (assert) => {
 
 QUnit.test("Laborer execute()", (assert) => {
   // Setup.
-  const stepKey = Step.PERFORM_ROLE;
+  const phaseKey = Phase.PERFORM_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const roleFunction = RoleFunction[Role.LABORER];
 
@@ -270,13 +270,13 @@ QUnit.test("Laborer execute()", (assert) => {
 
 QUnit.test("Legionary execute()", (assert) => {
   // Setup.
-  const stepKey = Step.PERFORM_ROLE;
+  const phaseKey = Phase.PERFORM_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   // store.dispatch(ActionCreator.setVerbose(true));
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const roleFunction = RoleFunction[Role.LEGIONARY];
 
@@ -318,12 +318,12 @@ QUnit.test("Legionary execute()", (assert) => {
 
 QUnit.test("Merchant execute()", (assert) => {
   // Setup.
-  const stepKey = Step.PERFORM_ROLE;
+  const phaseKey = Phase.PERFORM_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const cardId = R.last(Selector.cardPool(store.getState()));
   store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
@@ -351,12 +351,12 @@ QUnit.test("Merchant execute()", (assert) => {
 
 QUnit.test("Patron execute()", (assert) => {
   // Setup.
-  const stepKey = Step.PERFORM_ROLE;
+  const phaseKey = Phase.PERFORM_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const roleFunction = RoleFunction[Role.PATRON];
 
@@ -382,12 +382,12 @@ QUnit.test("Patron execute()", (assert) => {
 
 QUnit.test("Thinker execute()", (assert) => {
   // Setup.
-  const stepKey = Step.DECLARE_ROLE;
+  const phaseKey = Phase.DECLARE_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const roleFunction = RoleFunction[Role.THINKER];
 
@@ -407,13 +407,13 @@ QUnit.test("Thinker execute()", (assert) => {
 
 QUnit.test("Thinker execute() needs refill", (assert) => {
   // Setup.
-  const stepKey = Step.DECLARE_ROLE;
+  const phaseKey = Phase.DECLARE_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const cardId = R.last(Selector.cardPool(store.getState()));
   store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
@@ -439,13 +439,13 @@ QUnit.test("Thinker execute() needs refill", (assert) => {
 
 QUnit.test("Thinker execute() out of Jacks", (assert) => {
   // Setup.
-  const stepKey = Step.DECLARE_ROLE;
+  const phaseKey = Phase.DECLARE_ROLE;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  store.dispatch(ActionCreator.setCurrentStep(stepKey));
+  store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   store.dispatch(ActionCreator.setJackDeck([]));
   const roleFunction = RoleFunction[Role.THINKER];

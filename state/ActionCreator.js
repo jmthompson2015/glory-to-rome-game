@@ -98,7 +98,9 @@ ActionCreator.setJackDeck = makeActionCreator(
   "jackDeck"
 );
 
-ActionCreator.setLeadRole = makeActionCreator(
+ActionCreator.setLeader = makeActionCreator(ActionType.SET_LEADER, "leaderId");
+
+ActionCreator.setLeadRole = makeActionCreatorNilAllowed(
   ActionType.SET_LEAD_ROLE,
   "leadRoleKey"
 );

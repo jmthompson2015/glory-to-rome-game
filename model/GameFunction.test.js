@@ -14,11 +14,11 @@ QUnit.test("isGameOver() false", (assert) => {
   assert.equal(result, false);
 });
 
-QUnit.test("stepKeys()", (assert) => {
+QUnit.test("phaseKeys()", (assert) => {
   // Setup.
 
   // Run.
-  const result = GameFunction.stepKeys();
+  const result = GameFunction.phaseKeys();
 
   // Verify.
   assert.ok(result);

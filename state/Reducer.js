@@ -74,16 +74,16 @@ const layFoundation = (state, playerId, foundationId, siteId) => {
   };
 };
 
-const setCurrentPlayer = (state, currentPlayerId) => {
+const setLeader = (state, leaderId) => {
   const players = Object.values(state.playerInstances);
   const playerIds = R.map(R.prop("id"), players);
   const count = playerIds.length;
-  const index0 = playerIds.indexOf(currentPlayerId);
+  const index0 = playerIds.indexOf(leaderId);
   const first = R.slice(index0, count, playerIds);
   const second = R.slice(0, index0, playerIds);
   const currentPlayerOrder = [...first, ...second];
 
-  return { ...state, currentPlayerId, currentPlayerOrder };
+  return { ...state, leaderId, currentPlayerOrder };
 };
 
 const setOrderFaceup = (state, cardId, isFaceup) => {
@@ -387,7 +387,7 @@ Reducer.root = (state, action) => {
         )}`,
         state
       );
-      return setCurrentPlayer(state, action.playerId);
+      return { ...state, currentPlayerId: action.playerId };
     case ActionType.SET_CURRENT_ROUND:
       log(`Reducer SET_CURRENT_ROUND round = ${action.round}`, state);
       return { ...state, currentRound: action.round };
@@ -402,6 +402,9 @@ Reducer.root = (state, action) => {
     case ActionType.SET_LEAD_ROLE:
       log(`Reducer SET_LEAD_ROLE leadRoleKey = ${action.leadRoleKey}`, state);
       return { ...state, leadRoleKey: action.leadRoleKey };
+    case ActionType.SET_LEADER:
+      log(`Reducer SET_LEADER leaderId = ${action.leaderId}`, state);
+      return setLeader(state, action.leaderId);
     case ActionType.SET_MCTS_ROOT:
       log(`Reducer SET_MCTS_ROOT mctsRoot = ${action.mctsRoot}`, state);
       return { ...state, mctsRoot: action.mctsRoot };

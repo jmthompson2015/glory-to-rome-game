@@ -16,6 +16,7 @@ ActionType.SET_CURRENT_STEP = "setCurrentStep";
 ActionType.SET_DELAY = "setDelay";
 ActionType.SET_JACK_DECK = "setJackDeck";
 ActionType.SET_LEAD_ROLE = "setLeadRole";
+ActionType.SET_LEADER = "setLeader";
 ActionType.SET_MCTS_ROOT = "setMctsRoot";
 ActionType.SET_ORDER_DECK = "setOrderDeck";
 ActionType.SET_ORDER_FACEUP = "setOrderFaceup";

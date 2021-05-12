@@ -1,6 +1,7 @@
+import Phase from "../artifact/Phase.js";
+
 import ActionCreator from "../state/ActionCreator.js";
 import Reducer from "../state/Reducer.js";
-import Selector from "../state/Selector.js";
 
 import Setup from "../model/Setup.js";
 import TestData from "../model/TestData.js";
@@ -10,8 +11,8 @@ import StatusBarContainer from "./StatusBarContainer.js";
 const store = Redux.createStore(Reducer.root);
 const players = TestData.createPlayers();
 Setup.execute(store, players);
-const cardId = R.head(Selector.orderDeck(store.getState()));
-store.dispatch(ActionCreator.setOrderFaceup(cardId, false));
+store.dispatch(ActionCreator.setCurrentRound(1));
+store.dispatch(ActionCreator.setCurrentPhase(Phase.DECLARE_ROLE));
 
 const container = React.createElement(StatusBarContainer, {
   helpBase: "../view/",
