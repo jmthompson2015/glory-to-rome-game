@@ -1,5 +1,6 @@
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
+import StructureState from "../state/StructureState.js";
 
 import TestData from "../model/TestData.js";
 
@@ -35,6 +36,29 @@ store.dispatch(
 );
 
 store.dispatch(ActionCreator.addToPlayerArray("playerToCamp", playerId, 62));
+const structureState1 = StructureState.create({
+  id: 1,
+  foundationId: 2,
+  siteId: 1,
+  store,
+});
+store.dispatch(ActionCreator.addStructure(structureState1));
+const structureState2 = StructureState.create({
+  id: 2,
+  foundationId: 23,
+  siteId: 13,
+  materialIds: [24, 25],
+  store,
+});
+store.dispatch(ActionCreator.addStructure(structureState2));
+const structureState3 = StructureState.create({
+  id: 3,
+  foundationId: 5,
+  materialIds: [6, 7],
+  store,
+});
+store.dispatch(ActionCreator.addStructure(structureState3));
+const structureStates = [structureState1, structureState2, structureState3];
 const state = store.getState();
 
 const element = React.createElement(TableauUI, {
@@ -45,10 +69,7 @@ const element = React.createElement(TableauUI, {
   player: Selector.player(playerId, state),
   resourceBase: Endpoint.LOCAL_RESOURCE,
   stockpileCards: Selector.stockpileCards(playerId, state),
-  structures: Selector.structures(
-    Selector.structureIds(playerId, state),
-    state
-  ),
+  structures: structureStates,
   vaultCards: Selector.vaultCards(playerId, state),
   width: 150,
 });

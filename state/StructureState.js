@@ -1,3 +1,5 @@
+import IV from "../utility/InputValidator.js";
+
 import OrderCard from "../artifact/OrderCard.js";
 import SiteCard from "../artifact/SiteCard.js";
 
@@ -20,17 +22,21 @@ StructureState.create = ({
     R.isNil(id) && store ? Selector.nextStructureId(store.getState()) : id;
   let foundationType;
   let siteType;
-  let materialTypes;
+  let materialTypes = [];
 
   if (store) {
     const { orderCardInstances, siteCardInstances } = store.getState();
     foundationType = OrderCard.value(orderCardInstances[foundationId].cardKey);
-    siteType = SiteCard.value(siteCardInstances[siteId].cardKey);
+    const siteCard = siteCardInstances[siteId];
+    if (siteCard) {
+      siteType = SiteCard.value(siteCard.cardKey);
+    }
     const mapFunction = (cardId) => {
       const instance = orderCardInstances[cardId];
       return OrderCard.value(instance.cardKey);
     };
     materialTypes = R.map(mapFunction, materialIds);
+    IV.validateNotIncludesNil("materialTypes", materialTypes);
   }
 
   const structure = Immutable({

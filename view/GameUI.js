@@ -69,7 +69,14 @@ const createPoolCell = (state, resourceBase, width) => {
   return RU.createCell(cardsPane, "CardPoolCell", "tc");
 };
 
-const createSitesCell0 = (title, siteCards0, isFaceup, resourceBase, width) => {
+const createSitesCell0 = (
+  title,
+  siteCards0,
+  isFaceup,
+  resourceBase,
+  width,
+  isExpanded = true
+) => {
   const reduceFunction = (accum, materialKey) => {
     const deck = R.filter(
       (c) => c.cardType.materialKey === materialKey,
@@ -91,7 +98,7 @@ const createSitesCell0 = (title, siteCards0, isFaceup, resourceBase, width) => {
   const decksPane = React.createElement(CollapsiblePane, {
     key: `SiteDecksPane${title}`,
     element,
-    isExpanded: true,
+    isExpanded,
     title,
     titleClass: "b bg-light-gray f5 ph1 pt1 tc",
   });
@@ -113,7 +120,8 @@ const createOutOfTownSitesCell = (state, resourceBase) => {
     ootSiteCards,
     false,
     resourceBase,
-    WIDTH
+    WIDTH,
+    false
   );
 };
 

@@ -200,12 +200,17 @@ const transferHandToStructure = (state, playerId, cardId, structureId) => {
   const oldMaterialIds = oldStructure.materialIds || [];
   const newMaterialIds = [...oldMaterialIds, cardId];
   IV.validateNotIncludesNil("newMaterialIds", newMaterialIds);
-  const newStructure = StructureState.create({
-    id: structureId,
-    foundationId: oldStructure.foundationId,
-    siteId: oldStructure.siteId,
+  const mapFunction = (id) => {
+    const instance = state.orderCardInstances[id];
+    return OrderCard.value(instance.cardKey);
+  };
+  const newMaterialTypes = R.map(mapFunction, newMaterialIds);
+  IV.validateNotIncludesNil("newMaterialTypes", newMaterialTypes);
+  const newStructure = {
+    ...oldStructure,
     materialIds: newMaterialIds,
-  });
+    materialTypes: newMaterialTypes,
+  };
   const newStructureInstances = {
     ...state.structureInstances,
     [structureId]: newStructure,
