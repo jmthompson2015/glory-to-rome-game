@@ -62,8 +62,7 @@ ActionCreator.addToPlayerArray = (arrayName, playerId, cardId) => ({
 ActionCreator.layFoundation = makeActionCreator(
   ActionType.LAY_FOUNDATION,
   "playerId",
-  "foundationId",
-  "siteId"
+  "structureState"
 );
 
 ActionCreator.setCardPool = makeActionCreator(

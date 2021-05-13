@@ -4,6 +4,7 @@ import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
+import StructureState from "../state/StructureState.js";
 
 import RoleFunction from "./RoleFunction.js";
 import TestData from "./TestData.js";
@@ -26,7 +27,13 @@ QUnit.test("Architect execute() Build Structure", (assert) => {
   const foundationId = R.head(handIds0);
   const siteIds0 = Selector.siteIdsByMaterial(Material.BRICK, store.getState());
   const siteId = R.head(siteIds0);
-  store.dispatch(ActionCreator.layFoundation(playerId, foundationId, siteId));
+  const structureState = StructureState.create({
+    id: 1,
+    foundationId,
+    siteId,
+    store,
+  });
+  store.dispatch(ActionCreator.layFoundation(playerId, structureState));
   // Add a card to stockpile.
   const cardPool = Selector.cardPool(store.getState());
   const cardId = R.head(cardPool);
@@ -138,7 +145,13 @@ QUnit.test("Craftsman execute() Build Structure", (assert) => {
   const foundationId = R.head(handIds0);
   const siteIds0 = Selector.siteIdsByMaterial(Material.BRICK, store.getState());
   const siteId = R.head(siteIds0);
-  store.dispatch(ActionCreator.layFoundation(playerId, foundationId, siteId));
+  const structureState = StructureState.create({
+    id: 1,
+    foundationId,
+    siteId,
+    store,
+  });
+  store.dispatch(ActionCreator.layFoundation(playerId, structureState));
   // Remove cards from player's hand.
   store.dispatch(ActionCreator.transferHandToCamp(playerId, 4));
   store.dispatch(ActionCreator.transferHandToCamp(playerId, 5));

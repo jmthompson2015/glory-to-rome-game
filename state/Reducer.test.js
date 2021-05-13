@@ -255,8 +255,15 @@ QUnit.test("layFoundation()", (assert) => {
   const action2 = ActionCreator.addSiteCard(siteCard);
   const state3 = Reducer.root(state2, action2);
   const action3 = ActionCreator.setSiteDeck([siteCard.id]);
-  const state = Reducer.root(state3, action3);
-  const action = ActionCreator.layFoundation(playerId, foundationId, siteId);
+  const state4 = Reducer.root(state3, action3);
+  const structureState = StructureState.create({
+    id: 1,
+    foundationId,
+    siteId,
+  });
+  const action4 = ActionCreator.addStructure(structureState);
+  const state = Reducer.root(state4, action4);
+  const action = ActionCreator.layFoundation(playerId, structureState);
 
   // Run.
   const result = Reducer.root(state, action);
@@ -794,9 +801,16 @@ QUnit.test("transferHandToStructure()", (assert) => {
   const state2 = Reducer.root(state1, action1);
 
   const foundationId = 1;
-  const siteKey = SiteCard.BRICK;
-  const action2 = ActionCreator.layFoundation(playerId, foundationId, siteKey);
-  const state = Reducer.root(state2, action2);
+  const siteId = 2;
+  const structureState = StructureState.create({
+    id: 1,
+    foundationId,
+    siteId,
+  });
+  const action2 = ActionCreator.addStructure(structureState);
+  const state3 = Reducer.root(state2, action2);
+  const action3 = ActionCreator.layFoundation(playerId, structureState);
+  const state = Reducer.root(state3, action3);
   const structureId = R.head(state.playerToStructures[playerId]);
   const action = ActionCreator.transferHandToStructure(
     playerId,

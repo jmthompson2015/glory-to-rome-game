@@ -6,8 +6,6 @@ import OrderCard from "../artifact/OrderCard.js";
 
 import ActionType from "./ActionType.js";
 import AppState from "./AppState.js";
-import Selector from "./Selector.js";
-import StructureState from "./StructureState.js";
 
 const Reducer = {};
 
@@ -37,7 +35,9 @@ const addOrderCard = (state, cardState) => {
     : { ...state, orderCardInstances: newCards };
 };
 
-const layFoundation = (state, playerId, foundationId, siteId) => {
+const layFoundation = (state, playerId, structureState) => {
+  IV.validateNotNil("structureState", structureState);
+  const { foundationId, siteId } = structureState;
   const oldHand = state.playerToHand[playerId] || [];
   const newHand = R.without([foundationId], oldHand);
   IV.validateNotIncludesNil("newHand", newHand);
@@ -47,19 +47,9 @@ const layFoundation = (state, playerId, foundationId, siteId) => {
   const newDeck = R.without([siteId], oldDeck);
   IV.validateNotIncludesNil("newDeck", newDeck);
 
-  const newId = Selector.nextStructureId(state);
-  const newStructure = StructureState.create({
-    id: newId,
-    foundationId,
-    siteId,
-  });
-  const newStructureInstances = {
-    ...state.structureInstances,
-    [newId]: newStructure,
-  };
-
   const oldStructures = state.playerToStructures[playerId] || [];
-  const newStructures = [...oldStructures, newId];
+  const newStructures = [...oldStructures, structureState.id];
+  IV.validateNotIncludesNil("newStructures", newStructures);
   const newPlayerToStructures = {
     ...state.playerToStructures,
     [playerId]: newStructures,
@@ -70,7 +60,6 @@ const layFoundation = (state, playerId, foundationId, siteId) => {
     playerToHand: newPlayerToHand,
     playerToStructures: newPlayerToStructures,
     siteDeck: newDeck,
-    structureInstances: newStructureInstances,
   };
 };
 
@@ -371,15 +360,10 @@ Reducer.root = (state, action) => {
     case ActionType.LAY_FOUNDATION:
       log(
         `Reducer LAY_FOUNDATION playerId = ${action.playerId} ` +
-          `foundationId = ${action.foundationId} siteId = ${action.siteId}`,
+          `structureState = ${JSON.stringify(action.structureState)}`,
         state
       );
-      return layFoundation(
-        state,
-        action.playerId,
-        action.foundationId,
-        action.siteId
-      );
+      return layFoundation(state, action.playerId, action.structureState);
     case ActionType.SET_CARD_POOL:
       return { ...state, cardPool: action.cardPool };
     case ActionType.SET_CURRENT_PHASE:

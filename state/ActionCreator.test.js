@@ -106,18 +106,16 @@ QUnit.test("addToPlayerArray()", (assert) => {
 QUnit.test("layFoundation()", (assert) => {
   // Setup.
   const playerId = 3;
-  const foundationId = 12;
-  const siteId = 4;
+  const structureState = 12;
 
   // Run.
-  const result = ActionCreator.layFoundation(playerId, foundationId, siteId);
+  const result = ActionCreator.layFoundation(playerId, structureState);
 
   // Verify.
   assert.ok(result);
   assert.equal(result.type, ActionType.LAY_FOUNDATION);
   assert.equal(result.playerId, playerId);
-  assert.equal(result.foundationId, foundationId);
-  assert.equal(result.siteId, siteId);
+  assert.equal(result.structureState, structureState);
 });
 
 QUnit.test("setCurrentPhase()", (assert) => {

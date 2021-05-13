@@ -6,6 +6,7 @@ import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
+import StructureState from "../state/StructureState.js";
 
 import MG from "./MoveGenerator.js";
 import SR from "./StrategyResolver.js";
@@ -25,7 +26,12 @@ const performArchitectOption = (playerId, store) => (moveState) => {
     const siteId = R.head(siteIds);
     IV.validateNotNil("cardId", cardId);
     IV.validateNotNil("siteId", siteId);
-    store.dispatch(ActionCreator.layFoundation(playerId, cardId, siteId));
+    const structureState = StructureState.create({
+      foundationId: cardId,
+      siteId,
+      store,
+    });
+    store.dispatch(ActionCreator.layFoundation(playerId, structureState));
   } else if (moveKey === options.BUILD_STRUCTURE) {
     const { cardId, structureId } = moveState;
     IV.validateNotNil("cardId", cardId);
@@ -50,7 +56,12 @@ const performCraftsmanOption = (playerId, store) => (moveState) => {
     );
     IV.validateNotNil("cardId", cardId);
     IV.validateNotNil("siteId", siteId);
-    store.dispatch(ActionCreator.layFoundation(playerId, cardId, siteId));
+    const structureState = StructureState.create({
+      foundationId: cardId,
+      siteId,
+      store,
+    });
+    store.dispatch(ActionCreator.layFoundation(playerId, structureState));
   } else if (moveKey === options.BUILD_STRUCTURE) {
     const { cardId, structureId } = moveState;
     IV.validateNotNil("cardId", cardId);
