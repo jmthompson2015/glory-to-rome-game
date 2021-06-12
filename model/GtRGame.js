@@ -14,7 +14,7 @@ GtRGame.execute = (store) => {
   const props = {
     actionCreator: ActionCreator,
     gameFunction: GameFunction,
-    roundLimit: 3,
+    roundLimit: 1000,
     selector: Selector,
   };
   const engine = {

@@ -27,7 +27,6 @@ const playGame = () => {
     strategy: "HumanPlayerStrategy",
   };
   players[0] = newPlayer0;
-  console.log(`players = ${JSON.stringify(players)}`);
   Setup.execute(store, players);
 
   // Status Bar
