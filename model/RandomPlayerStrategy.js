@@ -15,49 +15,49 @@ const delayedResolve = (choice, resolve, delay = DELAY) => {
   }
 };
 
-RandomPlayerStrategy.chooseArchitectOption = (options, state, delay = DELAY) =>
+RandomPlayerStrategy.chooseArchitectOption = (options, store, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);
     delayedResolve(answer, resolve, delay);
   });
 
-RandomPlayerStrategy.chooseCraftsmanOption = (options, state, delay = DELAY) =>
+RandomPlayerStrategy.chooseCraftsmanOption = (options, store, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);
     delayedResolve(answer, resolve, delay);
   });
 
-RandomPlayerStrategy.chooseLaborerOption = (options, state, delay = DELAY) =>
+RandomPlayerStrategy.chooseLaborerOption = (options, store, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);
     delayedResolve(answer, resolve, delay);
   });
 
-RandomPlayerStrategy.chooseLegionaryOption = (options, state, delay = DELAY) =>
+RandomPlayerStrategy.chooseLegionaryOption = (options, store, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);
     delayedResolve(answer, resolve, delay);
   });
 
-RandomPlayerStrategy.chooseMerchantOption = (options, state, delay = DELAY) =>
+RandomPlayerStrategy.chooseMerchantOption = (options, store, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);
     delayedResolve(answer, resolve, delay);
   });
 
-RandomPlayerStrategy.choosePatronOption = (options, state, delay = DELAY) =>
+RandomPlayerStrategy.choosePatronOption = (options, store, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);
     delayedResolve(answer, resolve, delay);
   });
 
-RandomPlayerStrategy.chooseRoleOption = (options, state, delay = DELAY) =>
+RandomPlayerStrategy.chooseRoleOption = (options, store, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);
     delayedResolve(answer, resolve, delay);
   });
 
-RandomPlayerStrategy.chooseThinkerOption = (options, state, delay = DELAY) =>
+RandomPlayerStrategy.chooseThinkerOption = (options, store, delay = DELAY) =>
   new Promise((resolve) => {
     const answer = options.length <= 1 ? options[0] : randomElement(options);
     delayedResolve(answer, resolve, delay);

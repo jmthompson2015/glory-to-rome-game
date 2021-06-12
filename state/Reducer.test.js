@@ -287,6 +287,50 @@ QUnit.test("layFoundation()", (assert) => {
   assert.equal(structureId, 1, `structureId = ${structureId}`);
 });
 
+QUnit.test("setCurrentInputCallback()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const callback = 12;
+  const action = ActionCreator.setCurrentInputCallback(callback);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const inputCallback = result.currentInputCallback;
+  assert.ok(inputCallback);
+  assert.equal(inputCallback, callback);
+});
+
+QUnit.test("setCurrentMove()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const moveState = 12;
+  const action = ActionCreator.setCurrentMove(moveState);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.currentMove, moveState);
+});
+
+QUnit.test("setCurrentMoves()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const moveStates = 12;
+  const action = ActionCreator.setCurrentMoves(moveStates);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.currentMoves, moveStates);
+});
+
 QUnit.test("setCurrentPhase()", (assert) => {
   // Setup.
   const state = AppState.create();

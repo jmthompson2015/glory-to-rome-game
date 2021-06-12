@@ -66,7 +66,7 @@ StepFunction.declareRole = (store) => {
       const player = Selector.player(playerId, store.getState());
       const strategy = StrategyResolver.resolve(player.strategy);
       answer = strategy
-        .chooseRoleOption(options, store.getState(), delay)
+        .chooseRoleOption(options, store, delay)
         .then(performMove(playerId, store));
     }
   }
@@ -96,6 +96,17 @@ StepFunction.cleanup = (store) => {
 
   if (!R.isEmpty(campIds)) {
     store.dispatch(ActionCreator.transferCampToPool(playerId, R.head(campIds)));
+  }
+
+  store.dispatch(ActionCreator.setCurrentInputCallback(null));
+  store.dispatch(ActionCreator.setCurrentMoves([]));
+
+  const currentPlayerOrder = Selector.currentPlayerOrder(store.getState());
+  const lastPlayerId = R.last(currentPlayerOrder);
+
+  if (playerId === lastPlayerId) {
+    store.dispatch(ActionCreator.setLeadRole(null));
+    store.dispatch(ActionCreator.setLeader(currentPlayerOrder[1]));
   }
 
   return Promise.resolve();

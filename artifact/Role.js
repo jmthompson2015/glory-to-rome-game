@@ -11,49 +11,49 @@ const Role = {
 Role.properties = {
   architect: {
     name: "Architect",
-    color: "Gray",
+    color: "gray",
     options: {
-      LAY_FOUNDATION: "lay a foundation",
-      BUILD_STRUCTURE: "build structure",
+      LAY_FOUNDATION: "Lay a Foundation",
+      BUILD_STRUCTURE: "Build a Structure",
     },
     key: "architect",
   },
   craftsman: {
     name: "Craftsman",
-    color: "Green",
+    color: "green",
     options: {
-      LAY_FOUNDATION: "lay a foundation",
-      BUILD_STRUCTURE: "build structure",
+      LAY_FOUNDATION: "Lay a Foundation",
+      BUILD_STRUCTURE: "Build a Structure",
     },
     key: "craftsman",
   },
   laborer: {
     name: "Laborer",
-    color: "Orange",
+    color: "orange",
     key: "laborer",
   },
   legionary: {
     name: "Legionary",
-    color: "Red",
+    color: "red",
     key: "legionary",
   },
   merchant: {
     name: "Merchant",
-    color: "Cyan",
+    color: "cyan",
     key: "merchant",
   },
   patron: {
     name: "Patron",
-    color: "Purple",
+    color: "purple",
     key: "patron",
   },
   thinker: {
     name: "Thinker",
-    color: "White",
+    color: "black",
     options: {
-      DRAW_JACK: "draw a jack",
-      REFILL_HAND: "refill hand",
-      DRAW_CARD: "draw a card",
+      DRAW_JACK: "Draw a Jack",
+      REFILL_HAND: "Refill Hand",
+      DRAW_CARD: "Draw a Card",
     },
     key: "thinker",
   },

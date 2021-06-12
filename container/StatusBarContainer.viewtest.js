@@ -1,4 +1,5 @@
 import Phase from "../artifact/Phase.js";
+import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Reducer from "../state/Reducer.js";
@@ -13,6 +14,7 @@ const players = TestData.createPlayers();
 Setup.execute(store, players);
 store.dispatch(ActionCreator.setCurrentRound(1));
 store.dispatch(ActionCreator.setCurrentPhase(Phase.DECLARE_ROLE));
+store.dispatch(ActionCreator.setLeadRole(Role.ARCHITECT));
 
 const container = React.createElement(StatusBarContainer, {
   helpBase: "../view/",

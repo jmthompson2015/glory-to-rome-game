@@ -18,8 +18,9 @@ const createMoves = (cardIds, playerId, state) => {
     return MoveState.create({
       playerId,
       cardId,
-      materialKey: card.materialKey,
-      roleKey: card.roleKey,
+      materialKey: card.cardType.materialKey,
+      roleKey: card.cardType.roleKey,
+      state,
     });
   };
 
@@ -55,9 +56,12 @@ const generateBuildStructureOptions = (cards, options, playerId, state) => {
     );
     const forEachFunction = (structureId) => {
       const move = MoveState.create({
+        playerId,
         moveKey: options.BUILD_STRUCTURE,
         cardId: stockpileCard.id,
+        roleKey: stockpileCard.cardType.roleKey,
         structureId,
+        state,
       });
       accum.push(move);
     };
@@ -69,18 +73,20 @@ const generateBuildStructureOptions = (cards, options, playerId, state) => {
 };
 
 const generateLayFoundationOptions = (handIds, options, playerId, state) => {
-  const reduceFunction = (accum, orderCard) => {
-    const { materialKey } = orderCard.cardType;
+  const reduceFunction = (accum, card) => {
+    const { materialKey } = card.cardType;
     IV.validateNotNil("materialKey", materialKey);
     const siteIds = Selector.siteIdsByMaterial(materialKey, state);
 
     if (siteIds.length > 0) {
       accum.push(
         MoveState.create({
+          playerId,
           moveKey: options.LAY_FOUNDATION,
-          cardId: orderCard.id,
-          materialKey: orderCard.cardType.materialKey,
-          roleKey: orderCard.cardType.roleKey,
+          cardId: card.id,
+          materialKey,
+          roleKey: card.cardType.roleKey,
+          state,
         })
       );
     }
@@ -97,15 +103,16 @@ const generateLeaderRoleOptions = (playerId, state) => {
 
     if (isJack(card)) {
       const mapFunction = (roleKey) => {
-        accum.push(MoveState.create({ playerId, cardId, roleKey }));
+        accum.push(MoveState.create({ playerId, cardId, roleKey, state }));
       };
       const roleKeys = R.without([Role.THINKER], Role.keys());
       const moves = R.map(mapFunction, roleKeys);
       accum.push(...moves);
     } else {
-      const { materialKey } = card.cardType;
-      const { roleKey } = card.cardType;
-      accum.push(MoveState.create({ playerId, cardId, materialKey, roleKey }));
+      const { materialKey, roleKey } = card.cardType;
+      accum.push(
+        MoveState.create({ playerId, cardId, materialKey, roleKey, state })
+      );
     }
 
     return accum;
@@ -121,17 +128,25 @@ const generateNonLeaderRoleOptions = (playerId, state) => {
     const card = Selector.orderCard(cardId, state);
 
     if (isJack(card)) {
-      accum.push(MoveState.create({ playerId, cardId, roleKey: leadRoleKey }));
+      accum.push(
+        MoveState.create({ playerId, cardId, roleKey: leadRoleKey, state })
+      );
     } else if (card.cardType.roleKey === leadRoleKey) {
-      const { materialKey } = card.cardType;
-      const { roleKey } = card.cardType;
-      accum.push(MoveState.create({ playerId, cardId, materialKey, roleKey }));
+      const { materialKey, roleKey } = card.cardType;
+      accum.push(
+        MoveState.create({ playerId, cardId, materialKey, roleKey, state })
+      );
     }
 
     return accum;
   };
   const cardId = Selector.leaderCardId(state);
-  const move = MoveState.create({ playerId, cardId, roleKey: Role.THINKER });
+  const move = MoveState.create({
+    playerId,
+    cardId,
+    roleKey: Role.THINKER,
+    state,
+  });
   const handIds = Selector.handIds(playerId, state);
 
   return R.reduce(reduceFunction, [move], handIds);
@@ -241,11 +256,29 @@ MoveGenerator.generateThinkerOptions = (playerId, state) => {
   const { options } = Role.value(Role.THINKER);
 
   if (state.jackDeck.length > 0) {
-    answer.push(options.DRAW_JACK);
+    answer.push(
+      MoveState.create({
+        playerId,
+        moveKey: options.DRAW_JACK,
+        roleKey: Role.THINKER,
+      })
+    );
   }
 
   const shortfall = Selector.handShortfall(playerId, state);
-  answer.push(shortfall > 0 ? options.REFILL_HAND : options.DRAW_CARD);
+  answer.push(
+    shortfall > 0
+      ? MoveState.create({
+          playerId,
+          moveKey: options.REFILL_HAND,
+          roleKey: Role.THINKER,
+        })
+      : MoveState.create({
+          playerId,
+          moveKey: options.DRAW_CARD,
+          roleKey: Role.THINKER,
+        })
+  );
 
   return answer;
 };

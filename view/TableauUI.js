@@ -1,8 +1,11 @@
 import CardsUI from "./CardsUI.js";
 import Endpoint from "./Endpoint.js";
+import MoveOptionDialog from "./MoveOptionDialog.js";
 import StructuresUI from "./StructuresUI.js";
 
 const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
+
+const TITLE_CLASS = "b bg-gray f5 ph1 pt1 tc v-mid";
 
 const createSlicing = (type) => ({ type, value: 0.2 });
 
@@ -27,10 +30,26 @@ const createCell = (
     element,
     isExpanded: true,
     title,
-    titleClass: "b bg-gray f5 ph1 pt1 tc",
+    titleClass: TITLE_CLASS,
   });
 
   return RU.createCell(cardsPane, `CardsCell${title}`, "tc v-mid");
+};
+
+const createInputArea = (callback, moveStates, player, role) => {
+  const customKey = `inputArea${player.id}`;
+  let element;
+
+  if (!R.isEmpty(moveStates)) {
+    element = React.createElement(MoveOptionDialog, {
+      callback,
+      moveStates,
+      role,
+      customKey: "move",
+    });
+  }
+
+  return ReactDOMFactories.div({ key: customKey, id: customKey }, element);
 };
 
 const createStructureCell = (
@@ -54,7 +73,7 @@ const createStructureCell = (
     element,
     isExpanded: true,
     title,
-    titleClass: "b bg-gray f5 ph1 pt1 tc v-mid",
+    titleClass: TITLE_CLASS,
   });
 
   return RU.createCell(cardsPane, `CardsCell${title}`, "tc v-mid");
@@ -133,8 +152,11 @@ class TableauUI extends React.PureComponent {
     const {
       className,
       handCards,
+      inputCallback,
+      moveStates,
       player,
       resourceBase,
+      role,
       structures,
       width,
     } = this.props;
@@ -155,6 +177,17 @@ class TableauUI extends React.PureComponent {
     );
     const playerBoard = this.createPlayerBoard();
     const cells = [handCell, playerBoard, structureCell];
+
+    if (!R.isNil(moveStates)) {
+      const inputArea = createInputArea(
+        inputCallback,
+        moveStates,
+        player,
+        role
+      );
+      cells.push(inputArea);
+    }
+
     const tableau = RU.createFlexboxWrap(cells, `TableauFlexbox${player.id}`);
 
     return React.createElement(CollapsiblePane, {
@@ -172,27 +205,35 @@ TableauUI.propTypes = {
   player: PropTypes.shape().isRequired,
 
   campCards: PropTypes.arrayOf(PropTypes.shape()),
-  className: PropTypes.string,
   clienteleCards: PropTypes.arrayOf(PropTypes.shape()),
   handCards: PropTypes.arrayOf(PropTypes.shape()),
   influenceCards: PropTypes.arrayOf(PropTypes.shape()),
-  resourceBase: PropTypes.string,
   stockpileCards: PropTypes.arrayOf(PropTypes.shape()),
-  structures: PropTypes.arrayOf(PropTypes.shape()),
   vaultCards: PropTypes.arrayOf(PropTypes.shape()),
+
+  className: PropTypes.string,
+  inputCallback: PropTypes.func,
+  moveStates: PropTypes.arrayOf(PropTypes.shape()),
+  resourceBase: PropTypes.string,
+  role: PropTypes.shape(),
+  structures: PropTypes.arrayOf(PropTypes.shape()),
   width: PropTypes.number,
 };
 
 TableauUI.defaultProps = {
   campCards: [],
-  className: undefined,
   clienteleCards: [],
   handCards: [],
   influenceCards: [],
-  resourceBase: Endpoint.NETWORK_RESOURCE,
   stockpileCards: [],
-  structures: [],
   vaultCards: [],
+
+  className: undefined,
+  inputCallback: undefined,
+  moveStates: undefined,
+  resourceBase: Endpoint.NETWORK_RESOURCE,
+  role: undefined,
+  structures: [],
   width: 200,
 };
 

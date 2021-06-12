@@ -29,6 +29,12 @@ Selector.computeInfluence = (playerId, state) => {
   return R.reduce(reduceFunction, 2, influenceIds);
 };
 
+Selector.currentInputCallback = (state) => state.currentInputCallback;
+
+Selector.currentMove = (state) => state.currentMove;
+
+Selector.currentMoves = (state) => state.currentMoves;
+
 Selector.currentPlayer = (state) =>
   Selector.player(state.currentPlayerId, state);
 
@@ -106,6 +112,12 @@ Selector.orderDeck = (state) => state.orderDeck;
 Selector.outOfTownSiteDeck = (state) => state.outOfTownSiteDeck;
 
 Selector.player = (playerId, state) => state.playerInstances[playerId];
+
+Selector.playerIds = (state) => {
+  const mapFunction = (id) => parseInt(id, 10);
+
+  return R.map(mapFunction, Object.keys(state.playerInstances));
+};
 
 Selector.playerCount = (state) => Object.keys(state.playerInstances).length;
 

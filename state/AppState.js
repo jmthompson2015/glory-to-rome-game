@@ -20,10 +20,13 @@ AppState.create = ({
   versionKey = "republic",
   winnerId = null,
 
-  currentRound = 0,
-  currentPlayerOrder = null,
+  currentInputCallback = null,
+  currentMove = null,
+  currentMoves = [],
   currentPhaseKey = null,
   currentPlayerId = null,
+  currentPlayerOrder = null,
+  currentRound = 0,
   currentStepKey = null,
 
   playerToCamp = {},
@@ -61,10 +64,13 @@ AppState.create = ({
     versionKey,
     winnerId,
 
-    currentRound,
-    currentPlayerOrder,
+    currentInputCallback,
+    currentMove,
+    currentMoves,
     currentPhaseKey,
     currentPlayerId,
+    currentPlayerOrder,
+    currentRound,
     currentStepKey,
 
     playerToCamp,

@@ -175,11 +175,11 @@ const performThinkerOption = (playerId, store) => (thinkerOption) => {
   IV.validateNotNil("thinkerOption", thinkerOption);
   const player = Selector.player(playerId, store.getState());
   const { options } = Role.value(Role.THINKER);
-  const userMessage = `${player.name} chose to ${thinkerOption}.`;
+  const userMessage = `${player.name} chose to ${thinkerOption.moveKey}.`;
   store.dispatch(ActionCreator.setUserMessage(userMessage));
   const shortfall = Selector.handShortfall(playerId, store.getState());
 
-  switch (thinkerOption) {
+  switch (thinkerOption.moveKey) {
     case options.DRAW_JACK:
       if (!R.isEmpty(store.getState().jackDeck)) {
         store.dispatch(ActionCreator.transferJackToHand(playerId));
@@ -218,7 +218,7 @@ const RoleFunction = {
         const strategy = SR.resolve(player.strategy);
         const delay = Selector.delay(store.getState());
         answer = strategy
-          .chooseArchitectOption(options, store.getState(), delay)
+          .chooseArchitectOption(options, store, delay)
           .then(performArchitectOption(playerId, store));
       }
 
@@ -241,7 +241,7 @@ const RoleFunction = {
         const strategy = SR.resolve(player.strategy);
         const delay = Selector.delay(store.getState());
         answer = strategy
-          .chooseCraftsmanOption(options, store.getState(), delay)
+          .chooseCraftsmanOption(options, store, delay)
           .then(performCraftsmanOption(playerId, store));
       }
 
@@ -262,7 +262,7 @@ const RoleFunction = {
         const strategy = SR.resolve(player.strategy);
         const delay = Selector.delay(store.getState());
         answer = strategy
-          .chooseLaborerOption(options, store.getState(), delay)
+          .chooseLaborerOption(options, store, delay)
           .then(performLaborerOption(playerId, store));
       }
 
@@ -283,7 +283,7 @@ const RoleFunction = {
         const strategy = SR.resolve(player.strategy);
         const delay = Selector.delay(store.getState());
         answer = strategy
-          .chooseLegionaryOption(options, store.getState(), delay)
+          .chooseLegionaryOption(options, store, delay)
           .then(performLegionaryOption(playerId, store));
       }
 
@@ -304,7 +304,7 @@ const RoleFunction = {
         const strategy = SR.resolve(player.strategy);
         const delay = Selector.delay(store.getState());
         answer = strategy
-          .chooseMerchantOption(options, store.getState(), delay)
+          .chooseMerchantOption(options, store, delay)
           .then(performMerchantOption(playerId, store));
       }
 
@@ -325,7 +325,7 @@ const RoleFunction = {
         const strategy = SR.resolve(player.strategy);
         const delay = Selector.delay(store.getState());
         answer = strategy
-          .choosePatronOption(options, store.getState(), delay)
+          .choosePatronOption(options, store, delay)
           .then(performPatronOption(playerId, store));
       }
 
@@ -347,7 +347,7 @@ const RoleFunction = {
       const strategy = SR.resolve(player.strategy);
       const delay = Selector.delay(store.getState());
       return strategy
-        .chooseThinkerOption(options, store.getState(), delay)
+        .chooseThinkerOption(options, store, delay)
         .then(performThinkerOption(playerId, store));
     },
   },

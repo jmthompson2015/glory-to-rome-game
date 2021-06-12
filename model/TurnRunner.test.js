@@ -150,9 +150,10 @@ QUnit.test("execute() Cleanup", (assert) => {
     assert.equal(S.currentPlayerId(state), undefined);
     assert.equal(S.currentStepKey(state), undefined);
 
-    assertEqual(assert, "leadRoleKey", S.leadRole(state), leadRoleKey);
+    assertEqual(assert, "leadRoleKey", S.leadRole(state), null);
     assertLength(assert, "cardPool", S.cardPool(state), 6);
     assertEqual(assert, "orderDeck len", S.orderDeck(state).length, 114);
+    assertLength(assert, "currentMoves", S.currentMoves(state), 0);
     assertEqual(assert, "campIds len", S.campIds(playerId, state).length, 0);
     assertEqual(assert, "handIds len", S.handIds(playerId, state).length, 5);
     assertLength(assert, "clienteleIds", S.clienteleIds(playerId, state), 0);

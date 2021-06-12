@@ -1,5 +1,3 @@
-import Role from "../artifact/Role.js";
-
 import ActionCreator from "../state/ActionCreator.js";
 import S from "../state/Selector.js";
 
@@ -53,8 +51,8 @@ QUnit.test("execute()", (assert) => {
     assert.equal(S.currentPlayerId(state), undefined);
     assert.equal(S.currentStepKey(state), undefined);
 
-    const roleSet = [Role.ARCHITECT, Role.LEGIONARY, Role.THINKER];
-    assertSet(assert, "leadRoleKey", S.leadRole(state), roleSet);
+    assertLength(assert, "currentMoves", S.currentMoves(state), 0);
+    assertEqual(assert, "leadRoleKey", S.leadRole(state), null);
     assertSet(assert, "cardPool len", S.cardPool(state).length, [5, 6, 7]);
     const deckLen = [110, 111, 112, 113, 114];
     assertSet(assert, "orderDeck len", S.orderDeck(state).length, deckLen);

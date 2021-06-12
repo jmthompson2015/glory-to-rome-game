@@ -8,7 +8,7 @@ QUnit.test("Role properties Architect", (assert) => {
   const roleKey = Role.ARCHITECT;
   const properties = Role.properties[roleKey];
   assert.equal(properties.name, "Architect");
-  assert.equal(properties.color, "Gray");
+  assert.equal(properties.color, "gray");
   assert.equal(properties.key, roleKey);
 });
 

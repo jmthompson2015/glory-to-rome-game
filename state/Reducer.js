@@ -366,6 +366,28 @@ Reducer.root = (state, action) => {
       return layFoundation(state, action.playerId, action.structureState);
     case ActionType.SET_CARD_POOL:
       return { ...state, cardPool: action.cardPool };
+    case ActionType.SET_CURRENT_INPUT_CALLBACK:
+      log(
+        `Reducer SET_CURRENT_INPUT_CALLBACK callback isNil ? ${R.isNil(
+          action.callback
+        )}`,
+        state
+      );
+      return { ...state, currentInputCallback: action.callback };
+    case ActionType.SET_CURRENT_MOVE:
+      log(
+        `Reducer SET_CURRENT_MOVE moveState = ${JSON.stringify(
+          action.moveState
+        )}`,
+        state
+      );
+      return { ...state, currentMove: action.moveState };
+    case ActionType.SET_CURRENT_MOVES:
+      log(
+        `Reducer SET_CURRENT_MOVES moveStates.length = ${action.moveStates.length}`,
+        state
+      );
+      return { ...state, currentMoves: action.moveStates };
     case ActionType.SET_CURRENT_PHASE:
       log(`Reducer SET_CURRENT_PHASE phaseKey = ${action.phaseKey}`, state);
       return { ...state, currentPhaseKey: action.phaseKey };

@@ -1,11 +1,24 @@
+/* eslint no-console: ["error", { allow: ["log"] }] */
+
+import Role from "../artifact/Role.js";
+
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
 import StructureState from "../state/StructureState.js";
 
+import MoveGenerator from "../model/MoveGenerator.js";
 import TestData from "../model/TestData.js";
 
 import Endpoint from "./Endpoint.js";
 import TableauUI from "./TableauUI.js";
+
+const inputCallback = ({ playerId, moveState }) => {
+  console.log(
+    `inputCallback() playerId = ${playerId} moveState = ${JSON.stringify(
+      moveState
+    )}`
+  );
+};
 
 const store = TestData.createStore();
 const playerId = 1;
@@ -58,6 +71,20 @@ const structureState3 = StructureState.create({
   store,
 });
 store.dispatch(ActionCreator.addStructure(structureState3));
+
+store.dispatch(ActionCreator.setLeadRole(Role.ARCHITECT));
+const roleKey = Selector.leadRole(store.getState());
+console.log(`roleKey = ${roleKey}`);
+const role = Role.value(roleKey);
+
+const moveStates = MoveGenerator.generateOptions(
+  roleKey,
+  playerId,
+  store.getState()
+);
+console.log(`moveStates.length = ${moveStates.length}`);
+
+// /////////////////////////////////////////////////////////////////////////////
 const structureStates = [structureState1, structureState2, structureState3];
 const state = store.getState();
 
@@ -66,8 +93,11 @@ const element = React.createElement(TableauUI, {
   clienteleCards: Selector.clienteleCards(playerId, state),
   handCards: Selector.handCards(playerId, state),
   influenceCards: Selector.influenceCards(playerId, state),
+  inputCallback,
+  moveStates,
   player: Selector.player(playerId, state),
   resourceBase: Endpoint.LOCAL_RESOURCE,
+  role,
   stockpileCards: Selector.stockpileCards(playerId, state),
   structures: structureStates,
   vaultCards: Selector.vaultCards(playerId, state),

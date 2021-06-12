@@ -1,4 +1,5 @@
 import Material from "../artifact/Material.js";
+import Role from "../artifact/Role.js";
 import Selector from "../state/Selector.js";
 
 import CardsUI from "./CardsUI.js";
@@ -125,15 +126,24 @@ const createOutOfTownSitesCell = (state, resourceBase) => {
   );
 };
 
-const createTableau = (playerId, resourceBase, className, state) =>
-  React.createElement(TableauUI, {
+const createTableau = (playerId, resourceBase, className, state) => {
+  const isCurrentPlayer = playerId === Selector.currentPlayerId(state);
+  const inputCallback = isCurrentPlayer
+    ? Selector.currentInputCallback(state)
+    : undefined;
+  const moveStates = isCurrentPlayer ? Selector.currentMoves(state) : undefined;
+
+  return React.createElement(TableauUI, {
     campCards: Selector.campCards(playerId, state),
     className,
     clienteleCards: Selector.clienteleCards(playerId, state),
     handCards: Selector.handCards(playerId, state),
     influenceCards: Selector.influenceCards(playerId, state),
+    inputCallback,
+    moveStates,
     player: Selector.player(playerId, state),
     resourceBase,
+    role: Role.value(Selector.leadRole(state)),
     stockpileCards: Selector.stockpileCards(playerId, state),
     structures: Selector.structures(
       Selector.structureIds(playerId, state),
@@ -142,6 +152,7 @@ const createTableau = (playerId, resourceBase, className, state) =>
     vaultCards: Selector.vaultCards(playerId, state),
     width: WIDTH,
   });
+};
 
 // /////////////////////////////////////////////////////////////////////////////
 class GameUI extends React.PureComponent {
@@ -152,7 +163,7 @@ class GameUI extends React.PureComponent {
       const tableau = createTableau(playerId, resourceBase, className, state);
       return { ...accum, [playerId]: tableau };
     };
-    const playerIds = Object.keys(state.playerInstances);
+    const playerIds = Selector.playerIds(state);
     const playerToTableau = R.reduce(reduceFunction, {}, playerIds);
 
     const orderDeckCell = createOrderDeckCell(state, resourceBase, WIDTH);

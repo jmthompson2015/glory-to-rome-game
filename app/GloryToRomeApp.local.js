@@ -21,6 +21,13 @@ const playGame = () => {
 
   const store = Redux.createStore(Reducer.root);
   const players = TestData.createPlayers();
+  const newPlayer0 = {
+    ...players[0],
+    isComputer: false,
+    strategy: "HumanPlayerStrategy",
+  };
+  players[0] = newPlayer0;
+  console.log(`players = ${JSON.stringify(players)}`);
   Setup.execute(store, players);
 
   // Status Bar

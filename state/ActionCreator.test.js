@@ -7,7 +7,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", (assert) => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 43);
+  assert.equal(actionTypeKeys.length, 46);
 
   // Run / Verify.
   actionTypeKeys.forEach((key) => {
@@ -116,6 +116,45 @@ QUnit.test("layFoundation()", (assert) => {
   assert.equal(result.type, ActionType.LAY_FOUNDATION);
   assert.equal(result.playerId, playerId);
   assert.equal(result.structureState, structureState);
+});
+
+QUnit.test("setCurrentInputCallback()", (assert) => {
+  // Setup.
+  const callback = 12;
+
+  // Run.
+  const result = ActionCreator.setCurrentInputCallback(callback);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.SET_CURRENT_INPUT_CALLBACK);
+  assert.equal(result.callback, callback);
+});
+
+QUnit.test("setCurrentMove()", (assert) => {
+  // Setup.
+  const moveState = 12;
+
+  // Run.
+  const result = ActionCreator.setCurrentMove(moveState);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.SET_CURRENT_MOVE);
+  assert.equal(result.moveState, moveState);
+});
+
+QUnit.test("setCurrentMoves()", (assert) => {
+  // Setup.
+  const moveStates = 12;
+
+  // Run.
+  const result = ActionCreator.setCurrentMoves(moveStates);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.SET_CURRENT_MOVES);
+  assert.equal(result.moveStates, moveStates);
 });
 
 QUnit.test("setCurrentPhase()", (assert) => {

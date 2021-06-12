@@ -10,7 +10,7 @@ import TestData from "./TestData.js";
 
 QUnit.module("MoveGenerator");
 
-QUnit.test("generateArchitectOptions() Build Structure", (assert) => {
+QUnit.test("generateArchitectOptions() Build a Structure", (assert) => {
   // Setup.
   const playerId = 1;
   const store = TestData.createStore();
@@ -48,7 +48,7 @@ QUnit.test("generateArchitectOptions() Build Structure", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "build structure",
+    "Build a Structure",
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   assert.equal(moveFirst.cardId, 27, `moveFirst.cardId = ${moveFirst.cardId}`);
@@ -76,20 +76,20 @@ QUnit.test("generateArchitectOptions() Lay Foundation", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "lay a foundation",
+    "Lay a Foundation",
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   assert.equal(moveFirst.cardId, 2, `moveFirst.cardId = ${moveFirst.cardId}`);
   const moveLast = R.last(result);
   assert.equal(
     moveLast.moveKey,
-    "lay a foundation",
+    "Lay a Foundation",
     `moveLast.moveKey = ${moveLast.moveKey}`
   );
   assert.equal(moveLast.cardId, 6, `moveLast.cardId = ${moveLast.cardId}`);
 });
 
-QUnit.test("generateCraftsmanOptions() Build Structure", (assert) => {
+QUnit.test("generateCraftsmanOptions() Build a Structure", (assert) => {
   // Setup.
   const playerId = 1;
   const store = TestData.createStore();
@@ -130,7 +130,7 @@ QUnit.test("generateCraftsmanOptions() Build Structure", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "build structure",
+    "Build a Structure",
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   assert.equal(moveFirst.cardId, 3, `moveFirst.cardId = ${moveFirst.cardId}`);
@@ -158,14 +158,14 @@ QUnit.test("generateCraftsmanOptions() Lay Foundation", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "lay a foundation",
+    "Lay a Foundation",
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   assert.equal(moveFirst.cardId, 2, `moveFirst.cardId = ${moveFirst.cardId}`);
   const moveLast = R.last(result);
   assert.equal(
     moveLast.moveKey,
-    "lay a foundation",
+    "Lay a Foundation",
     `moveLast.moveKey = ${moveLast.moveKey}`
   );
   assert.equal(moveLast.cardId, 6, `moveLast.cardId = ${moveLast.cardId}`);
@@ -367,15 +367,17 @@ QUnit.test("generateThinkerOptions()", (assert) => {
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
   assert.equal(result.length, 2, `result.length = ${result.length}`);
+  const moveFirst = R.head(result);
   assert.equal(
-    R.head(result),
-    "draw a jack",
-    `R.head(result) = ${R.head(result)}`
+    moveFirst.moveKey,
+    "Draw a Jack",
+    `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
+  const moveLast = R.last(result);
   assert.equal(
-    R.last(result),
-    "draw a card",
-    `R.last(result) = ${R.last(result)}`
+    moveLast.moveKey,
+    "Draw a Card",
+    `moveLast.moveKey = ${moveLast.moveKey}`
   );
 });
 
@@ -397,14 +399,16 @@ QUnit.test("generateThinkerOptions() needs refill", (assert) => {
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
   assert.equal(result.length, 2, `result.length = ${result.length}`);
+  const moveFirst = R.head(result);
   assert.equal(
-    R.head(result),
-    "draw a jack",
-    `R.head(result) = ${R.head(result)}`
+    moveFirst.moveKey,
+    "Draw a Jack",
+    `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
+  const moveLast = R.last(result);
   assert.equal(
-    R.last(result),
-    "refill hand",
+    moveLast.moveKey,
+    "Refill Hand",
     `R.last(result) = ${R.last(result)}`
   );
 });
@@ -424,10 +428,11 @@ QUnit.test("generateThinkerOptions() out of Jacks", (assert) => {
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
   assert.equal(result.length, 1, `result.length = ${result.length}`);
+  const moveLast = R.last(result);
   assert.equal(
-    R.head(result),
-    "draw a card",
-    `R.head(result) = ${R.head(result)}`
+    moveLast.moveKey,
+    "Draw a Card",
+    `moveLast.moveKey = ${moveLast.moveKey}`
   );
 });
 
