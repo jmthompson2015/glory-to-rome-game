@@ -54,7 +54,7 @@ StepFunction.declareRole = (store) => {
 
   if (
     Selector.isLeader(playerId, store.getState()) ||
-    Selector.leadRole(store.getState()) !== Role.THINKER
+    Selector.leadRoleKey(store.getState()) !== Role.THINKER
   ) {
     const options = MoveGenerator.generateRoleOptions(
       playerId,
@@ -77,7 +77,7 @@ StepFunction.performRole = (store) => {
   if (store.getState().isVerbose) {
     console.log(`StepFunction.performRole()`);
   }
-  const leadRoleKey = Selector.leadRole(store.getState());
+  const leadRoleKey = Selector.leadRoleKey(store.getState());
   const roleFunction = RoleFunction[leadRoleKey];
   const playerId = Selector.currentPlayerId(store.getState());
   const campIds = Selector.campIds(playerId, store.getState());

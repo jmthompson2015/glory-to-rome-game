@@ -73,7 +73,7 @@ const structureState3 = StructureState.create({
 store.dispatch(ActionCreator.addStructure(structureState3));
 
 store.dispatch(ActionCreator.setLeadRole(Role.ARCHITECT));
-const roleKey = Selector.leadRole(store.getState());
+const roleKey = Selector.leadRoleKey(store.getState());
 console.log(`roleKey = ${roleKey}`);
 const role = Role.value(roleKey);
 

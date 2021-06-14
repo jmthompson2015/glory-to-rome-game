@@ -89,7 +89,7 @@ Selector.leaderCardId = (state) => state.leaderCardId;
 
 Selector.leaderId = (state) => state.leaderId;
 
-Selector.leadRole = (state) => state.leadRoleKey;
+Selector.leadRoleKey = (state) => state.leadRoleKey;
 
 Selector.mctsRoot = (state) => state.mctsRoot;
 

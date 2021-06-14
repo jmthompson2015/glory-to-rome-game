@@ -40,7 +40,7 @@ const moveStates = MoveGenerator.generateOptions(
   store.getState()
 );
 store.dispatch(ActionCreator.setCurrentMoves(moveStates));
-store.dispatch(ActionCreator.pushInputCallback(inputCallback));
+store.dispatch(ActionCreator.setCurrentInputCallback(inputCallback));
 
 const element = React.createElement(GameUI, {
   resourceBase: Endpoint.LOCAL_RESOURCE,

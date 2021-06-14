@@ -123,7 +123,7 @@ const generateLeaderRoleOptions = (playerId, state) => {
 };
 
 const generateNonLeaderRoleOptions = (playerId, state) => {
-  const leadRoleKey = Selector.leadRole(state);
+  const leadRoleKey = Selector.leadRoleKey(state);
   const reduceFunction = (accum, cardId) => {
     const card = Selector.orderCard(cardId, state);
 

@@ -53,7 +53,7 @@ QUnit.test("execute() Declare Role", (assert) => {
     assert.equal(S.currentStepKey(state), undefined);
 
     const roleSet = [Role.ARCHITECT, Role.LEGIONARY, Role.THINKER];
-    assertSet(assert, "leadRoleKey", S.leadRole(state), roleSet);
+    assertSet(assert, "leadRoleKey", S.leadRoleKey(state), roleSet);
     assertLength(assert, "cardPool", S.cardPool(state), 5);
     assertSet(assert, "orderDeck len", S.orderDeck(state).length, [113, 114]);
     assertSet(assert, "campIds len", S.campIds(playerId, state).length, [0, 1]);
@@ -100,7 +100,7 @@ QUnit.test("execute() Perform Role", (assert) => {
     assert.equal(S.currentPlayerId(state), playerId);
     assert.equal(S.currentStepKey(state), undefined);
 
-    assertEqual(assert, "leadRoleKey", S.leadRole(state), leadRoleKey);
+    assertEqual(assert, "leadRoleKey", S.leadRoleKey(state), leadRoleKey);
     assertLength(assert, "cardPool", S.cardPool(state), 5);
     assertEqual(assert, "orderDeck len", S.orderDeck(state).length, 114);
     assertEqual(assert, "campIds len", S.campIds(playerId, state).length, 1);
@@ -146,7 +146,7 @@ QUnit.test("execute() Cleanup", (assert) => {
     assert.equal(S.currentPlayerId(state), 1);
     assert.equal(S.currentStepKey(state), undefined);
 
-    assertEqual(assert, "leadRoleKey", S.leadRole(state), leadRoleKey);
+    assertEqual(assert, "leadRoleKey", S.leadRoleKey(state), leadRoleKey);
     assertLength(assert, "cardPool", S.cardPool(state), 6);
     assertEqual(assert, "orderDeck len", S.orderDeck(state).length, 114);
     assertLength(assert, "currentMoves", S.currentMoves(state), 0);
