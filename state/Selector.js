@@ -1,6 +1,7 @@
 import IV from "../utility/InputValidator.js";
 
 import OrderCard from "../artifact/OrderCard.js";
+import Role from "../artifact/Role.js";
 import SiteCard from "../artifact/SiteCard.js";
 
 const Selector = {};
@@ -88,6 +89,8 @@ Selector.leaderCard = (state) => {
 Selector.leaderCardId = (state) => state.leaderCardId;
 
 Selector.leaderId = (state) => state.leaderId;
+
+Selector.leadRole = (state) => Role.value(state.leadRoleKey);
 
 Selector.leadRoleKey = (state) => state.leadRoleKey;
 

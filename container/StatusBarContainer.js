@@ -8,8 +8,7 @@ import StatusBarUI from "../view/StatusBarUI.js";
 
 function mapStateToProps(state, ownProps) {
   const leader = Selector.player(Selector.leaderId(state), state);
-  const leadRoleKey = Selector.leadRoleKey(state);
-  const leadRole = Role.value(leadRoleKey);
+  const leadRole = Selector.leadRole(state);
   const phase = Phase.value(Selector.currentPhaseKey(state));
   const player = Selector.currentPlayer(state);
 

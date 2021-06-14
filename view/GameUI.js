@@ -143,7 +143,7 @@ const createTableau = (playerId, resourceBase, className, state) => {
     moveStates,
     player: Selector.player(playerId, state),
     resourceBase,
-    role: Role.value(Selector.leadRoleKey(state)),
+    role: Selector.leadRole(state),
     stockpileCards: Selector.stockpileCards(playerId, state),
     structures: Selector.structures(
       Selector.structureIds(playerId, state),
