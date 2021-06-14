@@ -1,5 +1,4 @@
 import Material from "../artifact/Material.js";
-import Role from "../artifact/Role.js";
 import Selector from "../state/Selector.js";
 
 import CardsUI from "./CardsUI.js";
@@ -11,7 +10,7 @@ import TableauUI from "./TableauUI.js";
 const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
 
 const BACKGROUND = ["bg-maroon", "bg-green", "bg-navy", "bg-olive", "bg-teal"];
-const WIDTH = 150;
+const WIDTH = 80;
 
 const createJackDeckCell = (state, resourceBase, width) => {
   const deck = Selector.orderCards(state.jackDeck, state);

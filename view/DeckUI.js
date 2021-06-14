@@ -19,7 +19,7 @@ const drawFunction2 = (count, fillStyle) => (context0, width, height) => {
     context.save();
     const y = height * 0.95;
     context.fillStyle = fillStyle;
-    context.font = "48px sans-serif";
+    context.font = "32px sans-serif";
     context.fillText(count, 5, y);
     context.restore();
   }
@@ -79,7 +79,7 @@ DeckUI.defaultProps = {
   countFillStyle: "white",
   resourceBase: Endpoint.NETWORK_RESOURCE,
   version: undefined,
-  width: 200,
+  width: 80,
 };
 
 Object.freeze(DeckUI);

@@ -39,7 +39,7 @@ DecksUI.propTypes = {
 DecksUI.defaultProps = {
   countFillStyle: undefined,
   resourceBase: Endpoint.NETWORK_RESOURCE,
-  width: 200,
+  width: 80,
 };
 
 Object.freeze(DecksUI);

@@ -22,6 +22,5 @@ const element = React.createElement(DecksUI, {
   countFillStyle: "black",
   decks,
   resourceBase: Endpoint.LOCAL_RESOURCE,
-  width: 150,
 });
 ReactDOM.render(element, document.getElementById("panel"));

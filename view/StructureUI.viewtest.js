@@ -22,7 +22,7 @@ const createStructureCell = (structureState, customKey0) => {
     structureState,
     customKey,
     resourceBase: Endpoint.LOCAL_RESOURCE,
-    width: 200,
+    width: 80,
   });
   const { foundationId } = structureState;
 

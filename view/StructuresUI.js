@@ -14,20 +14,13 @@ class StructuresUI extends React.PureComponent {
   }
 
   render() {
-    const {
-      structureStates,
-      onClick,
-      resourceBase,
-      slicing,
-      width,
-    } = this.props;
+    const { structureStates, resourceBase, slicing, width } = this.props;
 
     const mapFunction = (structureState) => {
       const customKey = this.createId(structureState);
       const element = React.createElement(StructureUI, {
         structureState,
         customKey,
-        onClick,
         resourceBase,
         slicing,
         width,
@@ -51,7 +44,6 @@ StructuresUI.propTypes = {
   structureStates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
   customKey: PropTypes.string,
-  onClick: PropTypes.func,
   resourceBase: PropTypes.string,
   slicing: PropTypes.number,
   width: PropTypes.number,
@@ -59,10 +51,9 @@ StructuresUI.propTypes = {
 
 StructuresUI.defaultProps = {
   customKey: "StructuresUI",
-  onClick: () => {},
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: 0.2,
-  width: 200,
+  width: 80,
 };
 
 Object.freeze(StructuresUI);

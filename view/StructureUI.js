@@ -43,9 +43,27 @@ const drawFunction2 = (imageSrc) => (context, width, height, imageMap) => {
 
 const mapIndexed = R.addIndex(R.map);
 
+// /////////////////////////////////////////////////////////////////////////////
 class StructureUI extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    const { width } = this.props;
+    this.state = { width };
+
+    this.handleOnClick = this.handleOnClickFunction.bind(this);
+  }
+
+  handleOnClickFunction() {
+    const { magnification, width: width0 } = this.props;
+    const { width: width1 } = this.state;
+    const newWidth = width0 === width1 ? magnification * width0 : width0;
+    this.setState({ width: newWidth });
+  }
+
   height() {
-    const { slicing, structureState, width } = this.props;
+    const { slicing, structureState } = this.props;
+    const { width } = this.state;
     const height0 = width * HEIGHT_RATIO;
     let answer = height0; // foundation
 
@@ -56,12 +74,6 @@ class StructureUI extends React.PureComponent {
     answer += height0 * slicing * structureState.materialIds.length;
 
     return answer;
-  }
-
-  width() {
-    const { width } = this.props;
-
-    return width;
   }
 
   createFoundationSrc() {
@@ -99,7 +111,8 @@ class StructureUI extends React.PureComponent {
   }
 
   render() {
-    const { customKey, slicing, structureState, width } = this.props;
+    const { customKey, slicing, structureState } = this.props;
+    const { width } = this.state;
     IV.validateNotNil("structureState", structureState);
     const height0 = width * HEIGHT_RATIO;
     const hBottom = this.height();
@@ -135,7 +148,7 @@ class StructureUI extends React.PureComponent {
       images,
       onClick: this.handleOnClick,
       title: `${structureState.foundationType.name}`,
-      width: this.width(),
+      width,
     });
   }
 }
@@ -144,6 +157,7 @@ StructureUI.propTypes = {
   structureState: PropTypes.shape().isRequired,
 
   customKey: PropTypes.string,
+  magnification: PropTypes.number,
   resourceBase: PropTypes.string,
   slicing: PropTypes.number,
   version: PropTypes.string,
@@ -152,10 +166,11 @@ StructureUI.propTypes = {
 
 StructureUI.defaultProps = {
   customKey: "StructureUI",
+  magnification: 3,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: 0.2,
   version: undefined,
-  width: 200,
+  width: 80,
 };
 
 export default StructureUI;

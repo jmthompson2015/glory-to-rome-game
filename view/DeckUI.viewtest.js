@@ -20,6 +20,5 @@ const deck = Selector.orderCards(Selector.orderDeck(state), state);
 const element = React.createElement(DeckUI, {
   deck,
   resourceBase: Endpoint.LOCAL_RESOURCE,
-  width: 200,
 });
 ReactDOM.render(element, document.getElementById("panel"));

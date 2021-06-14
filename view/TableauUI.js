@@ -234,7 +234,7 @@ TableauUI.defaultProps = {
   resourceBase: Endpoint.NETWORK_RESOURCE,
   role: undefined,
   structures: [],
-  width: 200,
+  width: 80,
 };
 
 Object.freeze(TableauUI);

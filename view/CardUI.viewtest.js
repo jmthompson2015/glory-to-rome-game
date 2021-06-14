@@ -13,12 +13,6 @@ const store = TestData.createStore();
 store.dispatch(ActionCreator.setVerbose(true));
 store.dispatch(ActionCreator.setOrderHighlighted(3, true));
 
-const onClick = ({ cardId, cardKey, eventSource }) => {
-  console.log(
-    `onClick() cardId = ${cardId} cardKey = ${cardKey} eventSource = ${eventSource}`
-  );
-};
-
 const createCardCell = (cardState, customKey0, sliceType) => {
   const c = cardState;
   const customKeySuffix = `${c.id}-${c.cardKey}-${c.isFaceup}-${c.isHighlighted}`;
@@ -28,10 +22,9 @@ const createCardCell = (cardState, customKey0, sliceType) => {
     key: `CardUI${cardState.key}`,
     cardState,
     customKey,
-    onClick,
     resourceBase: Endpoint.LOCAL_RESOURCE,
     slicing,
-    width: 200,
+    width: 80,
   });
 
   return RU.createCell(element, `CardCell${cardState.cardKey}`, "pa1 v-top");

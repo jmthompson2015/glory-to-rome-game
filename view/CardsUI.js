@@ -14,14 +14,13 @@ class CardsUI extends React.PureComponent {
   }
 
   render() {
-    const { cardStates, onClick, resourceBase, slicing, width } = this.props;
+    const { cardStates, resourceBase, slicing, width } = this.props;
 
     const mapFunction = (cardState) => {
       const customKey = this.createId(cardState);
       const element = React.createElement(CardUI, {
         cardState,
         customKey,
-        onClick,
         resourceBase,
         slicing,
         width,
@@ -45,7 +44,6 @@ CardsUI.propTypes = {
   cardStates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
   customKey: PropTypes.string,
-  onClick: PropTypes.func,
   resourceBase: PropTypes.string,
   slicing: PropTypes.shape(),
   width: PropTypes.number,
@@ -53,10 +51,9 @@ CardsUI.propTypes = {
 
 CardsUI.defaultProps = {
   customKey: "CardsUI",
-  onClick: () => {},
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: undefined,
-  width: 200,
+  width: 80,
 };
 
 Object.freeze(CardsUI);

@@ -10,12 +10,6 @@ import TestData from "../model/TestData.js";
 import CardsUI from "./CardsUI.js";
 import Endpoint from "./Endpoint.js";
 
-const onClick = ({ cardId, cardKey, eventSource }) => {
-  console.log(
-    `onClick() cardId = ${cardId} cardKey = ${cardKey} eventSource = ${eventSource}`
-  );
-};
-
 const store = Redux.createStore(Reducer.root);
 const players = TestData.createPlayers();
 Setup.execute(store, players);
@@ -27,8 +21,6 @@ const handCards = Selector.handCards(playerId, store.getState());
 
 const element = React.createElement(CardsUI, {
   cardStates: handCards,
-  onClick,
   resourceBase: Endpoint.LOCAL_RESOURCE,
-  width: 150,
 });
 ReactDOM.render(element, document.getElementById("panel"));

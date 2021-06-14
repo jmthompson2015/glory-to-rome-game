@@ -40,6 +40,7 @@ const drawFunction1 = (imageSrc, slicing) => (
   }
 };
 const drawFunction2 = (context0, width, height) => {
+  // Highlight
   const context = context0;
   context.save();
   context.strokeStyle = "blue";
@@ -49,20 +50,27 @@ const drawFunction2 = (context0, width, height) => {
   context.restore();
 };
 
+// /////////////////////////////////////////////////////////////////////////////
 class CardUI extends React.PureComponent {
   constructor(props) {
     super(props);
+
+    const { width } = this.props;
+    this.state = { width };
 
     this.handleOnClick = this.handleOnClickFunction.bind(this);
   }
 
   handleOnClickFunction() {
-    const { cardState, eventSource, onClick } = this.props;
-    onClick({ cardId: cardState.id, cardKey: cardState.cardKey, eventSource });
+    const { magnification, width: width0 } = this.props;
+    const { width: width1 } = this.state;
+    const newWidth = width0 === width1 ? magnification * width0 : width0;
+    this.setState({ width: newWidth });
   }
 
   height() {
-    const { slicing, width } = this.props;
+    const { slicing } = this.props;
+    const { width } = this.state;
     const height = width * 1.4;
     let dHeight;
 
@@ -74,7 +82,8 @@ class CardUI extends React.PureComponent {
   }
 
   width() {
-    const { slicing, width } = this.props;
+    const { slicing } = this.props;
+    const { width } = this.state;
     let dWidth;
 
     if (!R.isNil(slicing) && ["left", "right"].includes(slicing.type)) {
@@ -117,8 +126,7 @@ CardUI.propTypes = {
   cardState: PropTypes.shape().isRequired,
 
   customKey: PropTypes.string,
-  eventSource: PropTypes.string,
-  onClick: PropTypes.func,
+  magnification: PropTypes.number,
   resourceBase: PropTypes.string,
   slicing: PropTypes.shape({
     type: PropTypes.oneOf(["bottom", "left", "right", "top"]).isRequired,
@@ -130,12 +138,11 @@ CardUI.propTypes = {
 
 CardUI.defaultProps = {
   customKey: "CardUI",
-  eventSource: "CardUI",
-  onClick: () => {},
+  magnification: 3,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: undefined,
   version: undefined,
-  width: 200,
+  width: 80,
 };
 
 export default CardUI;

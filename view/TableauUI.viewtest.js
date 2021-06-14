@@ -101,6 +101,6 @@ const element = React.createElement(TableauUI, {
   stockpileCards: Selector.stockpileCards(playerId, state),
   structures: structureStates,
   vaultCards: Selector.vaultCards(playerId, state),
-  width: 150,
+  width: 80,
 });
 ReactDOM.render(element, document.getElementById("panel"));
