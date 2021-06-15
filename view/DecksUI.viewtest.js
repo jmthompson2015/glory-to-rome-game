@@ -18,9 +18,16 @@ const reduceFunction = (accum, materialKey) => {
 };
 const decks = R.reduce(reduceFunction, [], Material.keys());
 
-const element = React.createElement(DecksUI, {
+const element1 = React.createElement(DecksUI, {
   countFillStyle: "black",
   decks,
   resourceBase: Endpoint.LOCAL_RESOURCE,
 });
-ReactDOM.render(element, document.getElementById("panel"));
+ReactDOM.render(element1, document.getElementById("panel1"));
+
+const element2 = React.createElement(DecksUI, {
+  countFillStyle: "black",
+  decks: [],
+  resourceBase: Endpoint.LOCAL_RESOURCE,
+});
+ReactDOM.render(element2, document.getElementById("panel2"));

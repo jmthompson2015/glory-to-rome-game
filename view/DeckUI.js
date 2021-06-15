@@ -25,6 +25,7 @@ const drawFunction2 = (count, fillStyle) => (context0, width, height) => {
   }
 };
 
+// /////////////////////////////////////////////////////////////////////////////
 class DeckUI extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -46,6 +47,11 @@ class DeckUI extends React.PureComponent {
   render() {
     const { countFillStyle, deck, width } = this.props;
     const cardState = R.head(deck);
+
+    if (R.isNil(cardState)) {
+      return ReactDOMFactories.span({ key: "DeckCanvas0" }, "");
+    }
+
     const imageSrc = this.createSrc(cardState);
     const count = deck.length;
     const drawLayerFunctions = [

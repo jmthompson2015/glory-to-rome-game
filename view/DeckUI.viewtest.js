@@ -17,8 +17,14 @@ const state = store.getState();
 
 const deck = Selector.orderCards(Selector.orderDeck(state), state);
 
-const element = React.createElement(DeckUI, {
+const element1 = React.createElement(DeckUI, {
   deck,
   resourceBase: Endpoint.LOCAL_RESOURCE,
 });
-ReactDOM.render(element, document.getElementById("panel"));
+ReactDOM.render(element1, document.getElementById("panel1"));
+
+const element2 = React.createElement(DeckUI, {
+  deck: [],
+  resourceBase: Endpoint.LOCAL_RESOURCE,
+});
+ReactDOM.render(element2, document.getElementById("panel2"));

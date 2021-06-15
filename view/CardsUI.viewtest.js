@@ -19,8 +19,14 @@ const handIds = Selector.handIds(playerId, store.getState());
 store.dispatch(ActionCreator.setOrderHighlighted(handIds[1], true));
 const handCards = Selector.handCards(playerId, store.getState());
 
-const element = React.createElement(CardsUI, {
+const element1 = React.createElement(CardsUI, {
   cardStates: handCards,
   resourceBase: Endpoint.LOCAL_RESOURCE,
 });
-ReactDOM.render(element, document.getElementById("panel"));
+ReactDOM.render(element1, document.getElementById("panel1"));
+
+const element2 = React.createElement(CardsUI, {
+  cardStates: [],
+  resourceBase: Endpoint.LOCAL_RESOURCE,
+});
+ReactDOM.render(element2, document.getElementById("panel2"));
