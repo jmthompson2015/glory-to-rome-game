@@ -79,7 +79,7 @@ const createStructureCell = (
   return RU.createCell(cardsPane, `CardsCell${title}`, "tc v-mid");
 };
 
-class TableauUI extends React.PureComponent {
+class PlayerPanel extends React.PureComponent {
   createPlayerBoard() {
     const {
       campCards,
@@ -201,7 +201,7 @@ class TableauUI extends React.PureComponent {
   }
 }
 
-TableauUI.propTypes = {
+PlayerPanel.propTypes = {
   player: PropTypes.shape().isRequired,
 
   campCards: PropTypes.arrayOf(PropTypes.shape()),
@@ -220,7 +220,7 @@ TableauUI.propTypes = {
   width: PropTypes.number,
 };
 
-TableauUI.defaultProps = {
+PlayerPanel.defaultProps = {
   campCards: [],
   clienteleCards: [],
   handCards: [],
@@ -237,6 +237,6 @@ TableauUI.defaultProps = {
   width: 80,
 };
 
-Object.freeze(TableauUI);
+Object.freeze(PlayerPanel);
 
-export default TableauUI;
+export default PlayerPanel;

@@ -10,7 +10,7 @@ import MoveGenerator from "../model/MoveGenerator.js";
 import TestData from "../model/TestData.js";
 
 import Endpoint from "./Endpoint.js";
-import TableauUI from "./TableauUI.js";
+import PlayerPanel from "./PlayerPanel.js";
 
 const inputCallback = ({ playerId, moveState }) => {
   console.log(
@@ -88,7 +88,7 @@ console.log(`moveStates.length = ${moveStates.length}`);
 const structureStates = [structureState1, structureState2, structureState3];
 const state = store.getState();
 
-const element = React.createElement(TableauUI, {
+const element = React.createElement(PlayerPanel, {
   campCards: Selector.campCards(playerId, state),
   clienteleCards: Selector.clienteleCards(playerId, state),
   handCards: Selector.handCards(playerId, state),

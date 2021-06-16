@@ -5,7 +5,7 @@ import CardsUI from "./CardsUI.js";
 import DeckUI from "./DeckUI.js";
 import DecksUI from "./DecksUI.js";
 import Endpoint from "./Endpoint.js";
-import TableauUI from "./TableauUI.js";
+import PlayerPanel from "./PlayerPanel.js";
 
 const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
 
@@ -132,7 +132,7 @@ const createTableau = (playerId, resourceBase, className, state) => {
     : undefined;
   const moveStates = isCurrentPlayer ? Selector.currentMoves(state) : undefined;
 
-  return React.createElement(TableauUI, {
+  return React.createElement(PlayerPanel, {
     campCards: Selector.campCards(playerId, state),
     className,
     clienteleCards: Selector.clienteleCards(playerId, state),
