@@ -1,3 +1,4 @@
+import CampUI from "./CampUI.js";
 import CardsUI from "./CardsUI.js";
 import Endpoint from "./Endpoint.js";
 import MoveOptionDialog from "./MoveOptionDialog.js";
@@ -7,36 +8,7 @@ const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
 
 const TITLE_CLASS = "b bg-gray f5 ph1 pt1 tc v-mid";
 
-const createSlicing = (type) => ({ type, value: 0.2 });
-
-const createCell = (
-  title,
-  cardStates,
-  playerId,
-  resourceBase,
-  width,
-  slicing
-) => {
-  const element = React.createElement(CardsUI, {
-    cardStates,
-    customKey: `CardsUI${title}-${playerId}`,
-    resourceBase,
-    slicing,
-    width,
-  });
-
-  const cardsPane = React.createElement(CollapsiblePane, {
-    key: `CardsPane${title}`,
-    element,
-    isExpanded: true,
-    title,
-    titleClass: TITLE_CLASS,
-  });
-
-  return RU.createCell(cardsPane, `CardsCell${title}`, "tc v-mid");
-};
-
-const createInputArea = (callback, moveStates, player, role) => {
+const createInputArea = ({ callback, moveStates, player, role }) => {
   const customKey = `inputArea${player.id}`;
   let element;
 
@@ -52,39 +24,12 @@ const createInputArea = (callback, moveStates, player, role) => {
   return ReactDOMFactories.div({ key: customKey, id: customKey }, element);
 };
 
-const createStructureCell = (
-  title,
-  structureStates,
-  playerId,
-  resourceBase,
-  width,
-  slicing
-) => {
-  const element = React.createElement(StructuresUI, {
-    structureStates,
-    customKey: `CardsUI${title}-${playerId}`,
-    resourceBase,
-    slicing,
-    width,
-  });
-
-  const cardsPane = React.createElement(CollapsiblePane, {
-    key: `CardsPane${title}`,
-    element,
-    isExpanded: true,
-    title,
-    titleClass: TITLE_CLASS,
-  });
-
-  return RU.createCell(cardsPane, `CardsCell${title}`, "tc v-mid");
-};
-
 class PlayerPanel extends React.PureComponent {
-  createPlayerBoard() {
+  createCampUI() {
     const {
-      campCards,
       clienteleCards,
       influenceCards,
+      leadCards,
       player,
       resourceBase,
       stockpileCards,
@@ -92,99 +37,75 @@ class PlayerPanel extends React.PureComponent {
       width,
     } = this.props;
 
-    const campCell = createCell(
-      "Camp",
-      campCards,
-      player.id,
-      resourceBase,
-      width
-    );
-    const clienteleCell = createCell(
-      "Clientele",
+    const campUI = React.createElement(CampUI, {
       clienteleCards,
-      player.id,
-      resourceBase,
-      width,
-      createSlicing("left")
-    );
-    const influenceCell = createCell(
-      "Influence",
       influenceCards,
-      player.id,
+      leadCards,
+      player,
       resourceBase,
-      width,
-      createSlicing("top")
-    );
-    const stockpileCell = createCell(
-      "Stockpile",
       stockpileCards,
-      player.id,
-      resourceBase,
-      width,
-      createSlicing("bottom")
-    );
-    const vaultCell = createCell(
-      "Vault",
       vaultCards,
-      player.id,
+      width,
+    });
+
+    return RU.createCell(campUI, `CampCell-${player.id}`, "tc v-mid");
+  }
+
+  createHandCell() {
+    const { handCards, player, resourceBase, width } = this.props;
+    const element = React.createElement(CardsUI, {
+      cardStates: handCards,
+      customKey: `CardsUI-Hand-${player.id}`,
       resourceBase,
       width,
-      createSlicing("right")
-    );
+    });
 
-    const middleRow = RU.createRow([clienteleCell, campCell, vaultCell]);
-    const middleCell = RU.createCell(
-      RU.createTable(middleRow),
-      "middleCell",
-      "tc v-mid"
-    );
+    const cardsPane = React.createElement(CollapsiblePane, {
+      key: `HandPane-${player.id}`,
+      element,
+      isExpanded: true,
+      title: "Hand",
+      titleClass: TITLE_CLASS,
+    });
 
-    const rows = [
-      RU.createRow(influenceCell, "influenceRow"),
-      RU.createRow(middleCell, "middleRow"),
-      RU.createRow(stockpileCell, "stockpileRow"),
-    ];
+    return RU.createCell(cardsPane, `HandCell-${player.id}`, "tc v-mid");
+  }
 
-    return RU.createTable(rows, `PlayerBoard${player.id}`, "tc v-mid");
+  createStructureCell() {
+    const { player, resourceBase, structures, width } = this.props;
+    const element = React.createElement(StructuresUI, {
+      structureStates: structures,
+      customKey: `CardsUI-Structures-${player.id}`,
+      resourceBase,
+      width,
+    });
+
+    const cardsPane = React.createElement(CollapsiblePane, {
+      key: `StructuresPane-${player.id}`,
+      element,
+      isExpanded: true,
+      title: "Structures",
+      titleClass: TITLE_CLASS,
+    });
+
+    return RU.createCell(cardsPane, `StructuresCell-${player.id}`, "tc v-mid");
   }
 
   render() {
-    const {
-      className,
-      handCards,
-      inputCallback,
-      moveStates,
-      player,
-      resourceBase,
-      role,
-      structures,
-      width,
-    } = this.props;
+    const { className, inputCallback, moveStates, player, role } = this.props;
 
-    const handCell = createCell(
-      "Hand",
-      handCards,
-      player.id,
-      resourceBase,
-      width
-    );
-    const structureCell = createStructureCell(
-      "Structures",
-      structures,
-      player.id,
-      resourceBase,
-      width
-    );
-    const playerBoard = this.createPlayerBoard();
-    const cells = [handCell, playerBoard, structureCell];
+    const handCell = this.createHandCell();
+    const campUI = this.createCampUI();
+    const structureCell = this.createStructureCell();
+    const cells = [handCell, campUI, structureCell];
 
     if (!R.isNil(moveStates)) {
-      const inputArea = createInputArea(
-        inputCallback,
+      const inputArea = createInputArea({
+        callback: inputCallback,
         moveStates,
         player,
-        role
-      );
+        role,
+      });
       cells.push(inputArea);
     }
 
@@ -204,10 +125,10 @@ class PlayerPanel extends React.PureComponent {
 PlayerPanel.propTypes = {
   player: PropTypes.shape().isRequired,
 
-  campCards: PropTypes.arrayOf(PropTypes.shape()),
   clienteleCards: PropTypes.arrayOf(PropTypes.shape()),
   handCards: PropTypes.arrayOf(PropTypes.shape()),
   influenceCards: PropTypes.arrayOf(PropTypes.shape()),
+  leadCards: PropTypes.arrayOf(PropTypes.shape()),
   stockpileCards: PropTypes.arrayOf(PropTypes.shape()),
   vaultCards: PropTypes.arrayOf(PropTypes.shape()),
 
@@ -221,10 +142,10 @@ PlayerPanel.propTypes = {
 };
 
 PlayerPanel.defaultProps = {
-  campCards: [],
   clienteleCards: [],
   handCards: [],
   influenceCards: [],
+  leadCards: [],
   stockpileCards: [],
   vaultCards: [],
 

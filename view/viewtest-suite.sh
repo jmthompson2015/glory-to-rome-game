@@ -2,6 +2,7 @@
 
 export BASE=/Volumes/StorageDrive/jmthompson/git/glory-to-rome-game/view
 
+open ${BASE}/CampUI.viewtest.html
 open ${BASE}/CardUI.viewtest.html
 open ${BASE}/CardsUI.viewtest.html
 open ${BASE}/DeckUI.viewtest.html

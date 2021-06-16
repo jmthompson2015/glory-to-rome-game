@@ -133,12 +133,12 @@ const createTableau = (playerId, resourceBase, className, state) => {
   const moveStates = isCurrentPlayer ? Selector.currentMoves(state) : undefined;
 
   return React.createElement(PlayerPanel, {
-    campCards: Selector.campCards(playerId, state),
     className,
     clienteleCards: Selector.clienteleCards(playerId, state),
     handCards: Selector.handCards(playerId, state),
     influenceCards: Selector.influenceCards(playerId, state),
     inputCallback,
+    leadCards: Selector.campCards(playerId, state),
     moveStates,
     player: Selector.player(playerId, state),
     resourceBase,
