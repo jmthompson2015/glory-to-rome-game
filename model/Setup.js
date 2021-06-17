@@ -112,15 +112,6 @@ Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {
 
   // Deal an order card into the pool for each player, and determine the leader.
   Setup.dealPoolCards(store, players);
-
-  // Give the Leader card to the first player.
-  store.dispatch(
-    ActionCreator.addToPlayerArray(
-      "playerToHand",
-      Selector.leaderId(store.getState()),
-      store.getState().leaderCardId
-    )
-  );
 };
 
 Object.freeze(Setup);

@@ -38,14 +38,6 @@ const filterJacks = (cardIds, state) => {
   return R.filter(filterFunction, cardIds);
 };
 
-const filterLeader = (cardIds, state) => {
-  IV.validateNotNil("state", state);
-  IV.validateIsArray("cardIds", cardIds);
-  const leaderCardId = Selector.leaderCardId(state);
-
-  return R.without([leaderCardId], cardIds);
-};
-
 const generateBuildStructureOptions = (cards, options, playerId, state) => {
   const reduceFunction = (accum, stockpileCard) => {
     const { materialKey } = stockpileCard.cardType;
@@ -155,7 +147,7 @@ const generateNonLeaderRoleOptions = (playerId, state) => {
 // /////////////////////////////////////////////////////////////////////////////
 MoveGenerator.generateArchitectOptions = (playerId, state) => {
   const { options } = Role.value(Role.ARCHITECT);
-  const handIds0 = filterLeader(Selector.handIds(playerId, state), state);
+  const handIds0 = Selector.handIds(playerId, state);
   const handIds = filterJacks(handIds0, state);
   let answer = [];
 
@@ -181,7 +173,7 @@ MoveGenerator.generateArchitectOptions = (playerId, state) => {
 
 MoveGenerator.generateCraftsmanOptions = (playerId, state) => {
   const { options } = Role.value(Role.CRAFTSMAN);
-  const handIds0 = filterLeader(Selector.handIds(playerId, state), state);
+  const handIds0 = Selector.handIds(playerId, state);
   const handIds = filterJacks(handIds0, state);
   let answer = [];
 
@@ -213,9 +205,8 @@ MoveGenerator.generateLaborerOptions = (playerId, state) => {
 
 MoveGenerator.generateLegionaryOptions = (playerId, state) => {
   const handIds = filterJacks(Selector.handIds(playerId, state), state);
-  const cardIds = filterLeader(handIds, state);
 
-  return createMoves(cardIds, playerId, state);
+  return createMoves(handIds, playerId, state);
 };
 
 MoveGenerator.generateMerchantOptions = (playerId, state) => {

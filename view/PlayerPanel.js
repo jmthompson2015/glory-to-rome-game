@@ -1,4 +1,5 @@
 import CampUI from "./CampUI.js";
+import CardUI from "./CardUI.js";
 import CardsUI from "./CardsUI.js";
 import Endpoint from "./Endpoint.js";
 import MoveOptionDialog from "./MoveOptionDialog.js";
@@ -71,6 +72,20 @@ class PlayerPanel extends React.PureComponent {
     return RU.createCell(cardsPane, `HandCell-${player.id}`, "tc v-mid");
   }
 
+  createLeaderCell() {
+    const { isLeader, leaderCard, player } = this.props;
+
+    if (isLeader) {
+      const cardCell = React.createElement(CardUI, {
+        cardState: leaderCard,
+      });
+
+      return RU.createCell(cardCell, `LeaderCardCell-${player.id}`, "tc v-mid");
+    }
+
+    return undefined;
+  }
+
   createStructureCell() {
     const { player, resourceBase, structures, width } = this.props;
     const element = React.createElement(StructuresUI, {
@@ -94,10 +109,11 @@ class PlayerPanel extends React.PureComponent {
   render() {
     const { className, inputCallback, moveStates, player, role } = this.props;
 
+    const leaderCell = this.createLeaderCell();
     const handCell = this.createHandCell();
     const campUI = this.createCampUI();
     const structureCell = this.createStructureCell();
-    const cells = [handCell, campUI, structureCell];
+    const cells = [leaderCell, handCell, campUI, structureCell];
 
     if (!R.isNil(moveStates)) {
       const inputArea = createInputArea({
@@ -123,6 +139,7 @@ class PlayerPanel extends React.PureComponent {
 }
 
 PlayerPanel.propTypes = {
+  leaderCard: PropTypes.shape().isRequired,
   player: PropTypes.shape().isRequired,
 
   clienteleCards: PropTypes.arrayOf(PropTypes.shape()),
@@ -134,6 +151,7 @@ PlayerPanel.propTypes = {
 
   className: PropTypes.string,
   inputCallback: PropTypes.func,
+  isLeader: PropTypes.bool,
   moveStates: PropTypes.arrayOf(PropTypes.shape()),
   resourceBase: PropTypes.string,
   role: PropTypes.shape(),
@@ -151,6 +169,7 @@ PlayerPanel.defaultProps = {
 
   className: undefined,
   inputCallback: undefined,
+  isLeader: false,
   moveStates: undefined,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   role: undefined,

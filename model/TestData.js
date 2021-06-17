@@ -8,7 +8,6 @@ import BonusCardState from "../state/BonusCardState.js";
 import OrderCardState from "../state/OrderCardState.js";
 import PlayerState from "../state/PlayerState.js";
 import Reducer from "../state/Reducer.js";
-import Selector from "../state/Selector.js";
 
 import DeckBuilder from "./DeckBuilder.js";
 import Setup from "./Setup.js";
@@ -75,15 +74,6 @@ TestData.createStore = () => {
 
   // Deal an order card into the pool for each player, and determine the leader.
   Setup.dealPoolCards(store, players);
-
-  // Give the Leader card to the first player.
-  store.dispatch(
-    ActionCreator.addToPlayerArray(
-      "playerToHand",
-      Selector.leaderId(store.getState()),
-      store.getState().leaderCardId
-    )
-  );
 
   return store;
 };
