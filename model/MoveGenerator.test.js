@@ -1,3 +1,5 @@
+import InputValidator from "../utility/InputValidator.js";
+
 import Material from "../artifact/Material.js";
 import Role from "../artifact/Role.js";
 
@@ -44,6 +46,7 @@ QUnit.test("generateArchitectOptions() Build a Structure", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 1, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.equal(
@@ -72,6 +75,7 @@ QUnit.test("generateArchitectOptions() Lay Foundation", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.equal(
@@ -126,6 +130,7 @@ QUnit.test("generateCraftsmanOptions() Build a Structure", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 1, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.equal(
@@ -154,6 +159,7 @@ QUnit.test("generateCraftsmanOptions() Lay Foundation", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.equal(
@@ -184,6 +190,7 @@ QUnit.test("generateLaborerOptions()", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
@@ -206,6 +213,7 @@ QUnit.test("generateLegionaryOptions()", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
@@ -232,6 +240,7 @@ QUnit.test("generateMerchantOptions()", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 2, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
@@ -254,6 +263,7 @@ QUnit.test("generatePatronOptions()", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
@@ -273,6 +283,7 @@ QUnit.test("generateRoleOptions() 1", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
@@ -293,6 +304,7 @@ QUnit.test("generateRoleOptions() 2", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
@@ -313,6 +325,7 @@ QUnit.test("generateRoleOptions() 3", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 1, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
@@ -330,6 +343,7 @@ QUnit.test("generateRoleOptions() 4", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 1, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
@@ -347,6 +361,7 @@ QUnit.test("generateRoleOptions() 5", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 1, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
@@ -366,6 +381,7 @@ QUnit.test("generateThinkerOptions()", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 2, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.equal(
@@ -398,6 +414,7 @@ QUnit.test("generateThinkerOptions() needs refill", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 2, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.equal(
@@ -427,6 +444,7 @@ QUnit.test("generateThinkerOptions() out of Jacks", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
   assert.equal(result.length, 1, `result.length = ${result.length}`);
   const moveLast = R.last(result);
   assert.equal(

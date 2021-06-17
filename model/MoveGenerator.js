@@ -94,9 +94,8 @@ const generateLeaderRoleOptions = (playerId, state) => {
     const card = Selector.orderCard(cardId, state);
 
     if (isJack(card)) {
-      const mapFunction = (roleKey) => {
-        accum.push(MoveState.create({ playerId, cardId, roleKey, state }));
-      };
+      const mapFunction = (roleKey) =>
+        MoveState.create({ playerId, cardId, roleKey, state });
       const roleKeys = R.without([Role.THINKER], Role.keys());
       const moves = R.map(mapFunction, roleKeys);
       accum.push(...moves);

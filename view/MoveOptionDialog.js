@@ -1,3 +1,5 @@
+import InputValidator from "../utility/InputValidator.js";
+
 import Role from "../artifact/Role.js";
 
 const RU = ReactComponent.ReactUtilities;
@@ -144,8 +146,14 @@ const createInitialInput = ({
   );
   const mapFunction = (moveState, i) => {
     const customKey2 = `${customKey}-${moveState.playerId}-${moveState.moveKey}-${i}`;
+    const defaultChecked = i === 0;
     const input = ReactDOMFactories.input(
-      R.merge(inputProps, { key: customKey2, id: i, "data-index": i })
+      R.merge(inputProps, {
+        key: customKey2,
+        defaultChecked,
+        id: i,
+        "data-index": i,
+      })
     );
     const label = labelFunction(moveState, role);
     const cells = [];
@@ -168,12 +176,16 @@ class MoveOptionDialog extends React.Component {
   constructor(props) {
     super(props);
 
-    const { initialMove, moveStates, role } = props;
+    const { moveStates, role } = props;
     const mySort =
       role && MATERIAL_ROLES.includes(role.key)
         ? materialRoleSort
         : roleMaterialSort;
-    this.state = { moveStates: mySort(moveStates), selectedMove: initialMove };
+    const myMoveStates = mySort(moveStates);
+    this.state = {
+      moveStates: myMoveStates,
+      selectedMove: R.head(myMoveStates),
+    };
 
     this.ok = this.okFunction.bind(this);
     this.selectionChanged = this.selectionChangedFunction.bind(this);
@@ -226,14 +238,12 @@ MoveOptionDialog.propTypes = {
 
   clientProps: PropTypes.shape(),
   customKey: PropTypes.string,
-  initialMove: PropTypes.shape(),
   role: PropTypes.shape(),
 };
 
 MoveOptionDialog.defaultProps = {
   clientProps: {},
   customKey: "MoveOptionDialog",
-  initialMove: undefined,
   role: undefined,
 };
 

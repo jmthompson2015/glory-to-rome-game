@@ -1,3 +1,5 @@
+import InputValidator from "../utility/InputValidator.js";
+
 const RandomPlayerStrategy = {};
 
 const DELAY = 1000;
@@ -53,6 +55,7 @@ RandomPlayerStrategy.choosePatronOption = (options, store, delay = DELAY) =>
 
 RandomPlayerStrategy.chooseRoleOption = (options, store, delay = DELAY) =>
   new Promise((resolve) => {
+    InputValidator.validateNotEmpty("options", options);
     const answer = options.length <= 1 ? options[0] : randomElement(options);
     delayedResolve(answer, resolve, delay);
   });

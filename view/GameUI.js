@@ -82,7 +82,9 @@ const createSitesCell0 = (
       (c) => c.cardType.materialKey === materialKey,
       siteCards0
     );
-    accum.push(deck);
+    if (!R.isEmpty(deck)) {
+      accum.push(deck);
+    }
     return accum;
   };
   const siteDecks = R.reduce(reduceFunction, [], Material.keys());
