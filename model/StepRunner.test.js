@@ -57,7 +57,7 @@ QUnit.test("execute() Declare Role", (assert) => {
     assertLength(assert, "cardPool", S.cardPool(state), 5);
     assertSet(assert, "orderDeck len", S.orderDeck(state).length, [113, 114]);
     assertSet(assert, "campIds len", S.campIds(playerId, state).length, [0, 1]);
-    assertSet(assert, "handIds len", S.handIds(playerId, state).length, [5, 7]);
+    assertSet(assert, "handIds len", S.handIds(playerId, state).length, [4, 6]);
     assertLength(assert, "clienteleIds", S.clienteleIds(playerId, state), 0);
     assertLength(assert, "influenceIds", S.influenceIds(playerId, state), 0);
     assertLength(assert, "stockpileIds", S.stockpileIds(playerId, state), 0);
@@ -104,7 +104,7 @@ QUnit.test("execute() Perform Role", (assert) => {
     assertLength(assert, "cardPool", S.cardPool(state), 5);
     assertEqual(assert, "orderDeck len", S.orderDeck(state).length, 114);
     assertEqual(assert, "campIds len", S.campIds(playerId, state).length, 1);
-    assertEqual(assert, "handIds len", S.handIds(playerId, state).length, 4);
+    assertEqual(assert, "handIds len", S.handIds(playerId, state).length, 3);
     assertLength(assert, "clienteleIds", S.clienteleIds(playerId, state), 0);
     assertLength(assert, "influenceIds", S.influenceIds(playerId, state), 0);
     assertLength(assert, "stockpileIds", S.stockpileIds(playerId, state), 0);
@@ -151,7 +151,7 @@ QUnit.test("execute() Cleanup", (assert) => {
     assertEqual(assert, "orderDeck len", S.orderDeck(state).length, 114);
     assertLength(assert, "currentMoves", S.currentMoves(state), 0);
     assertEqual(assert, "campIds len", S.campIds(playerId, state).length, 0);
-    assertEqual(assert, "handIds len", S.handIds(playerId, state).length, 5);
+    assertEqual(assert, "handIds len", S.handIds(playerId, state).length, 4);
     assertLength(assert, "clienteleIds", S.clienteleIds(playerId, state), 0);
     assertLength(assert, "influenceIds", S.influenceIds(playerId, state), 0);
     assertLength(assert, "stockpileIds", S.stockpileIds(playerId, state), 0);

@@ -57,7 +57,7 @@ QUnit.test("execute()", (assert) => {
     const deckLen = [110, 111, 112, 113, 114];
     assertSet(assert, "orderDeck len", S.orderDeck(state).length, deckLen);
     assertEqual(assert, "campIds", S.campIds(playerId, state).length, 0);
-    const handLen = [4, 5, 7];
+    const handLen = [3, 4, 6];
     assertSet(
       assert,
       "handIds len",

@@ -273,13 +273,13 @@ QUnit.test("generateRoleOptions() 1", (assert) => {
 
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
-  assert.equal(result.length, 6, `result.length = ${result.length}`);
+  assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
   assert.equal(moveFirst.cardId, 2, `moveFirst.cardId = ${moveFirst.cardId}`);
   const moveLast = R.last(result);
   assert.ok(moveLast);
-  assert.equal(moveLast.cardId, 1, `moveLast.cardId = ${moveLast.cardId}`);
+  assert.equal(moveLast.cardId, 6, `moveLast.cardId = ${moveLast.cardId}`);
 });
 
 QUnit.test("generateRoleOptions() 2", (assert) => {

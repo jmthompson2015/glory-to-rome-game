@@ -51,8 +51,7 @@ QUnit.test("Architect execute() Build Structure", (assert) => {
     // Verify.
     const state = store.getState();
     const handIds = Selector.handIds(playerId, state);
-    assert.equal(handIds.length, 1, `handIds.length = ${handIds.length}`);
-    assert.equal(R.head(handIds), 1, `handIds[0] = ${R.head(handIds)}`);
+    assert.equal(handIds.length, 0, `handIds.length = ${handIds.length}`);
     const siteIds = Selector.siteDeck(state);
     assert.equal(siteIds.length, 29, `siteIds.length = ${siteIds.length}`);
     const poolIds = Selector.cardPool(state);
@@ -106,13 +105,17 @@ QUnit.test("Architect execute() Lay Foundation", (assert) => {
     // Verify.
     const state = store.getState();
     const handIds = Selector.handIds(playerId, state);
-    assert.equal(handIds.length, 5, `handIds.length = ${handIds.length}`);
+    assert.equal(handIds.length, 4, `handIds.length = ${handIds.length}`);
     assert.equal(
       [2, 3].includes(R.head(handIds)),
       true,
       `handIds[0] = ${R.head(handIds)}`
     );
-    assert.equal(R.last(handIds), 1, `handIds[last] = ${R.last(handIds)}`);
+    assert.equal(
+      [5, 6].includes(R.last(handIds)),
+      true,
+      `handIds[last] = ${R.last(handIds)}`
+    );
     const siteIds = Selector.siteDeck(state);
     assert.equal(siteIds.length, 29, `siteIds.length = ${siteIds.length}`);
     const poolIds = Selector.cardPool(state);
@@ -172,8 +175,7 @@ QUnit.test("Craftsman execute() Build Structure", (assert) => {
     // Verify.
     const state = store.getState();
     const handIds = Selector.handIds(playerId, state);
-    assert.equal(handIds.length, 1, `handIds.length = ${handIds.length}`);
-    assert.equal(R.head(handIds), 1, `handIds[0] = ${R.head(handIds)}`);
+    assert.equal(handIds.length, 0, `handIds.length = ${handIds.length}`);
     const siteIds = Selector.siteDeck(state);
     assert.equal(siteIds.length, 25, `siteIds.length = ${siteIds.length}`);
     const poolIds = Selector.cardPool(state);
@@ -227,13 +229,17 @@ QUnit.test("Craftsman execute() Lay Foundation", (assert) => {
     // Verify.
     const state = store.getState();
     const handIds = Selector.handIds(playerId, state);
-    assert.equal(handIds.length, 5, `handIds.length = ${handIds.length}`);
+    assert.equal(handIds.length, 4, `handIds.length = ${handIds.length}`);
     assert.equal(
       [2, 3].includes(R.head(handIds)),
       true,
       `handIds[0] = ${R.head(handIds)}`
     );
-    assert.equal(R.last(handIds), 1, `handIds[last] = ${R.last(handIds)}`);
+    assert.equal(
+      [5, 6].includes(R.last(handIds)),
+      true,
+      `handIds[last] = ${R.last(handIds)}`
+    );
     const siteIds = Selector.siteDeck(state);
     assert.equal(siteIds.length, 29, `siteIds.length = ${siteIds.length}`);
     const poolIds = Selector.cardPool(state);
@@ -411,7 +417,7 @@ QUnit.test("Thinker execute()", (assert) => {
     // Verify.
     const state = store.getState();
     const handIds = Selector.handIds(playerId, state);
-    assert.equal(handIds.length, 7, `handIds.length = ${handIds.length}`);
+    assert.equal(handIds.length, 6, `handIds.length = ${handIds.length}`);
     done();
   };
 
@@ -470,7 +476,7 @@ QUnit.test("Thinker execute() out of Jacks", (assert) => {
     // Verify.
     const state = store.getState();
     const handIds = Selector.handIds(playerId, state);
-    assert.equal(handIds.length, 7, `handIds.length = ${handIds.length}`);
+    assert.equal(handIds.length, 6, `handIds.length = ${handIds.length}`);
     done();
   };
 
