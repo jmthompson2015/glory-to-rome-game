@@ -188,6 +188,12 @@ ActionCreator.setVersion = makeActionCreator(
 
 ActionCreator.setWinner = makeActionCreator(ActionType.SET_WINNER, "winnerId");
 
+ActionCreator.transferCampToJack = makeActionCreator(
+  ActionType.TRANSFER_CAMP_TO_JACK,
+  "playerId",
+  "cardId"
+);
+
 ActionCreator.transferCampToPool = makeActionCreator(
   ActionType.TRANSFER_CAMP_TO_POOL,
   "playerId",

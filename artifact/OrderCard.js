@@ -522,6 +522,12 @@ OrderCard.image = (card, version = "v2.0", isFaceup = true) => {
   return answer;
 };
 
+OrderCard.isJack = (key) => {
+  const card = OrderCard.value(key);
+
+  return card ? card.key.startsWith("jack") : false;
+};
+
 OrderCard.keysByVersion = (versionKey) =>
   R.map((c) => c.key, OrderCard.valuesByVersion(versionKey));
 

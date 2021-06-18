@@ -71,9 +71,23 @@ Selector.isHumanPlayer = (playerId, state) => {
   return player && !player.isComputer;
 };
 
+Selector.isJack = (cardId, state) => {
+  const cardState = Selector.orderCard(cardId, state);
+
+  return cardState ? OrderCard.isJack(cardState.cardKey) : false;
+};
+
 Selector.isLeader = (playerId, state) => playerId === Selector.leaderId(state);
 
 Selector.isVerbose = (state) => state.isVerbose;
+
+Selector.jackCards = (state) => {
+  const cardIds = Selector.jackDeck(state);
+
+  return Selector.orderCards(cardIds, state);
+};
+
+Selector.jackDeck = (state) => state.jackDeck;
 
 Selector.leaderCard = (state) => {
   IV.validateNotNil("state", state);

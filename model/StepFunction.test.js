@@ -50,6 +50,46 @@ QUnit.test("cleanup() 1", (assert) => {
   StepFunction.cleanup(store).then(callback);
 });
 
+QUnit.test("cleanup() 1 Jack", (assert) => {
+  // Setup.
+  const leaderId = 1;
+  const store = TestData.createStore();
+  // store.dispatch(ActionCreator.setVerbose(true));
+  store.dispatch(ActionCreator.setDelay(TestData.DELAY));
+  store.dispatch(ActionCreator.setCurrentRound(1));
+  store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
+  store.dispatch(ActionCreator.setCurrentPhase(Phase.CLEANUP));
+  store.dispatch(ActionCreator.transferJackToHand(1, 146));
+  store.dispatch(ActionCreator.transferHandToCamp(1, 146));
+  store.dispatch(ActionCreator.transferHandToCamp(3, 12));
+  store.dispatch(ActionCreator.transferHandToCamp(4, 17));
+
+  // Run.
+  const done = assert.async();
+  const callback = () => {
+    assert.ok(true, "test resumed from async operation");
+    // Verify.
+    const camp1 = Selector.campIds(1, store.getState());
+    assert.ok(camp1);
+    assert.equal(camp1.length, 0);
+    const camp3 = Selector.campIds(3, store.getState());
+    assert.ok(camp3);
+    assert.equal(camp3.length, 1);
+    assert.equal(R.head(camp3), 12);
+    const camp4 = Selector.campIds(4, store.getState());
+    assert.ok(camp4);
+    assert.equal(camp4.length, 1);
+    assert.equal(R.head(camp4), 17);
+    const jackDeck = Selector.jackDeck(store.getState());
+    assert.ok(jackDeck);
+    assert.equal(jackDeck.length, 6);
+    assert.equal(jackDeck.join(", "), "147, 148, 149, 150, 151, 146");
+    done();
+  };
+
+  StepFunction.cleanup(store).then(callback);
+});
+
 QUnit.test("cleanup() 3", (assert) => {
   // Setup.
   const leaderId = 3;

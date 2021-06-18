@@ -124,6 +124,20 @@ const transferBetweenArrays = (state, fromKey, toKey, playerId, cardId) => {
   return { ...state, [fromKey]: newPlayerToFrom, [toKey]: newPlayerToTo };
 };
 
+const transferCampToJack = (state, playerId, cardId) => {
+  const oldCamp = state.playerToCamp[playerId] || [];
+  const newCamp = R.without([cardId], oldCamp);
+  const newPlayerToCamp = { ...state.playerToCamp, [playerId]: newCamp };
+  const oldJack = state.jackDeck || [];
+  const newJack = [...oldJack, cardId];
+
+  return {
+    ...state,
+    playerToCamp: newPlayerToCamp,
+    jackDeck: newJack,
+  };
+};
+
 const transferCampToPool = (state, playerId, cardId) => {
   const oldCamp = state.playerToCamp[playerId] || [];
   const newCamp = R.without([cardId], oldCamp);
@@ -504,6 +518,12 @@ Reducer.root = (state, action) => {
     case ActionType.SET_WINNER:
       log(`Reducer SET_WINNER winnerId = ${action.winnerId}`, state);
       return { ...state, winnerId: action.winnerId };
+    case ActionType.TRANSFER_CAMP_TO_JACK:
+      log(
+        `Reducer TRANSFER_CAMP_TO_JACK playerId = ${action.playerId} cardId = ${action.cardId}`,
+        state
+      );
+      return transferCampToJack(state, action.playerId, action.cardId);
     case ActionType.TRANSFER_CAMP_TO_POOL:
       log(
         `Reducer TRANSFER_CAMP_TO_POOL playerId = ${action.playerId} cardId = ${action.cardId}`,

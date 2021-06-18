@@ -34,6 +34,7 @@ ActionType.SET_USER_MESSAGE = "setUserMessage";
 ActionType.SET_VERBOSE = "setVerbose";
 ActionType.SET_VERSION = "setVersion";
 ActionType.SET_WINNER = "setWinner";
+ActionType.TRANSFER_CAMP_TO_JACK = "transferCampToJack";
 ActionType.TRANSFER_CAMP_TO_POOL = "transferCampToPool";
 ActionType.TRANSFER_HAND_TO_CAMP = "transferHandToCamp";
 ActionType.TRANSFER_HAND_TO_HAND = "transferHandToHand";

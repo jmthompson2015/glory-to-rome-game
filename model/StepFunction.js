@@ -2,8 +2,8 @@
 
 import IV from "../utility/InputValidator.js";
 
-import Role from "../artifact/Role.js";
 import Phase from "../artifact/Phase.js";
+import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
@@ -95,7 +95,13 @@ StepFunction.cleanup = (store) => {
   const campIds = Selector.campIds(playerId, store.getState());
 
   if (!R.isEmpty(campIds)) {
-    store.dispatch(ActionCreator.transferCampToPool(playerId, R.head(campIds)));
+    const cardId = R.head(campIds);
+
+    if (Selector.isJack(cardId, store.getState())) {
+      store.dispatch(ActionCreator.transferCampToJack(playerId, cardId));
+    } else {
+      store.dispatch(ActionCreator.transferCampToPool(playerId, cardId));
+    }
   }
 
   store.dispatch(ActionCreator.setCurrentInputCallback(null));

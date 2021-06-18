@@ -690,17 +690,48 @@ QUnit.test("setWinner()", (assert) => {
   assert.equal(result.winnerId, winnerId);
 });
 
-QUnit.test("transferCampToPool()", (assert) => {
+QUnit.test("transferCampToJack()", (assert) => {
   // Setup.
   const state0 = AppState.create();
   const playerId = 3;
-  const cardId = 1;
+  const cardId = 146;
   const cardKey = OrderCard.ACADEMY;
   const card = OrderCardState.create({ id: cardId, cardKey });
   const action0 = ActionCreator.addOrderCard(card);
   const state1 = Reducer.root(state0, action0);
   const action1 = ActionCreator.addToPlayerArray(
-    "playerToHand",
+    "playerToCamp",
+    playerId,
+    cardId
+  );
+  const state = Reducer.root(state1, action1);
+  const action = ActionCreator.transferCampToJack(playerId, cardId);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const camp = result.playerToCamp[playerId];
+  assert.ok(camp);
+  assert.equal(camp.length, 0);
+  const { jackDeck } = result;
+  assert.ok(jackDeck);
+  assert.equal(jackDeck.length, 1);
+  assert.equal(R.last(jackDeck), cardId);
+});
+
+QUnit.test("transferCampToPool()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const playerId = 3;
+  const cardId = 146;
+  const cardKey = OrderCard.ACADEMY;
+  const card = OrderCardState.create({ id: cardId, cardKey });
+  const action0 = ActionCreator.addOrderCard(card);
+  const state1 = Reducer.root(state0, action0);
+  const action1 = ActionCreator.addToPlayerArray(
+    "playerToCamp",
     playerId,
     cardId
   );
