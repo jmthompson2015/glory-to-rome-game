@@ -108,9 +108,16 @@ const generateLeaderRoleOptions = (playerId, state) => {
 
     return accum;
   };
+  const cardId = Selector.leaderCardId(state);
+  const move = MoveState.create({
+    playerId,
+    cardId,
+    roleKey: Role.THINKER,
+    state,
+  });
   const handIds = Selector.handIds(playerId, state);
 
-  return R.reduce(reduceFunction, [], handIds);
+  return R.reduce(reduceFunction, [move], handIds);
 };
 
 const generateNonLeaderRoleOptions = (playerId, state) => {
