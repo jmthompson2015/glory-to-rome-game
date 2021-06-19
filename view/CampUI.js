@@ -41,6 +41,7 @@ class CampUI extends React.PureComponent {
       className,
       clienteleCards,
       influenceCards,
+      isLeader,
       leadCards,
       player,
       resourceBase,
@@ -53,7 +54,7 @@ class CampUI extends React.PureComponent {
     const campCell = createCell({
       ...inputProps0,
       cardStates: leadCards,
-      title: "Lead",
+      title: isLeader ? "Lead" : "Follow",
     });
     const clienteleCell = createCell({
       ...inputProps0,
@@ -103,6 +104,7 @@ CampUI.propTypes = {
   vaultCards: PropTypes.arrayOf(PropTypes.shape()),
 
   className: PropTypes.string,
+  isLeader: PropTypes.bool,
   resourceBase: PropTypes.string,
   width: PropTypes.number,
 };
@@ -115,6 +117,7 @@ CampUI.defaultProps = {
   vaultCards: [],
 
   className: "tc v-mid",
+  isLeader: false,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   width: 80,
 };

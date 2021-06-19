@@ -30,6 +30,7 @@ class PlayerPanel extends React.PureComponent {
     const {
       clienteleCards,
       influenceCards,
+      isLeader,
       leadCards,
       player,
       resourceBase,
@@ -41,6 +42,7 @@ class PlayerPanel extends React.PureComponent {
     const campUI = React.createElement(CampUI, {
       clienteleCards,
       influenceCards,
+      isLeader,
       leadCards,
       player,
       resourceBase,
