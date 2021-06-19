@@ -176,7 +176,7 @@ class GameUI extends React.PureComponent {
     const ootSitesCell = createOutOfTownSitesCell(state, resourceBase);
 
     const mapFunction = (playerId) =>
-      RU.createCell(playerToTableau[playerId], `tableauCell${playerId}`);
+      RU.createCell(playerToTableau[playerId], `tableauCell${playerId}`, "pa1");
     const cells0 = R.map(mapFunction, playerIds);
     const cells = [
       ...cells0,
