@@ -135,6 +135,12 @@ ActionCreator.setOrderFaceup = makeActionCreator(
   "isFaceup"
 );
 
+ActionCreator.setOrdersFaceup = makeActionCreator(
+  ActionType.SET_ORDERS_FACEUP,
+  "cardIds",
+  "isFaceup"
+);
+
 ActionCreator.setOrderHighlighted = makeActionCreator(
   ActionType.SET_ORDER_HIGHLIGHTED,
   "cardId",

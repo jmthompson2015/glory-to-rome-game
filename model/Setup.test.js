@@ -49,6 +49,7 @@ QUnit.test("dealOrderCards()", (assert) => {
   // Setup.
   const store = Redux.createStore(Reducer.root);
   const players = createPlayers();
+  store.dispatch(ActionCreator.setPlayers(players));
   const orderDeck0 = DeckBuilder.buildOrderDeck(store);
   store.dispatch(ActionCreator.setOrderDeck(orderDeck0));
   const jackDeck0 = DeckBuilder.buildJackDeck(store);

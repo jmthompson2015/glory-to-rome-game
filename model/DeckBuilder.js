@@ -35,7 +35,7 @@ DeckBuilder.buildJackDeck = (store) => {
 
 DeckBuilder.buildOrderDeck = (store) => {
   const reduceFunction = (accum, card) =>
-    R.concat(accum, createOrderCards(store, card.key, card.count, true));
+    R.concat(accum, createOrderCards(store, card.key, card.count));
   const { versionKey } = store.getState();
   const values = OrderCard.valuesByVersion(versionKey);
   const array = R.reduce(reduceFunction, [], values);

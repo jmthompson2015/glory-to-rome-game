@@ -75,11 +75,25 @@ const setLeader = (state, leaderId) => {
   return { ...state, leaderId, currentPlayerOrder };
 };
 
-const setOrderFaceup = (state, cardId, isFaceup) => {
-  const oldCard = state.orderCardInstances[cardId];
+const setOrderFaceup = (orderCardInstances, cardId, isFaceup = false) => {
+  IV.validateNotNil("orderCardInstances", orderCardInstances);
+  IV.validateIsNumber("cardId", cardId);
+  IV.validateIsBoolean("isFaceup", isFaceup);
+  const oldCard = orderCardInstances[cardId];
   IV.validateNotNil("oldCard", oldCard);
   const newCard = { ...oldCard, isFaceup };
-  const newCardInstances = { ...state.orderCardInstances, [cardId]: newCard };
+
+  return { ...orderCardInstances, [cardId]: newCard };
+};
+
+const setOrdersFaceup = (state, cardIds, isFaceup) => {
+  const reduceFunction = (accum, cardId) => {
+    const oldCard = state.orderCardInstances[cardId];
+    const newCard = { ...oldCard, isFaceup };
+    return R.assoc(cardId, newCard, accum);
+  };
+  const newCards = R.reduce(reduceFunction, {}, cardIds);
+  const newCardInstances = { ...state.orderCardInstances, ...newCards };
 
   return { ...state, orderCardInstances: newCardInstances };
 };
@@ -165,8 +179,18 @@ const transferHandToHand = (state, fromPlayerId, cardId, toPlayerId) => {
     [fromPlayerId]: newFromHand,
     [toPlayerId]: newToHand,
   };
+  let newCardInstances = state.orderCardInstances;
 
-  return { ...state, playerToHand: newPlayerToHand };
+  if (!state.playerInstances[toPlayerId].isComputer) {
+    // Flip the card faceup.
+    newCardInstances = setOrderFaceup(state.orderCardInstances, cardId, true);
+  }
+
+  return {
+    ...state,
+    orderCardInstances: newCardInstances,
+    playerToHand: newPlayerToHand,
+  };
 };
 
 const transferHandToStockpile = (state, fromPlayerId, cardId, toPlayerId) => {
@@ -186,8 +210,16 @@ const transferHandToStockpile = (state, fromPlayerId, cardId, toPlayerId) => {
     [toPlayerId]: newStockpile,
   };
 
+  // Flip the card faceup.
+  const newCardInstances = setOrderFaceup(
+    state.orderCardInstances,
+    cardId,
+    true
+  );
+
   return {
     ...state,
+    orderCardInstances: newCardInstances,
     playerToHand: newPlayerToHand,
     playerToStockpile: newPlayerToStockpile,
   };
@@ -219,8 +251,16 @@ const transferHandToStructure = (state, playerId, cardId, structureId) => {
     [structureId]: newStructure,
   };
 
+  // Flip the card faceup.
+  const newCardInstances = setOrderFaceup(
+    state.orderCardInstances,
+    cardId,
+    true
+  );
+
   return {
     ...state,
+    orderCardInstances: newCardInstances,
     playerToHand: newPlayerToHand,
     structureInstances: newStructureInstances,
   };
@@ -250,9 +290,16 @@ const transferOrderToHand = (state, playerId) => {
   const newHand = [...oldHand, cardId];
   IV.validateNotIncludesNil("newHand", newHand);
   const newPlayerToHand = { ...state.playerToHand, [playerId]: newHand };
+  let newCardInstances = state.orderCardInstances;
+
+  if (!state.playerInstances[playerId].isComputer) {
+    // Flip the card faceup.
+    newCardInstances = setOrderFaceup(state.orderCardInstances, cardId, true);
+  }
 
   return {
     ...state,
+    orderCardInstances: newCardInstances,
     orderDeck: newOrderDeck,
     playerToHand: newPlayerToHand,
   };
@@ -264,8 +311,16 @@ const transferOrderToPool = (state) => {
   const oldPool = state.cardPool || [];
   const newPool = [...oldPool, cardId];
 
+  // Flip the card faceup.
+  const newCardInstances = setOrderFaceup(
+    state.orderCardInstances,
+    cardId,
+    true
+  );
+
   return {
     ...state,
+    orderCardInstances: newCardInstances,
     orderDeck: newOrderDeck,
     cardPool: newPool,
   };
@@ -324,9 +379,11 @@ const transferStockpileToVault = (state, playerId, cardId) => {
   };
 
   // Flip the card facedown.
-  const oldCard = state.orderCardInstances[cardId];
-  const newCard = { ...oldCard, isFaceup: false };
-  const newCardInstances = { ...state.orderCardInstances, [cardId]: newCard };
+  const newCardInstances = setOrderFaceup(
+    state.orderCardInstances,
+    cardId,
+    false
+  );
 
   return {
     ...state,
@@ -348,11 +405,13 @@ Reducer.root = (state, action) => {
     return state;
   }
 
+  let newCardInstances;
   let newCards;
   let newGameRecords;
   let newPlayers;
   let newPlayerToStrategy;
   let newStructures;
+  let state2;
 
   switch (action.type) {
     case ActionType.ADD_BONUS_CARD:
@@ -473,7 +532,18 @@ Reducer.root = (state, action) => {
         `Reducer SET_ORDER_FACEUP cardId = ${action.cardId} isFaceup ? ${action.isFaceup}`,
         state
       );
-      return setOrderFaceup(state, action.cardId, action.isFaceup);
+      newCardInstances = setOrderFaceup(
+        state.orderCardInstances,
+        action.cardId,
+        action.isFaceup
+      );
+      return { ...state, orderCardInstances: newCardInstances };
+    case ActionType.SET_ORDERS_FACEUP:
+      log(
+        `Reducer SET_ORDERS_FACEUP cardIds = ${action.cardIds} isFaceup ? ${action.isFaceup}`,
+        state
+      );
+      return setOrdersFaceup(state, action.cardIds, action.isFaceup);
     case ActionType.SET_ORDER_HIGHLIGHTED:
       log(
         `Reducer SET_ORDER_HIGHLIGHTED cardId = ${action.cardId} isHighlighted ? ` +
@@ -562,8 +632,14 @@ Reducer.root = (state, action) => {
         `Reducer TRANSFER_HAND_TO_CAMP playerId = ${action.playerId} cardId = ${action.cardId}`,
         state
       );
+      newCardInstances = setOrderFaceup(
+        state.orderCardInstances,
+        action.cardId,
+        true
+      );
+      state2 = { ...state, orderCardInstances: newCardInstances };
       return transferBetweenArrays(
-        state,
+        state2,
         "playerToHand",
         "playerToCamp",
         action.playerId,

@@ -23,6 +23,7 @@ ActionType.SET_LEADER = "setLeader";
 ActionType.SET_MCTS_ROOT = "setMctsRoot";
 ActionType.SET_ORDER_DECK = "setOrderDeck";
 ActionType.SET_ORDER_FACEUP = "setOrderFaceup";
+ActionType.SET_ORDERS_FACEUP = "setOrdersFaceup";
 ActionType.SET_ORDER_HIGHLIGHTED = "setOrderHighlighted";
 ActionType.SET_OUT_OF_TOWN_SITE_DECK = "setOutOfTownSiteDeck";
 ActionType.SET_PLAYERS = "setPlayers";
