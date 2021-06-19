@@ -109,6 +109,7 @@ class CardUI extends React.PureComponent {
     const drawLayerFunctions = cardState.isHighlighted
       ? [drawFunction1(imageSrc, slicing), drawFunction2]
       : [drawFunction1(imageSrc, slicing)];
+    const title = cardState.isFaceup ? cardState.cardType.name : null;
 
     return React.createElement(LayeredCanvas, {
       drawLayerFunctions,
@@ -116,7 +117,7 @@ class CardUI extends React.PureComponent {
       height: this.height(),
       images: [imageSrc],
       onClick: this.handleOnClick,
-      title: `${cardState.cardType.name}`,
+      title,
       width: this.width(),
     });
   }
