@@ -1051,13 +1051,15 @@ QUnit.test("transferStockpileToVault()", (assert) => {
   const playerId = 3;
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  OrderCardState.create({ id: cardId, cardKey });
+  const card = OrderCardState.create({ id: cardId, cardKey, state: state0 });
   const action0 = ActionCreator.addToPlayerArray(
     "playerToStockpile",
     playerId,
     cardId
   );
-  const state = Reducer.root(state0, action0);
+  const state1 = Reducer.root(state0, action0);
+  const action1 = ActionCreator.addOrderCard(card);
+  const state = Reducer.root(state1, action1);
   const action = ActionCreator.transferStockpileToVault(playerId, cardId);
 
   // Run.
@@ -1075,7 +1077,11 @@ QUnit.test("transferStockpileToVault()", (assert) => {
   const vault = playerToVault[playerId];
   assert.ok(vault);
   assert.equal(vault.length, 1);
-  assert.equal(R.head(vault), cardId);
+  const vaultCardId = R.head(vault);
+  assert.equal(vaultCardId, cardId);
+  const vaultCard = Selector.orderCard(vaultCardId, result);
+  assert.ok(vaultCard);
+  assert.equal(vaultCard.isFaceup, false);
 });
 
 const ReducerTest = {};

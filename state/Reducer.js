@@ -309,6 +309,33 @@ const transferPoolToStockpile = (state, playerId, cardId) => {
   };
 };
 
+const transferStockpileToVault = (state, playerId, cardId) => {
+  const oldStockpile = state.playerToStockpile[playerId] || [];
+  const newStockpile = R.without([cardId], oldStockpile);
+  const newPlayerToStockpile = {
+    ...state.playerToStockpile,
+    [playerId]: newStockpile,
+  };
+  const oldVault = state.playerToVault[playerId] || [];
+  const newVault = [...oldVault, cardId];
+  const newPlayerToVault = {
+    ...state.playerToVault,
+    [playerId]: newVault,
+  };
+
+  // Flip the card facedown.
+  const oldCard = state.orderCardInstances[cardId];
+  const newCard = { ...oldCard, isFaceup: false };
+  const newCardInstances = { ...state.orderCardInstances, [cardId]: newCard };
+
+  return {
+    ...state,
+    orderCardInstances: newCardInstances,
+    playerToStockpile: newPlayerToStockpile,
+    playerToVault: newPlayerToVault,
+  };
+};
+
 Reducer.root = (state, action) => {
   // LOGGER.debug(`root() type = ${action.type}`);
 
@@ -609,13 +636,7 @@ Reducer.root = (state, action) => {
           `cardId = ${action.cardId}`,
         state
       );
-      return transferBetweenArrays(
-        state,
-        "playerToStockpile",
-        "playerToVault",
-        action.playerId,
-        action.cardId
-      );
+      return transferStockpileToVault(state, action.playerId, action.cardId);
     default:
       console.warn(`Reducer.root: Unhandled action type: ${action.type}`);
       return state;
