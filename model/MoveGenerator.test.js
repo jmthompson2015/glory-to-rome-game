@@ -293,6 +293,28 @@ QUnit.test("generateRoleOptions() 1", (assert) => {
   assert.equal(moveLast.cardId, 6, `moveLast.cardId = ${moveLast.cardId}`);
 });
 
+QUnit.test("generateRoleOptions() 1 Jacks", (assert) => {
+  // Setup.
+  const playerId = 1;
+  const store = TestData.createStore();
+  store.dispatch(ActionCreator.transferJackToHand(playerId, 146));
+  store.dispatch(ActionCreator.transferJackToHand(playerId, 147));
+
+  // Run.
+  const result = MoveGenerator.generateRoleOptions(playerId, store.getState());
+
+  // Verify.
+  assert.ok(result, `result = ${JSON.stringify(result)}`);
+  InputValidator.validateNotIncludesNil("result", result);
+  assert.equal(result.length, 12, `result.length = ${result.length}`);
+  const moveFirst = R.head(result);
+  assert.ok(moveFirst);
+  assert.equal(moveFirst.cardId, 1, `moveFirst.cardId = ${moveFirst.cardId}`);
+  const moveLast = R.last(result);
+  assert.ok(moveLast);
+  assert.equal(moveLast.cardId, 146, `moveLast.cardId = ${moveLast.cardId}`);
+});
+
 QUnit.test("generateRoleOptions() 2", (assert) => {
   // Setup.
   const playerId = 2;

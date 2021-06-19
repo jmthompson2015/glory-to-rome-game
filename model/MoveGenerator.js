@@ -2,14 +2,13 @@
 
 import IV from "../utility/InputValidator.js";
 
+import OrderCard from "../artifact/OrderCard.js";
 import Role from "../artifact/Role.js";
 
 import MoveState from "../state/MoveState.js";
 import Selector from "../state/Selector.js";
 
 const MoveGenerator = {};
-
-const isJack = (card) => (card ? card.cardKey.startsWith("jack") : false);
 
 const createMoves = (cardIds, playerId, state) => {
   const mapFunction = (cardId) => {
@@ -30,10 +29,7 @@ const createMoves = (cardIds, playerId, state) => {
 const filterJacks = (cardIds, state) => {
   IV.validateNotNil("state", state);
   IV.validateIsArray("cardIds", cardIds);
-  const filterFunction = (id) => {
-    const orderCard = state.orderCardInstances[id];
-    return !isJack(orderCard);
-  };
+  const filterFunction = (id) => !Selector.isJack(id, state);
 
   return R.filter(filterFunction, cardIds);
 };
@@ -93,12 +89,18 @@ const generateLeaderRoleOptions = (playerId, state) => {
   const reduceFunction = (accum, cardId) => {
     const card = Selector.orderCard(cardId, state);
 
-    if (isJack(card)) {
-      const mapFunction = (roleKey) =>
-        MoveState.create({ playerId, cardId, roleKey, state });
-      const roleKeys = R.without([Role.THINKER], Role.keys());
-      const moves = R.map(mapFunction, roleKeys);
-      accum.push(...moves);
+    if (Selector.isJack(cardId, state)) {
+      const reduceFunction2 = (accum2, m) =>
+        accum2 || Selector.isJack(m.cardId, state);
+      const isAlreadyJack = R.reduce(reduceFunction2, false, accum);
+
+      if (!isAlreadyJack) {
+        const mapFunction = (roleKey) =>
+          MoveState.create({ playerId, cardId, roleKey, state });
+        const roleKeys = R.without([Role.THINKER], Role.keys());
+        const moves = R.map(mapFunction, roleKeys);
+        accum.push(...moves);
+      }
     } else {
       const { materialKey, roleKey } = card.cardType;
       accum.push(
@@ -125,7 +127,7 @@ const generateNonLeaderRoleOptions = (playerId, state) => {
   const reduceFunction = (accum, cardId) => {
     const card = Selector.orderCard(cardId, state);
 
-    if (isJack(card)) {
+    if (Selector.isJack(cardId, state)) {
       accum.push(
         MoveState.create({ playerId, cardId, roleKey: leadRoleKey, state })
       );
