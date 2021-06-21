@@ -1,43 +1,15 @@
-import InputValidator from "../utility/InputValidator.js";
-
 import Role from "../artifact/Role.js";
 
-const RU = ReactComponent.ReactUtilities;
+const { RadioButtonPanel, ReactUtilities: RU, TitledElement } = ReactComponent;
 
 const MATERIAL_ROLES = [Role.LABORER, Role.LEGIONARY, Role.MERCHANT];
 
-const createButtons = (okOnClick) =>
-  RU.createButton("OK", "okButton", null, {
-    onClick: okOnClick,
-  });
-
 const createColorName = (item) =>
-  ReactDOMFactories.span(
-    {
-      key: `${item.name}-${item.color}`,
-      className: `b ${item.color.toLowerCase()}`,
-    },
-    item.name
+  RU.createSpan(
+    item.name,
+    `${item.name}-${item.color}`,
+    `b ${item.color.toLowerCase()}`
   );
-
-const createMessage = (role) => {
-  let message;
-
-  if (role) {
-    const article = role.name.startsWith("A") ? "an" : "a";
-    const roleName = createColorName(role);
-    message = ReactDOMFactories.div(
-      { key: `${role.name}-${role.color}` },
-      `Select ${article} `,
-      roleName,
-      ` action:`
-    );
-  } else {
-    message = ReactDOMFactories.div({ key: `choose-role` }, "Select a Role:");
-  }
-
-  return message;
-};
 
 const createTitle = (role) => (role ? "Select Action" : "Select Role");
 
@@ -49,12 +21,9 @@ const materialLabelFunction = (move) => {
   const roleName = roleType ? roleType.name : "";
   const materialName = materialType ? createColorName(materialType) : "";
 
-  return ReactDOMFactories.div(
-    {
-      key: `${materialName}-${cardId}-${cardName}-${roleName}`,
-    },
-    materialName,
-    ` (${cardId} ${cardName} ${roleName})`
+  return RU.createSpan(
+    [materialName, ` (${cardId} ${cardName} ${roleName})`],
+    `${materialName}-${cardId}-${cardName}-${roleName}`
   );
 };
 
@@ -69,16 +38,13 @@ const roleLabelFunction = (move) => {
     ? ` (${cardId} ${cardName} ${materialName})`
     : ` (${cardId} ${cardName})`;
 
-  return ReactDOMFactories.div(
-    {
-      key: `${roleName}-${cardId}-${cardName}-${materialName}`,
-    },
-    roleName,
-    label
+  return RU.createSpan(
+    [roleName, label],
+    `${roleName}-${cardId}-${cardName}-${materialName}`
   );
 };
 
-const labelFunction = (move, role) => {
+const labelFunction = (role) => (move) => {
   let answer = JSON.stringify(move);
 
   if (move) {
@@ -93,18 +59,21 @@ const labelFunction = (move, role) => {
 
     if (role) {
       if (move.roleKey === Role.THINKER) {
-        answer = ReactDOMFactories.div({ key }, roleName, ` `, moveName);
+        answer = RU.createSpan([roleName, ` `, moveName], key);
       } else if (MATERIAL_ROLES.includes(role.key)) {
         answer = materialLabelFunction(move);
       } else if (role.key === Role.PATRON) {
         answer = roleLabelFunction(move);
       } else {
-        answer = ReactDOMFactories.div(
-          { key },
-          `${moveName} ${cardId} ${cardName} `,
-          roleName,
-          ` `,
-          materialName
+        answer = RU.createSpan(
+          [
+            `${moveName} (${cardId} ${cardName} `,
+            roleName,
+            ` `,
+            materialName,
+            `)`,
+          ],
+          key
         );
       }
     } else {
@@ -127,50 +96,6 @@ const roleMaterialSort = R.sortWith([
   R.ascend(R.prop("cardId")),
 ]);
 
-const mapIndexed = R.addIndex(R.map);
-
-const createInitialInput = ({
-  customKey,
-  clientProps,
-  moveStates,
-  onChange,
-  role,
-}) => {
-  const inputProps = R.merge(
-    {
-      name: `chooseMove${customKey}`, // needed for radio
-      onChange,
-      type: "radio",
-    },
-    clientProps
-  );
-  const mapFunction = (moveState, i) => {
-    const customKey2 = `${customKey}-${moveState.playerId}-${moveState.moveKey}-${i}`;
-    const defaultChecked = i === 0;
-    const input = ReactDOMFactories.input(
-      R.merge(inputProps, {
-        key: customKey2,
-        defaultChecked,
-        id: i,
-        "data-index": i,
-      })
-    );
-    const label = labelFunction(moveState, role);
-    const cells = [];
-    cells.push(RU.createCell(input, cells.length, "pa1 v-mid"));
-    cells.push(RU.createCell(label, cells.length, "pa1 v-mid"));
-
-    return RU.createRow(
-      cells,
-      `row${moveState.playerId}-${moveState.moveKey}-${i}`
-    );
-  };
-  const rows = mapIndexed(mapFunction, moveStates);
-  const customKey3 = R.map((m) => m.moveKey, moveStates);
-
-  return RU.createTable(rows, `initialInput-${customKey3}`, "f6 tl");
-};
-
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 class MoveOptionDialog extends React.Component {
   constructor(props) {
@@ -182,52 +107,40 @@ class MoveOptionDialog extends React.Component {
         ? materialRoleSort
         : roleMaterialSort;
     const myMoveStates = mySort(moveStates);
-    this.state = {
-      moveStates: myMoveStates,
-      selectedMove: R.head(myMoveStates),
-    };
+    this.state = { moveStates: myMoveStates };
 
     this.ok = this.okFunction.bind(this);
-    this.selectionChanged = this.selectionChangedFunction.bind(this);
   }
 
-  okFunction() {
+  okFunction(selectedMove) {
     const { callback } = this.props;
-    const { selectedMove } = this.state;
 
     callback(selectedMove);
   }
 
-  selectionChangedFunction(event) {
-    const { moveStates } = this.state;
-    const { index } = event.currentTarget.dataset;
-    const selectedMove = moveStates[index];
-
-    this.setState({ selectedMove });
-  }
-
   render() {
-    const { clientProps, customKey, role } = this.props;
+    const { customKey, role } = this.props;
     const { moveStates } = this.state;
-    const message = createMessage(role);
-    const initialInput = createInitialInput({
-      customKey,
-      clientProps,
-      moveStates,
-      onChange: this.selectionChanged,
-      role,
-    });
-    const buttons = createButtons(this.ok);
     const customKey2 = R.map((m) => m.moveKey, moveStates);
+    const radioButtonPanel = React.createElement(RadioButtonPanel, {
+      applyOnClick: this.ok,
+      buttonLabel: "OK",
+      buttonPanelClass: "fr pa1",
+      className: "w-100",
+      customKey,
+      inputPanelClass: "bg-white pa1 tl",
+      items: moveStates,
+      labelFunction: labelFunction(role),
+      selectedItem: R.head(moveStates),
+    });
 
-    return React.createElement(ReactComponent.OptionPane, {
-      key: `${customKey}-${customKey2}`,
-      panelClass: "bg-wc-medium f6",
+    return React.createElement(TitledElement, {
+      className: "bg-gray ma1",
+      customKey: `${customKey}-${customKey2}`,
+      element: radioButtonPanel,
+      elementClass: "ma0 tc v-mid",
       title: createTitle(role),
-      message,
-      initialInput,
-      buttons,
-      titleClass: "b bg-gray f5 ph1 pt1 tc v-mid",
+      titleClass: "b bg-gray f5 pa1 tc v-mid",
     });
   }
 }
@@ -236,13 +149,11 @@ MoveOptionDialog.propTypes = {
   callback: PropTypes.func.isRequired,
   moveStates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
-  clientProps: PropTypes.shape(),
   customKey: PropTypes.string,
   role: PropTypes.shape(),
 };
 
 MoveOptionDialog.defaultProps = {
-  clientProps: {},
   customKey: "MoveOptionDialog",
   role: undefined,
 };

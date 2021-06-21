@@ -6,7 +6,6 @@ import MoveGenerator from "../model/MoveGenerator.js";
 import TestData from "../model/TestData.js";
 
 import MoveOptionDialog from "./MoveOptionDialog.js";
-import Endpoint from "./Endpoint.js";
 
 const RU = ReactComponent.ReactUtilities;
 
@@ -19,46 +18,40 @@ const myCallback = (moveState) => {
   );
 };
 
-const createDialog = (playerId, roleKey, state) => {
+const createDialog = (playerId, roleKey, i, state) => {
   const role = Role.value(roleKey);
   const moveStates = MoveGenerator.generateOptions(roleKey, playerId, state);
 
   return React.createElement(MoveOptionDialog, {
     callback: myCallback,
-    coinInstances: state.coinInstances,
+    customKey: `MoveOptionDialog-${playerId}-${roleKey}-${i}`,
     moveStates,
     role,
-
-    customKey: `MoveOptionDialog-${playerId}-${roleKey}`,
-    resourceBase: Endpoint.LOCAL_RESOURCE,
   });
 };
 
 const store = TestData.createStore();
+const state = store.getState();
 
-const playerId1 = 1;
 const element1 = React.createElement(MoveOptionDialog, {
   callback: myCallback,
-  coinInstances: store.getState().coinInstances,
-  moveStates: MoveGenerator.generateRoleOptions(playerId1, store.getState()),
-
-  customKey: "MoveOptionDialog-1",
-  resourceBase: Endpoint.LOCAL_RESOURCE,
+  customKey: "MoveOptionDialog-1-undefined-1",
+  moveStates: MoveGenerator.generateRoleOptions(1, state),
 });
 
-const element2 = createDialog(2, Role.ARCHITECT, store.getState());
+const element2 = createDialog(2, Role.ARCHITECT, 2, state);
 
-const element3 = createDialog(3, Role.CRAFTSMAN, store.getState());
+const element3 = createDialog(3, Role.CRAFTSMAN, 3, state);
 
-const element4 = createDialog(4, Role.LABORER, store.getState());
+const element4 = createDialog(4, Role.LABORER, 4, state);
 
-const element5 = createDialog(5, Role.LEGIONARY, store.getState());
+const element5 = createDialog(5, Role.LEGIONARY, 5, state);
 
-const element6 = createDialog(1, Role.MERCHANT, store.getState());
+const element6 = createDialog(1, Role.MERCHANT, 6, state);
 
-const element7 = createDialog(2, Role.PATRON, store.getState());
+const element7 = createDialog(2, Role.PATRON, 7, state);
 
-const element8 = createDialog(3, Role.THINKER, store.getState());
+const element8 = createDialog(3, Role.THINKER, 8, state);
 
 const cells = [
   element1,
