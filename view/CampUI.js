@@ -25,14 +25,14 @@ const createCell = ({
 
   const cardsPane = React.createElement(CollapsiblePane, {
     key: `CardsPane${title}`,
-    className: "center ph1 pt1",
+    className: "bg-light-gray center",
     element,
     isExpanded: true,
     title,
     titleClass: TITLE_CLASS,
   });
 
-  return RU.createCell(cardsPane, `CardsCell${title}`);
+  return RU.createCell(cardsPane, `CardsCell${title}`, "ph1 pt1");
 };
 
 class CampUI extends React.PureComponent {
