@@ -53,7 +53,13 @@ QUnit.test("execute()", (assert) => {
 
     assertLength(assert, "currentMoves", S.currentMoves(state), 0);
     assertEqual(assert, "leadRoleKey", S.leadRoleKey(state), null);
-    assertSet(assert, "cardPool len", S.cardPool(state).length, [5, 6, 7]);
+    assertSet(assert, "cardPool len", S.cardPool(state).length, [
+      5,
+      6,
+      7,
+      8,
+      9,
+    ]);
     const deckLen = [110, 111, 112, 113, 114];
     assertSet(assert, "orderDeck len", S.orderDeck(state).length, deckLen);
     assertEqual(assert, "campIds", S.campIds(playerId, state).length, 0);

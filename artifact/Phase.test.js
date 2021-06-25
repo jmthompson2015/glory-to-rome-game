@@ -28,10 +28,10 @@ QUnit.test("keys()", (assert) => {
 
   // Verify.
   assert.ok(result);
-  const length = 3;
+  const length = 2;
   assert.equal(result.length, length);
   assert.equal(R.head(result), Phase.DECLARE_ROLE);
-  assert.equal(R.last(result), Phase.CLEANUP);
+  assert.equal(R.last(result), Phase.PERFORM_ROLE);
 });
 
 const PhaseTest = {};

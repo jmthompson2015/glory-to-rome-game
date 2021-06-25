@@ -1,7 +1,6 @@
 const Phase = {
   DECLARE_ROLE: "declareRole",
   PERFORM_ROLE: "performRole",
-  CLEANUP: "cleanup",
 
   properties: {
     declareRole: {
@@ -11,10 +10,6 @@ const Phase = {
     performRole: {
       name: "Perform Role",
       key: "performRole",
-    },
-    cleanup: {
-      name: "Cleanup",
-      key: "cleanup",
     },
   },
 };

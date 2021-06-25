@@ -87,37 +87,6 @@ StepFunction.performRole = (store) => {
     : Promise.resolve();
 };
 
-StepFunction.cleanup = (store) => {
-  if (store.getState().isVerbose) {
-    console.log(`StepFunction.cleanup()`);
-  }
-  const playerId = Selector.currentPlayerId(store.getState());
-  const campIds = Selector.campIds(playerId, store.getState());
-
-  if (!R.isEmpty(campIds)) {
-    const cardId = R.head(campIds);
-
-    if (Selector.isJack(cardId, store.getState())) {
-      store.dispatch(ActionCreator.transferCampToJack(playerId, cardId));
-    } else {
-      store.dispatch(ActionCreator.transferCampToPool(playerId, cardId));
-    }
-  }
-
-  store.dispatch(ActionCreator.setCurrentInputCallback(null));
-  store.dispatch(ActionCreator.setCurrentMoves([]));
-
-  const currentPlayerOrder = Selector.currentPlayerOrder(store.getState());
-  const lastPlayerId = R.last(currentPlayerOrder);
-
-  if (playerId === lastPlayerId) {
-    store.dispatch(ActionCreator.setLeadRole(null));
-    store.dispatch(ActionCreator.setLeader(currentPlayerOrder[1]));
-  }
-
-  return Promise.resolve();
-};
-
 StepFunction.execute = (store) => {
   const phaseKey = Selector.currentPhaseKey(store.getState());
   let answer = Promise.resolve();
@@ -128,9 +97,6 @@ StepFunction.execute = (store) => {
       break;
     case Phase.PERFORM_ROLE:
       answer = StepFunction.performRole(store);
-      break;
-    case Phase.CLEANUP:
-      answer = StepFunction.cleanup(store);
       break;
     default:
       throw new Error(`Unknown phaseKey = ${phaseKey}`);
