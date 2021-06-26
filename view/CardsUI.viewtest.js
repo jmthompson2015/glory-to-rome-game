@@ -16,6 +16,7 @@ Setup.execute(store, players);
 store.dispatch(ActionCreator.setVerbose(true));
 const playerId = 1;
 const handIds = Selector.handIds(playerId, store.getState());
+store.dispatch(ActionCreator.setOrdersFaceup(handIds, true));
 store.dispatch(ActionCreator.setOrderHighlighted(handIds[1], true));
 const handCards = Selector.handCards(playerId, store.getState());
 

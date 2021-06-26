@@ -7,6 +7,7 @@ import PlayerStateTest from "./PlayerState.test.js";
 import ReducerTest from "./Reducer.test.js";
 import SelectorTest from "./Selector.test.js";
 import SiteCardStateTest from "./SiteCardState.test.js";
+import SorterTest from "./Sorter.test.js";
 import StructureStateTest from "./StructureState.test.js";
 
 QUnit.start();

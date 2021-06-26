@@ -1,5 +1,7 @@
 import Role from "../artifact/Role.js";
 
+import Sorter from "../state/Sorter.js";
+
 const { RadioButtonPanel, ReactUtilities: RU, TitledElement } = ReactComponent;
 
 const MATERIAL_ROLES = [Role.LABORER, Role.LEGIONARY, Role.MERCHANT];
@@ -84,18 +86,6 @@ const labelFunction = (role) => (move) => {
   return answer;
 };
 
-const materialRoleSort = R.sortWith([
-  R.ascend(R.prop("materialKey")),
-  R.ascend(R.prop("roleKey")),
-  R.ascend(R.prop("cardId")),
-]);
-
-const roleMaterialSort = R.sortWith([
-  R.ascend(R.prop("roleKey")),
-  R.ascend(R.prop("materialKey")),
-  R.ascend(R.prop("cardId")),
-]);
-
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 class MoveOptionDialog extends React.Component {
   constructor(props) {
@@ -104,8 +94,8 @@ class MoveOptionDialog extends React.Component {
     const { moveStates, role } = props;
     const mySort =
       role && MATERIAL_ROLES.includes(role.key)
-        ? materialRoleSort
-        : roleMaterialSort;
+        ? Sorter.moveMaterialRoleSort
+        : Sorter.moveRoleMaterialSort;
     const myMoveStates = mySort(moveStates);
     this.state = { moveStates: myMoveStates };
 

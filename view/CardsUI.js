@@ -1,3 +1,5 @@
+import Sorter from "../state/Sorter.js";
+
 import CardUI from "./CardUI.js";
 import Endpoint from "./Endpoint.js";
 
@@ -14,7 +16,8 @@ class CardsUI extends React.PureComponent {
   }
 
   render() {
-    const { cardStates, resourceBase, slicing, width } = this.props;
+    const { cardStates, resourceBase, slicing, sort, width } = this.props;
+    const myCardStates = sort(cardStates);
 
     const mapFunction = (cardState) => {
       const customKey = this.createId(cardState);
@@ -33,7 +36,7 @@ class CardsUI extends React.PureComponent {
       );
     };
 
-    const cardCells = R.map(mapFunction, cardStates);
+    const cardCells = R.map(mapFunction, myCardStates);
     const row = RU.createRow(cardCells);
 
     return RU.createTable(row, "cardsUITable", "center");
@@ -46,6 +49,7 @@ CardsUI.propTypes = {
   customKey: PropTypes.string,
   resourceBase: PropTypes.string,
   slicing: PropTypes.shape(),
+  sort: PropTypes.func,
   width: PropTypes.number,
 };
 
@@ -53,6 +57,7 @@ CardsUI.defaultProps = {
   customKey: "CardsUI",
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: undefined,
+  sort: Sorter.orderRoleNameSort,
   width: 80,
 };
 
