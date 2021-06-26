@@ -9,16 +9,16 @@ import Sorter from "./Sorter.js";
 QUnit.module("Sorter");
 
 const createCard1 = () =>
-  OrderCardState.create({ id: 1, cardKey: OrderCard.ACADEMY }); // Legionary
+  OrderCardState.create({ id: 1, cardKey: OrderCard.ACADEMY }); // Legionary 2
 
 const createCard2 = () =>
   OrderCardState.create({ id: 2, cardKey: OrderCard.JACK1 });
 
 const createCard3 = () =>
-  OrderCardState.create({ id: 3, cardKey: OrderCard.CATACOMB }); // Merchant
+  OrderCardState.create({ id: 3, cardKey: OrderCard.CATACOMB }); // Merchant 3
 
 const createCard4 = () =>
-  OrderCardState.create({ id: 4, cardKey: OrderCard.BAR }); // Laborer
+  OrderCardState.create({ id: 4, cardKey: OrderCard.BAR }); // Laborer 1
 
 const createMove1 = () =>
   MoveState.create({
@@ -48,7 +48,7 @@ const createMove4 = () =>
     roleKey: Role.LEGIONARY,
   });
 
-QUnit.test("moveMaterialRoleSort()", (assert) => {
+QUnit.test("Move.materialRoleSort()", (assert) => {
   // Setup.
   const move1 = createMove1();
   const move2 = createMove2();
@@ -57,14 +57,14 @@ QUnit.test("moveMaterialRoleSort()", (assert) => {
   const moveStates = [move1, move2, move3, move4];
 
   // Run.
-  const result = Sorter.moveMaterialRoleSort(moveStates);
+  const result = Sorter.Move.materialRoleSort(moveStates);
 
   // Verify.
   assert.ok(result);
   assert.equal(R.map((c) => c.cardId, result).join(", "), "4, 1, 3, 2");
 });
 
-QUnit.test("moveRoleMaterialSort()", (assert) => {
+QUnit.test("Move.roleMaterialSort()", (assert) => {
   // Setup.
   const move1 = createMove1();
   const move2 = createMove2();
@@ -73,14 +73,14 @@ QUnit.test("moveRoleMaterialSort()", (assert) => {
   const moveStates = [move1, move2, move3, move4];
 
   // Run.
-  const result = Sorter.moveRoleMaterialSort(moveStates);
+  const result = Sorter.Move.roleMaterialSort(moveStates);
 
   // Verify.
   assert.ok(result);
   assert.equal(R.map((c) => c.cardId, result).join(", "), "1, 2, 4, 3");
 });
 
-QUnit.test("orderRoleNameSort()", (assert) => {
+QUnit.test("Order.roleNameSort()", (assert) => {
   // Setup.
   const card1 = createCard1();
   const card2 = createCard2();
@@ -89,11 +89,26 @@ QUnit.test("orderRoleNameSort()", (assert) => {
   const cardStates = [card1, card2, card3, card4];
 
   // Run.
-  const result = Sorter.orderRoleNameSort(cardStates);
+  const result = Sorter.Order.roleNameSort(cardStates);
 
   // Verify.
   assert.ok(result);
   assert.equal(R.map((c) => c.id, result).join(", "), "4, 1, 3, 2");
+});
+
+QUnit.test("Order.valueMaterialSort()", (assert) => {
+  // Setup.
+  const card1 = createCard1();
+  const card3 = createCard3();
+  const card4 = createCard4();
+  const cardStates = [card1, card3, card4];
+
+  // Run.
+  const result = Sorter.Order.valueMaterialSort(cardStates);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(R.map((c) => c.id, result).join(", "), "4, 1, 3");
 });
 
 const SorterTest = {};

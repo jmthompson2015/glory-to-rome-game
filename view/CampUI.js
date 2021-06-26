@@ -1,3 +1,5 @@
+import Sorter from "../state/Sorter.js";
+
 import CardsUI from "./CardsUI.js";
 import Endpoint from "./Endpoint.js";
 
@@ -12,6 +14,7 @@ const createCell = ({
   playerId,
   resourceBase,
   slicing,
+  sorter,
   title,
   width,
 }) => {
@@ -20,6 +23,7 @@ const createCell = ({
     customKey: `CampUI-${playerId}-${title}`,
     resourceBase,
     slicing,
+    sorter,
     width,
   });
 
@@ -60,18 +64,21 @@ class CampUI extends React.PureComponent {
       ...inputProps0,
       cardStates: clienteleCards,
       title: "Clientele",
+      sorter: Sorter.Order.roleNameSort,
       slicing: createSlicing("left"),
     });
     const influenceCell = createCell({
       ...inputProps0,
       cardStates: influenceCards,
       slicing: createSlicing("top"),
+      sorter: Sorter.Order.valueMaterialSort,
       title: "Influence",
     });
     const stockpileCell = createCell({
       ...inputProps0,
       cardStates: stockpileCards,
       slicing: createSlicing("bottom"),
+      sorter: Sorter.Order.valueMaterialSort,
       title: "Stockpile",
     });
     const vaultCell = createCell({

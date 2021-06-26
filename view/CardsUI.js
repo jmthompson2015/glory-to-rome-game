@@ -57,7 +57,7 @@ CardsUI.defaultProps = {
   customKey: "CardsUI",
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: undefined,
-  sort: Sorter.orderRoleNameSort,
+  sort: Sorter.Order.roleNameSort,
   width: 80,
 };
 

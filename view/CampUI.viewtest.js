@@ -16,20 +16,19 @@ store.dispatch(
   ActionCreator.addToPlayerArray("playerToInfluence", playerId, 32)
 );
 store.dispatch(
-  ActionCreator.addToPlayerArray("playerToInfluence", playerId, 35)
+  ActionCreator.addToPlayerArray("playerToInfluence", playerId, 47)
 );
 
 store.dispatch(
   ActionCreator.addToPlayerArray("playerToClientele", playerId, 38)
 );
 store.dispatch(
-  ActionCreator.addToPlayerArray("playerToClientele", playerId, 47)
+  ActionCreator.addToPlayerArray("playerToClientele", playerId, 35)
 );
 
 store.dispatch(ActionCreator.addToPlayerArray("playerToVault", playerId, 50));
-store.dispatch(ActionCreator.setOrderFaceup(50, false));
 store.dispatch(ActionCreator.addToPlayerArray("playerToVault", playerId, 53));
-store.dispatch(ActionCreator.setOrderFaceup(53, false));
+store.dispatch(ActionCreator.setOrdersFaceup([50, 53], false));
 
 store.dispatch(
   ActionCreator.addToPlayerArray("playerToStockpile", playerId, 56)
@@ -39,10 +38,12 @@ store.dispatch(
 );
 
 store.dispatch(ActionCreator.addToPlayerArray("playerToCamp", playerId, 62));
+store.dispatch(
+  ActionCreator.setOrdersFaceup([32, 35, 38, 47, 56, 59, 62], true)
+);
 
 store.dispatch(ActionCreator.setLeadRole(Role.ARCHITECT));
 const roleKey = Selector.leadRoleKey(store.getState());
-console.log(`roleKey = ${roleKey}`);
 const role = Role.value(roleKey);
 
 // /////////////////////////////////////////////////////////////////////////////

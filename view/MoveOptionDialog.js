@@ -94,8 +94,8 @@ class MoveOptionDialog extends React.Component {
     const { moveStates, role } = props;
     const mySort =
       role && MATERIAL_ROLES.includes(role.key)
-        ? Sorter.moveMaterialRoleSort
-        : Sorter.moveRoleMaterialSort;
+        ? Sorter.Move.materialRoleSort
+        : Sorter.Move.roleMaterialSort;
     const myMoveStates = mySort(moveStates);
     this.state = { moveStates: myMoveStates };
 
