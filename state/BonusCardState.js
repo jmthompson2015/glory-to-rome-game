@@ -5,13 +5,7 @@ import Selector from "./Selector.js";
 
 const BonusCardState = {};
 
-BonusCardState.create = ({
-  id,
-  cardKey,
-  isFaceup = true,
-  isHighlighted = false,
-  store,
-}) => {
+BonusCardState.create = ({ id, cardKey, isHighlighted = false, store }) => {
   const myId =
     R.isNil(id) && store ? Selector.nextBonusCardId(store.getState()) : id;
 
@@ -20,7 +14,6 @@ BonusCardState.create = ({
     id: myId,
     cardKey,
     // Situational.
-    isFaceup,
     isHighlighted,
     // Managed.
     cardType: BonusCard.value(cardKey),

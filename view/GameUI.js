@@ -55,6 +55,7 @@ const createPoolCell = (state, resourceBase, width) => {
   const element = React.createElement(CardsUI, {
     key: `CardPool`,
     cardStates: poolCards,
+    isFaceup: true,
     resourceBase,
     width,
   });

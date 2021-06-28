@@ -504,81 +504,6 @@ QUnit.test("setPlayerStrategy()", (assert) => {
   assert.equal(result.playerToStrategy[playerId], strategy);
 });
 
-QUnit.test("setOrderFaceup()", (assert) => {
-  // Setup.
-  const state0 = AppState.create();
-  const cardKey = OrderCard.ACADEMY;
-  const cardId = Selector.nextOrderCardId(state0);
-  const cardState = OrderCardState.create({
-    id: cardId,
-    cardKey,
-  });
-  assert.equal(cardState.isFaceup, true);
-  const action0 = ActionCreator.addOrderCard(cardState);
-  const state = Reducer.root(state0, action0);
-  const action = ActionCreator.setOrderFaceup(cardId, false);
-
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  const cards = Object.values(result.orderCardInstances);
-  assert.ok(cards);
-  assert.equal(cards.length, 1);
-  const card = R.head(cards);
-  assert.ok(card);
-  assert.equal(card.id, cardId);
-  assert.equal(card.cardKey, cardKey);
-  assert.equal(card.isFaceup, false);
-});
-
-QUnit.test("setOrdersFaceup()", (assert) => {
-  // Setup.
-  const state0 = AppState.create();
-  const cardKey0 = OrderCard.ACADEMY;
-  const cardId0 = Selector.nextOrderCardId(state0);
-  const cardState0 = OrderCardState.create({ id: cardId0, cardKey: cardKey0 });
-  assert.equal(cardState0.isFaceup, true);
-  const action0 = ActionCreator.addOrderCard(cardState0);
-  const state1 = Reducer.root(state0, action0);
-  const cardKey1 = OrderCard.BAR;
-  const cardId1 = Selector.nextOrderCardId(state1);
-  const cardState1 = OrderCardState.create({ id: cardId1, cardKey: cardKey1 });
-  assert.equal(cardState1.isFaceup, true);
-  const action1 = ActionCreator.addOrderCard(cardState1);
-  const state = Reducer.root(state1, action1);
-  const cardIds = [cardId0, cardId1];
-  const action = ActionCreator.setOrdersFaceup(cardIds, false);
-
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  const cards = Object.values(result.orderCardInstances);
-  assert.ok(cards);
-  assert.equal(cards.length, 2);
-  const cardFirst = R.head(cards);
-  assert.ok(cardFirst);
-  assert.equal(cardFirst.id, cardId0);
-  assert.equal(cardFirst.cardKey, cardKey0);
-  assert.equal(
-    cardFirst.isFaceup,
-    false,
-    `cardFirst.isFaceup ? ${cardFirst.isFaceup}`
-  );
-  const cardLast = R.last(cards);
-  assert.ok(cardLast);
-  assert.equal(cardLast.id, cardId1);
-  assert.equal(cardLast.cardKey, cardKey1);
-  assert.equal(
-    cardLast.isFaceup,
-    false,
-    `cardLast.isFaceup ? ${cardLast.isFaceup}`
-  );
-});
-
 QUnit.test("setOrderHighlighted()", (assert) => {
   // Setup.
   const state0 = AppState.create();
@@ -606,35 +531,6 @@ QUnit.test("setOrderHighlighted()", (assert) => {
   assert.equal(card.id, cardId);
   assert.equal(card.cardKey, cardKey);
   assert.equal(card.isHighlighted, true);
-});
-
-QUnit.test("setSiteFaceup()", (assert) => {
-  // Setup.
-  const state0 = AppState.create();
-  const cardKey = SiteCard.BRICK;
-  const cardId = Selector.nextSiteCardId(state0);
-  const cardState = SiteCardState.create({
-    id: cardId,
-    cardKey,
-  });
-  assert.equal(cardState.isFaceup, true);
-  const action0 = ActionCreator.addSiteCard(cardState);
-  const state = Reducer.root(state0, action0);
-  const action = ActionCreator.setSiteFaceup(cardId, false);
-
-  // Run.
-  const result = Reducer.root(state, action);
-
-  // Verify.
-  assert.ok(result);
-  const cards = Object.values(result.siteCardInstances);
-  assert.ok(cards);
-  assert.equal(cards.length, 1);
-  const card = R.head(cards);
-  assert.ok(card);
-  assert.equal(card.id, cardId);
-  assert.equal(card.cardKey, cardKey);
-  assert.equal(card.isFaceup, false);
 });
 
 QUnit.test("setSiteHighlighted()", (assert) => {
@@ -1133,7 +1029,6 @@ QUnit.test("transferStockpileToVault()", (assert) => {
   assert.equal(vaultCardId, cardId);
   const vaultCard = Selector.orderCard(vaultCardId, result);
   assert.ok(vaultCard);
-  assert.equal(vaultCard.isFaceup, false);
 });
 
 const ReducerTest = {};

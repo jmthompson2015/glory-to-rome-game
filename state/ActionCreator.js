@@ -129,18 +129,6 @@ ActionCreator.setOrderDeck = makeActionCreator(
   "orderDeck"
 );
 
-ActionCreator.setOrderFaceup = makeActionCreator(
-  ActionType.SET_ORDER_FACEUP,
-  "cardId",
-  "isFaceup"
-);
-
-ActionCreator.setOrdersFaceup = makeActionCreator(
-  ActionType.SET_ORDERS_FACEUP,
-  "cardIds",
-  "isFaceup"
-);
-
 ActionCreator.setOrderHighlighted = makeActionCreator(
   ActionType.SET_ORDER_HIGHLIGHTED,
   "cardId",
@@ -163,12 +151,6 @@ ActionCreator.setPlayerStrategy = makeActionCreator(
 ActionCreator.setSiteDeck = makeActionCreator(
   ActionType.SET_SITE_DECK,
   "siteDeck"
-);
-
-ActionCreator.setSiteFaceup = makeActionCreator(
-  ActionType.SET_SITE_FACEUP,
-  "cardId",
-  "isFaceup"
 );
 
 ActionCreator.setSiteHighlighted = makeActionCreator(

@@ -21,6 +21,7 @@ const decks = R.reduce(reduceFunction, [], Material.keys());
 const element1 = React.createElement(DecksUI, {
   countFillStyle: "black",
   decks,
+  isFaceup: true,
   resourceBase: Endpoint.LOCAL_RESOURCE,
 });
 ReactDOM.render(element1, document.getElementById("panel1"));

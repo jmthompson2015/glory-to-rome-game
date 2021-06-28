@@ -5,13 +5,7 @@ import Selector from "./Selector.js";
 
 const SiteCardState = {};
 
-SiteCardState.create = ({
-  id,
-  cardKey,
-  isFaceup = true,
-  isHighlighted = false,
-  store,
-}) => {
+SiteCardState.create = ({ id, cardKey, isHighlighted = false, store }) => {
   const myId =
     R.isNil(id) && store ? Selector.nextSiteCardId(store.getState()) : id;
 
@@ -20,7 +14,6 @@ SiteCardState.create = ({
     id: myId,
     cardKey,
     // Situational.
-    isFaceup,
     isHighlighted,
     // Managed.
     cardType: SiteCard.value(cardKey),

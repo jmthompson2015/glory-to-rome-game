@@ -5,13 +5,14 @@ const { ReactUtilities: RU } = ReactComponent;
 
 class DecksUI extends React.PureComponent {
   render() {
-    const { countFillStyle, decks, resourceBase, width } = this.props;
+    const { countFillStyle, decks, isFaceup, resourceBase, width } = this.props;
 
     const mapFunction = (deck) => {
       const element = React.createElement(DeckUI, {
         key: `DeckUI${deck.id}`,
         countFillStyle,
         deck,
+        isFaceup,
         resourceBase,
         width,
       });
@@ -32,12 +33,14 @@ DecksUI.propTypes = {
   decks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape())).isRequired,
 
   countFillStyle: PropTypes.string,
+  isFaceup: PropTypes.bool,
   resourceBase: PropTypes.string,
   width: PropTypes.number,
 };
 
 DecksUI.defaultProps = {
   countFillStyle: undefined,
+  isFaceup: false,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   width: 80,
 };

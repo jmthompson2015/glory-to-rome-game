@@ -11,6 +11,7 @@ const createSlicing = (type) => ({ type, value: 0.2 });
 
 const createCell = ({
   cardStates,
+  isFaceup,
   playerId,
   resourceBase,
   slicing,
@@ -21,6 +22,7 @@ const createCell = ({
   const element = React.createElement(CardsUI, {
     cardStates,
     customKey: `CampUI-${playerId}-${title}`,
+    isFaceup,
     resourceBase,
     slicing,
     sorter,
@@ -58,11 +60,13 @@ class CampUI extends React.PureComponent {
     const campCell = createCell({
       ...inputProps0,
       cardStates: leadCards,
+      isFaceup: true,
       title: isLeader ? "Lead" : "Follow",
     });
     const clienteleCell = createCell({
       ...inputProps0,
       cardStates: clienteleCards,
+      isFaceup: true,
       title: "Clientele",
       sorter: Sorter.Order.roleNameSort,
       slicing: createSlicing("left"),
@@ -70,6 +74,7 @@ class CampUI extends React.PureComponent {
     const influenceCell = createCell({
       ...inputProps0,
       cardStates: influenceCards,
+      isFaceup: true,
       slicing: createSlicing("top"),
       sorter: Sorter.Order.valueMaterialSort,
       title: "Influence",
@@ -77,6 +82,7 @@ class CampUI extends React.PureComponent {
     const stockpileCell = createCell({
       ...inputProps0,
       cardStates: stockpileCards,
+      isFaceup: true,
       slicing: createSlicing("bottom"),
       sorter: Sorter.Order.valueMaterialSort,
       title: "Stockpile",

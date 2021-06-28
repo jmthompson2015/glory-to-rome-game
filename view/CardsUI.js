@@ -6,7 +6,7 @@ import Endpoint from "./Endpoint.js";
 const { ReactUtilities: RU } = ReactComponent;
 
 const createIdSuffix = (card) =>
-  `${card.id}-${card.cardKey}-${card.isFaceup}-${card.isHighlighted}`;
+  `${card.id}-${card.cardKey}-${card.isHighlighted}`;
 
 class CardsUI extends React.PureComponent {
   createId(cardState) {
@@ -16,7 +16,14 @@ class CardsUI extends React.PureComponent {
   }
 
   render() {
-    const { cardStates, resourceBase, slicing, sort, width } = this.props;
+    const {
+      cardStates,
+      isFaceup,
+      resourceBase,
+      slicing,
+      sort,
+      width,
+    } = this.props;
     const myCardStates = sort(cardStates);
 
     const mapFunction = (cardState) => {
@@ -24,6 +31,7 @@ class CardsUI extends React.PureComponent {
       const element = React.createElement(CardUI, {
         cardState,
         customKey,
+        isFaceup,
         resourceBase,
         slicing,
         width,
@@ -47,6 +55,7 @@ CardsUI.propTypes = {
   cardStates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
   customKey: PropTypes.string,
+  isFaceup: PropTypes.bool,
   resourceBase: PropTypes.string,
   slicing: PropTypes.shape(),
   sort: PropTypes.func,
@@ -55,6 +64,7 @@ CardsUI.propTypes = {
 
 CardsUI.defaultProps = {
   customKey: "CardsUI",
+  isFaceup: false,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: undefined,
   sort: Sorter.Order.roleNameSort,

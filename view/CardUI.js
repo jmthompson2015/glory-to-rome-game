@@ -94,22 +94,22 @@ class CardUI extends React.PureComponent {
   }
 
   createSrc() {
-    const { cardState, resourceBase, version } = this.props;
+    const { cardState, isFaceup, resourceBase, version } = this.props;
     const image =
-      OrderCard.image(cardState.cardType, version, cardState.isFaceup) ||
-      SiteCard.image(cardState.cardType, version, cardState.isFaceup) ||
-      BonusCard.image(cardState.cardType, version, cardState.isFaceup);
+      OrderCard.image(cardState.cardType, version, isFaceup) ||
+      SiteCard.image(cardState.cardType, version, isFaceup) ||
+      BonusCard.image(cardState.cardType, version, isFaceup);
 
     return `${resourceBase}${image}`;
   }
 
   render() {
-    const { cardState, customKey, slicing } = this.props;
+    const { cardState, customKey, isFaceup, slicing } = this.props;
     const imageSrc = this.createSrc(cardState);
     const drawLayerFunctions = cardState.isHighlighted
       ? [drawFunction1(imageSrc, slicing), drawFunction2]
       : [drawFunction1(imageSrc, slicing)];
-    const title = cardState.isFaceup ? cardState.cardType.name : null;
+    const title = isFaceup ? cardState.cardType.name : null;
 
     return React.createElement(LayeredCanvas, {
       drawLayerFunctions,
@@ -127,6 +127,7 @@ CardUI.propTypes = {
   cardState: PropTypes.shape().isRequired,
 
   customKey: PropTypes.string,
+  isFaceup: PropTypes.bool,
   magnification: PropTypes.number,
   resourceBase: PropTypes.string,
   slicing: PropTypes.shape({
@@ -139,6 +140,7 @@ CardUI.propTypes = {
 
 CardUI.defaultProps = {
   customKey: "CardUI",
+  isFaceup: false,
   magnification: 3,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   slicing: undefined,

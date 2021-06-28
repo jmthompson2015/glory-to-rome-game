@@ -4,7 +4,7 @@ import StructureUI from "./StructureUI.js";
 const { ReactUtilities: RU } = ReactComponent;
 
 const createIdSuffix = (card) =>
-  `${card.id}-${card.cardKey}-${card.isFaceup}-${card.isHighlighted}`;
+  `${card.id}-${card.cardKey}-${card.isHighlighted}`;
 
 class StructuresUI extends React.PureComponent {
   createId(cardState) {

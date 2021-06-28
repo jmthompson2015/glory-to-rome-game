@@ -514,9 +514,13 @@ OrderCard.image = (card, version = "v2.0", isFaceup = true) => {
   let answer;
 
   if (OrderCard.keys().includes(card.key)) {
-    answer = isFaceup
-      ? card.image.replace("{version}", version)
-      : CARD_BACK.replace("{version}", version);
+    if (OrderCard.isJack(card.key)) {
+      answer = card.image.replace("{version}", version);
+    } else {
+      answer = isFaceup
+        ? card.image.replace("{version}", version)
+        : CARD_BACK.replace("{version}", version);
+    }
   }
 
   return answer;

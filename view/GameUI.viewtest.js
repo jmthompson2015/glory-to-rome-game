@@ -4,7 +4,6 @@ import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
 import Reducer from "../state/Reducer.js";
-import Selector from "../state/Selector.js";
 
 import MoveGenerator from "../model/MoveGenerator.js";
 import Setup from "../model/Setup.js";
@@ -25,8 +24,6 @@ const store = Redux.createStore(Reducer.root);
 store.dispatch(ActionCreator.setVerbose(true));
 const players = TestData.createPlayers();
 Setup.execute(store, players);
-const cardId = R.head(Selector.orderDeck(store.getState()));
-store.dispatch(ActionCreator.setOrderFaceup(cardId, false));
 
 const playerId = R.head(players).id;
 store.dispatch(ActionCreator.setCurrentPlayer(playerId));

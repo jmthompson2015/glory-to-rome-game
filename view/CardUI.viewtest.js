@@ -15,13 +15,14 @@ store.dispatch(ActionCreator.setOrderHighlighted(3, true));
 
 const createCardCell = (cardState, customKey0, sliceType) => {
   const c = cardState;
-  const customKeySuffix = `${c.id}-${c.cardKey}-${c.isFaceup}-${c.isHighlighted}`;
+  const customKeySuffix = `${c.id}-${c.cardKey}-${c.isHighlighted}`;
   const customKey = `${customKey0}${customKeySuffix}`;
   const slicing = sliceType ? { type: sliceType, value: 0.2 } : undefined;
   const element = React.createElement(CardUI, {
     key: `CardUI${cardState.key}`,
     cardState,
     customKey,
+    isFaceup: true,
     resourceBase: Endpoint.LOCAL_RESOURCE,
     slicing,
     width: 80,

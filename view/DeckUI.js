@@ -35,11 +35,11 @@ class DeckUI extends React.PureComponent {
   }
 
   createSrc(cardState) {
-    const { resourceBase, version } = this.props;
+    const { isFaceup, resourceBase, version } = this.props;
     const image =
-      OrderCard.image(cardState.cardType, version, cardState.isFaceup) ||
-      SiteCard.image(cardState.cardType, version, cardState.isFaceup) ||
-      BonusCard.image(cardState.cardType, version, cardState.isFaceup);
+      OrderCard.image(cardState.cardType, version, isFaceup) ||
+      SiteCard.image(cardState.cardType, version, isFaceup) ||
+      BonusCard.image(cardState.cardType, version, isFaceup);
 
     return `${resourceBase}${image}`;
   }
@@ -76,6 +76,7 @@ DeckUI.propTypes = {
   deck: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
   countFillStyle: PropTypes.string,
+  isFaceup: PropTypes.bool,
   resourceBase: PropTypes.string,
   version: PropTypes.string,
   width: PropTypes.number,
@@ -83,6 +84,7 @@ DeckUI.propTypes = {
 
 DeckUI.defaultProps = {
   countFillStyle: "white",
+  isFaceup: false,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   version: undefined,
   width: 80,

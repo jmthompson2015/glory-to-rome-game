@@ -59,6 +59,7 @@ class PlayerPanel extends React.PureComponent {
     const element = React.createElement(CardsUI, {
       cardStates: handCards,
       customKey: `CardsUI-Hand-${player.id}`,
+      isFaceup: R.not(player.isComputer),
       resourceBase,
       width,
     });
@@ -80,6 +81,7 @@ class PlayerPanel extends React.PureComponent {
     if (isLeader) {
       const cardCell = React.createElement(CardUI, {
         cardState: leaderCard,
+        isFaceup: true,
       });
 
       return RU.createCell(cardCell, `LeaderCardCell-${player.id}`, "tc v-mid");
@@ -93,6 +95,7 @@ class PlayerPanel extends React.PureComponent {
     const element = React.createElement(StructuresUI, {
       structureStates: structures,
       customKey: `CardsUI-Structures-${player.id}`,
+      isFaceup: true,
       resourceBase,
       width,
     });

@@ -112,15 +112,6 @@ Setup.execute = (store, players, versionKey = Version.REPUBLIC) => {
 
   // Deal an order card into the pool for each player, and determine the leader.
   Setup.dealPoolCards(store, players);
-
-  // Flip human player hand cards faceup.
-  const forEachFunction2 = (player) => {
-    if (!player.isComputer) {
-      const hand = Selector.handIds(player.id, store.getState());
-      store.dispatch(ActionCreator.setOrdersFaceup(hand, true));
-    }
-  };
-  R.forEach(forEachFunction2, players);
 };
 
 Object.freeze(Setup);

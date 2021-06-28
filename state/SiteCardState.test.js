@@ -6,8 +6,7 @@ const createTestData = () =>
   SiteCardState.create({
     id: 1,
     cardKey: 2,
-    isFaceup: 3,
-    isHighlighted: 4,
+    isHighlighted: 3,
   });
 
 QUnit.test("create()", (assert) => {
@@ -18,8 +17,7 @@ QUnit.test("create()", (assert) => {
   assert.ok(result);
   assert.equal(result.id, 1);
   assert.equal(result.cardKey, 2);
-  assert.equal(result.isFaceup, 3);
-  assert.equal(result.isHighlighted, 4);
+  assert.equal(result.isHighlighted, 3);
 });
 
 QUnit.test("create() immutable", (assert) => {

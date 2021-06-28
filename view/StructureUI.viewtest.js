@@ -15,7 +15,7 @@ store.dispatch(ActionCreator.setVerbose(true));
 
 const createStructureCell = (structureState, customKey0) => {
   const c = structureState;
-  const customKeySuffix = `${c.id}-${c.cardKey}-${c.isFaceup}-${c.isHighlighted}`;
+  const customKeySuffix = `${c.id}-${c.cardKey}-${c.isHighlighted}`;
   const customKey = `${customKey0}${customKeySuffix}`;
   const element = React.createElement(StructureUI, {
     key: `StructureUI${structureState.key}`,
