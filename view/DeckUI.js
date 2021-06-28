@@ -34,12 +34,12 @@ class DeckUI extends React.PureComponent {
     this.height = width * 1.4;
   }
 
-  createSrc(cardState) {
+  createSrc(card) {
     const { isFaceup, resourceBase, version } = this.props;
     const image =
-      OrderCard.image(cardState.cardType, version, isFaceup) ||
-      SiteCard.image(cardState.cardType, version, isFaceup) ||
-      BonusCard.image(cardState.cardType, version, isFaceup);
+      OrderCard.image(card, version, isFaceup) ||
+      SiteCard.image(card, version, isFaceup) ||
+      BonusCard.image(card, version, isFaceup);
 
     return `${resourceBase}${image}`;
   }
@@ -52,7 +52,21 @@ class DeckUI extends React.PureComponent {
       return ReactDOMFactories.span({ key: "DeckCanvas0" }, "");
     }
 
-    const imageSrc = this.createSrc(cardState);
+    let imageSrc;
+    let images;
+
+    if (OrderCard.isJack(cardState.cardKey)) {
+      const jack1 = OrderCard.value(OrderCard.JACK1);
+      const jack2 = OrderCard.value(OrderCard.JACK2);
+      const image1 = this.createSrc(jack1);
+      const image2 = this.createSrc(jack2);
+      images = [image1, image2];
+      imageSrc = cardState.cardKey === OrderCard.JACK1 ? image1 : image2;
+    } else {
+      imageSrc = this.createSrc(cardState.cardType);
+      images = [imageSrc];
+    }
+
     const count = deck.length;
     const drawLayerFunctions = [
       drawFunction1(imageSrc),
@@ -64,7 +78,7 @@ class DeckUI extends React.PureComponent {
       drawLayerFunctions,
       customKey: key,
       height: this.height,
-      images: [imageSrc],
+      images,
       isVerbose: false,
       title: `${count}`,
       width,

@@ -13,6 +13,7 @@ Setup.execute(store, players);
 const state = store.getState();
 
 const deck = Selector.orderCards(Selector.orderDeck(state), state);
+const jackDeck = Selector.orderCards(Selector.jackDeck(state), state);
 
 const element1 = React.createElement(DeckUI, {
   deck,
@@ -21,7 +22,13 @@ const element1 = React.createElement(DeckUI, {
 ReactDOM.render(element1, document.getElementById("panel1"));
 
 const element2 = React.createElement(DeckUI, {
-  deck: [],
+  deck: jackDeck,
   resourceBase: Endpoint.LOCAL_RESOURCE,
 });
 ReactDOM.render(element2, document.getElementById("panel2"));
+
+const element3 = React.createElement(DeckUI, {
+  deck: [],
+  resourceBase: Endpoint.LOCAL_RESOURCE,
+});
+ReactDOM.render(element3, document.getElementById("panel3"));
