@@ -30,4 +30,11 @@ Sorter.Order = {
   ]),
 };
 
+Sorter.Site = {
+  valueMaterialSort: R.sortWith([
+    R.ascend(R.path(["cardType", "materialValue"])),
+    R.ascend(R.path(["cardType", "materialKey"])),
+  ]),
+};
+
 export default Sorter;

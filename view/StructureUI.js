@@ -41,7 +41,7 @@ const drawFunction2 = (imageSrc) => (context, width, height, imageMap) => {
   context.drawImage(image, 0, 0, width, width * HEIGHT_RATIO);
 };
 
-const mapIndexed = R.addIndex(R.map);
+const forEachIndexed = R.addIndex(R.forEach);
 
 // /////////////////////////////////////////////////////////////////////////////
 class StructureUI extends React.PureComponent {
@@ -85,16 +85,11 @@ class StructureUI extends React.PureComponent {
 
   createMaterialSrc(i) {
     const { structureState, resourceBase, version } = this.props;
-    const image = OrderCard.image(structureState.materialTypes[i], version);
+    const orderCard = structureState.materialTypes[i];
+    IV.validateNotNil("orderCard", orderCard);
+    const image = OrderCard.image(orderCard, version);
 
     return `${resourceBase}${image}`;
-  }
-
-  createMaterialSrcs() {
-    const { structureState } = this.props;
-    const mapFunction = (card, i) => this.createMaterialSrc(i);
-
-    return mapIndexed(mapFunction, structureState.materialTypes);
   }
 
   createSiteSrc() {
@@ -116,34 +111,35 @@ class StructureUI extends React.PureComponent {
     IV.validateNotNil("structureState", structureState);
     const height0 = width * HEIGHT_RATIO;
     const hBottom = this.height();
-    let drawLayerFunctions = [];
-    let images = [];
+    const drawLayerFunctions = [];
+    const images = [];
 
-    const mapFunction = (cardId, i) => {
-      const imageMaterialSrc = this.createMaterialSrc(i);
-      return drawFunction1(
-        imageMaterialSrc,
-        slicing,
-        hBottom - (i + 1) * slicing * height0
-      );
+    const forEachFunction = (cardId, i) => {
+      const imageSrc = this.createMaterialSrc(i);
+      const hOffset = hBottom - (i + 1) * slicing * height0;
+      const dlf = drawFunction1(imageSrc, slicing, hOffset);
+      drawLayerFunctions.push(dlf);
+      images.push(imageSrc);
     };
-    const dlf = mapIndexed(mapFunction, structureState.materialTypes);
-    drawLayerFunctions = drawLayerFunctions.concat(dlf);
-    images = images.concat(this.createMaterialSrcs());
+    forEachIndexed(forEachFunction, structureState.materialIds);
 
     if (!R.isNil(structureState.siteId)) {
-      const imageSiteSrc = this.createSiteSrc();
-      drawLayerFunctions.push(drawFunction1(imageSiteSrc, slicing, height0));
-      images.push(imageSiteSrc);
+      const imageSrc = this.createSiteSrc();
+      drawLayerFunctions.push(drawFunction1(imageSrc, slicing, height0));
+      images.push(imageSrc);
     }
 
     const imageFoundationSrc = this.createFoundationSrc();
     drawLayerFunctions.push(drawFunction2(imageFoundationSrc));
     images.push(imageFoundationSrc);
+    const materialKeys = R.map((id) => `-${id}`, structureState.materialIds);
+    const key = `${customKey}-StructureCanvas-${structureState.id}-${
+      structureState.foundationId
+    }-${structureState.siteId}${materialKeys.join("")}`;
 
     return React.createElement(LayeredCanvas, {
       drawLayerFunctions,
-      customKey,
+      customKey: key,
       height: this.height(),
       images,
       onClick: this.handleOnClick,

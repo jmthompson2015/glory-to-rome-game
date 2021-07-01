@@ -254,6 +254,13 @@ ActionCreator.transferStockpileToVault = makeActionCreator(
   "cardId"
 );
 
+ActionCreator.transferStructureToInfluence = makeActionCreator(
+  ActionType.TRANSFER_STRUCTURE_TO_INFLUENCE,
+  "structureId",
+  "playerId",
+  "cardId"
+);
+
 Object.freeze(ActionCreator);
 
 export default ActionCreator;

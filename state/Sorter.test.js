@@ -1,9 +1,11 @@
 import Material from "../artifact/Material.js";
 import OrderCard from "../artifact/OrderCard.js";
 import Role from "../artifact/Role.js";
+import SiteCard from "../artifact/SiteCard.js";
 
 import MoveState from "./MoveState.js";
 import OrderCardState from "./OrderCardState.js";
+import SiteCardState from "./SiteCardState.js";
 import Sorter from "./Sorter.js";
 
 QUnit.module("Sorter");
@@ -47,6 +49,15 @@ const createMove4 = () =>
     materialKey: Material.BRICK,
     roleKey: Role.LEGIONARY,
   });
+
+const createSite1 = () =>
+  SiteCardState.create({ id: 1, cardKey: SiteCard.BRICK }); // 2
+
+const createSite2 = () =>
+  SiteCardState.create({ id: 2, cardKey: SiteCard.MARBLE }); // 3
+
+const createSite3 = () =>
+  SiteCardState.create({ id: 3, cardKey: SiteCard.RUBBLE }); // 1
 
 QUnit.test("Move.materialRoleSort()", (assert) => {
   // Setup.
@@ -109,6 +120,21 @@ QUnit.test("Order.valueMaterialSort()", (assert) => {
   // Verify.
   assert.ok(result);
   assert.equal(R.map((c) => c.id, result).join(", "), "4, 1, 3");
+});
+
+QUnit.test("Site.valueMaterialSort()", (assert) => {
+  // Setup.
+  const card1 = createSite1();
+  const card2 = createSite2();
+  const card3 = createSite3();
+  const cardStates = [card1, card2, card3];
+
+  // Run.
+  const result = Sorter.Order.valueMaterialSort(cardStates);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(R.map((c) => c.id, result).join(", "), "3, 1, 2");
 });
 
 const SorterTest = {};

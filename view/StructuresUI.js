@@ -10,7 +10,7 @@ class StructuresUI extends React.PureComponent {
   createId(cardState) {
     const { customKey } = this.props;
 
-    return `${customKey}-${createIdSuffix(cardState)}`;
+    return `${customKey}-${cardState.id}`;
   }
 
   render() {

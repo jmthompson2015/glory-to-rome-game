@@ -50,8 +50,12 @@ QUnit.test("Architect execute() Build Structure", (assert) => {
     assert.ok(true, "test resumed from async operation");
     // Verify.
     const state = store.getState();
-    const handIds = Selector.handIds(playerId, state);
-    assert.equal(handIds.length, 0, `handIds.length = ${handIds.length}`);
+    const stockpileIds = Selector.stockpileIds(playerId, state);
+    assert.equal(
+      stockpileIds.length,
+      0,
+      `stockpileIds.length = ${stockpileIds.length}`
+    );
     const siteIds = Selector.siteDeck(state);
     assert.equal(siteIds.length, 29, `siteIds.length = ${siteIds.length}`);
     const poolIds = Selector.cardPool(state);
@@ -64,8 +68,8 @@ QUnit.test("Architect execute() Build Structure", (assert) => {
     );
     const structure = Selector.structure(1, store.getState());
     assert.ok(structure);
-    const { materialIds } = structure;
-    assert.ok(materialIds);
+    const { foundationType, materialIds, materialTypes, siteType } = structure;
+    assert.ok(foundationType);
     assert.equal(
       structure.foundationId,
       foundationId,
@@ -76,11 +80,19 @@ QUnit.test("Architect execute() Build Structure", (assert) => {
       siteId,
       `structure.siteId = ${structure.siteId}`
     );
+    assert.ok(materialIds);
     assert.equal(
       materialIds.length,
       1,
       `materialIds.length = ${materialIds.length}`
     );
+    assert.ok(materialTypes);
+    assert.equal(
+      materialTypes.length,
+      1,
+      `materialTypes.length = ${materialTypes.length}`
+    );
+    assert.ok(siteType);
     done();
   };
 
@@ -188,8 +200,8 @@ QUnit.test("Craftsman execute() Build Structure", (assert) => {
     );
     const structure = Selector.structure(1, store.getState());
     assert.ok(structure);
-    const { materialIds } = structure;
-    assert.ok(materialIds);
+    const { foundationType, materialIds, materialTypes, siteType } = structure;
+    assert.ok(foundationType);
     assert.equal(
       structure.foundationId,
       foundationId,
@@ -200,11 +212,19 @@ QUnit.test("Craftsman execute() Build Structure", (assert) => {
       siteId,
       `structure.siteId = ${structure.siteId}`
     );
+    assert.ok(materialIds);
     assert.equal(
       materialIds.length,
       1,
       `materialIds.length = ${materialIds.length}`
     );
+    assert.ok(materialTypes);
+    assert.equal(
+      materialTypes.length,
+      1,
+      `materialTypes.length = ${materialTypes.length}`
+    );
+    assert.ok(siteType);
     done();
   };
 

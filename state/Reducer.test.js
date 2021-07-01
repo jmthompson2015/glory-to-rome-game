@@ -993,6 +993,83 @@ QUnit.test("transferPoolToStockpile()", (assert) => {
   assert.equal(R.head(stockpile), cardId);
 });
 
+QUnit.test("transferStockpileToStructure()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const cardId1 = 1;
+  const cardKey1 = OrderCard.ACADEMY;
+  const card1 = OrderCardState.create({ id: cardId1, cardKey: cardKey1 });
+  const action0 = ActionCreator.addOrderCard(card1);
+  const state1 = Reducer.root(state0, action0);
+  const cardId2 = 2;
+  const cardKey2 = OrderCard.AMPHITHEATRE;
+  const card2 = OrderCardState.create({ id: cardId2, cardKey: cardKey2 });
+  const action1 = ActionCreator.addOrderCard(card2);
+  const state2 = Reducer.root(state1, action1);
+  const cardId3 = 3;
+  const cardKey3 = SiteCard.CONCRETE;
+  const siteCard = SiteCardState.create({ id: cardId3, cardKey: cardKey3 });
+  const action2 = ActionCreator.addSiteCard(siteCard);
+  const state3 = Reducer.root(state2, action2);
+
+  const playerId = 3;
+  const action3 = ActionCreator.addToPlayerArray(
+    "playerToStockpile",
+    playerId,
+    cardId2
+  );
+  const state4 = Reducer.root(state3, action3);
+  const structureId = 4;
+  const structureState = StructureState.create({
+    id: structureId,
+    foundationId: cardId1,
+    siteId: cardId3,
+  });
+  const action4 = ActionCreator.addStructure(structureState);
+  const state = Reducer.root(state4, action4);
+  const action = ActionCreator.transferStockpileToStructure(
+    playerId,
+    cardId2,
+    structureId
+  );
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const { playerToStockpile, structureInstances } = result;
+  assert.ok(playerToStockpile);
+  assert.equal(
+    playerToStockpile[playerId].length,
+    0,
+    `playerToStockpile[playerId].length = ${playerToStockpile[playerId].length}`
+  );
+  const resultStructure = structureInstances[structureId];
+  assert.ok(resultStructure);
+  assert.equal(
+    resultStructure.foundationId,
+    cardId1,
+    `foundationId = ${resultStructure.foundationId}`
+  );
+  assert.equal(
+    resultStructure.siteId,
+    cardId3,
+    `siteId = ${resultStructure.siteId}`
+  );
+  assert.equal(
+    resultStructure.materialIds.length,
+    1,
+    `resultStructure.materialIds.length = ${resultStructure.materialIds.length}`
+  );
+  assert.equal(resultStructure.materialIds.join(""), cardId2);
+  assert.equal(
+    resultStructure.materialTypes.length,
+    1,
+    `resultStructure.materialTypes.length = ${resultStructure.materialTypes.length}`
+  );
+});
+
 QUnit.test("transferStockpileToVault()", (assert) => {
   // Setup.
   const state0 = AppState.create();
@@ -1029,6 +1106,95 @@ QUnit.test("transferStockpileToVault()", (assert) => {
   assert.equal(vaultCardId, cardId);
   const vaultCard = Selector.orderCard(vaultCardId, result);
   assert.ok(vaultCard);
+});
+
+QUnit.test("transferStructureToInfluence()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const cardId1 = 1;
+  const cardKey1 = OrderCard.ACADEMY;
+  const card1 = OrderCardState.create({ id: cardId1, cardKey: cardKey1 });
+  const action0 = ActionCreator.addOrderCard(card1);
+  const state1 = Reducer.root(state0, action0);
+  const cardId2 = 2;
+  const cardKey2 = OrderCard.AMPHITHEATRE;
+  const card2 = OrderCardState.create({ id: cardId2, cardKey: cardKey2 });
+  const action1 = ActionCreator.addOrderCard(card2);
+  const state2 = Reducer.root(state1, action1);
+  const cardId3 = 3;
+  const cardKey3 = SiteCard.CONCRETE;
+  const siteCard = SiteCardState.create({ id: cardId3, cardKey: cardKey3 });
+  const action2 = ActionCreator.addSiteCard(siteCard);
+  const state3 = Reducer.root(state2, action2);
+  const cardId4 = 4;
+  const cardKey4 = OrderCard.AQUEDUCT;
+  const card4 = OrderCardState.create({ id: cardId4, cardKey: cardKey4 });
+  const action3 = ActionCreator.addOrderCard(card4);
+  const state4 = Reducer.root(state3, action3);
+  const cardId5 = 5;
+  const cardKey5 = OrderCard.BRIDGE;
+  const card5 = OrderCardState.create({ id: cardId5, cardKey: cardKey5 });
+  const action4 = ActionCreator.addOrderCard(card5);
+  const state5 = Reducer.root(state4, action4);
+
+  const playerId = 3;
+  const action5 = ActionCreator.addToPlayerArray(
+    "playerToStockpile",
+    playerId,
+    cardId2
+  );
+  const state6 = Reducer.root(state5, action5);
+  const structureId = 4;
+  const materialIds = [cardId4, cardId5];
+  const structureState = StructureState.create({
+    id: structureId,
+    foundationId: cardId1,
+    siteId: cardId3,
+    materialIds,
+  });
+  const action6 = ActionCreator.addStructure(structureState);
+  const state = Reducer.root(state6, action6);
+  const action = ActionCreator.transferStructureToInfluence(
+    structureId,
+    playerId,
+    cardId3
+  );
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  const { playerToInfluence, structureInstances } = result;
+  const resultStructure = structureInstances[structureId];
+  assert.ok(resultStructure);
+  assert.equal(
+    resultStructure.foundationId,
+    cardId1,
+    `foundationId = ${resultStructure.foundationId}`
+  );
+  assert.equal(
+    resultStructure.siteId,
+    null,
+    `siteId = ${resultStructure.siteId}`
+  );
+  assert.equal(
+    resultStructure.materialIds.length,
+    2,
+    `resultStructure.materialIds.length = ${resultStructure.materialIds.length}`
+  );
+  assert.equal(resultStructure.materialIds.join(", "), "4, 5");
+  const influence = playerToInfluence[playerId];
+  assert.ok(influence);
+  assert.equal(influence.length, 1, `influence.length = ${influence.length}`);
+  const influenceCardId = R.head(influence);
+  assert.equal(
+    influenceCardId,
+    cardId3,
+    `influenceCardId = ${influenceCardId}`
+  );
+  const influenceCard = Selector.siteCard(influenceCardId, result);
+  assert.ok(influenceCard);
 });
 
 const ReducerTest = {};

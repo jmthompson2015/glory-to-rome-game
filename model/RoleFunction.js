@@ -37,8 +37,19 @@ const performArchitectOption = (playerId, store) => (moveState) => {
     IV.validateNotNil("cardId", cardId);
     IV.validateNotNil("structureId", structureId);
     store.dispatch(
-      ActionCreator.transferHandToStructure(playerId, cardId, structureId)
+      ActionCreator.transferStockpileToStructure(playerId, cardId, structureId)
     );
+
+    if (Selector.isStructureComplete(structureId, store.getState())) {
+      const structure = Selector.structure(structureId, store.getState());
+      store.dispatch(
+        ActionCreator.transferStructureToInfluence(
+          structureId,
+          playerId,
+          structure.siteId
+        )
+      );
+    }
   }
 };
 
@@ -69,6 +80,17 @@ const performCraftsmanOption = (playerId, store) => (moveState) => {
     store.dispatch(
       ActionCreator.transferHandToStructure(playerId, cardId, structureId)
     );
+
+    if (Selector.isStructureComplete(structureId, store.getState())) {
+      const structure = Selector.structure(structureId, store.getState());
+      store.dispatch(
+        ActionCreator.transferStructureToInfluence(
+          structureId,
+          playerId,
+          structure.siteId
+        )
+      );
+    }
   }
 };
 

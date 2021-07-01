@@ -2,7 +2,6 @@
 
 import IV from "../utility/InputValidator.js";
 
-import OrderCard from "../artifact/OrderCard.js";
 import Role from "../artifact/Role.js";
 
 import MoveState from "../state/MoveState.js";

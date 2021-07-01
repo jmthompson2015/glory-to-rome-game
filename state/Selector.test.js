@@ -5,6 +5,7 @@ import SiteCard from "../artifact/SiteCard.js";
 
 import AppState from "./AppState.js";
 import ActionCreator from "./ActionCreator.js";
+import BonusCardState from "./BonusCardState.js";
 import OrderCardState from "./OrderCardState.js";
 import PlayerState from "./PlayerState.js";
 import Reducer from "./Reducer.js";
@@ -14,28 +15,28 @@ import StructureState from "./StructureState.js";
 
 QUnit.module("Selector");
 
-const addBonusCard = (id, cardKey, state) => {
-  const card = OrderCardState.create({ id, cardKey });
+const addBonusCard = (state, id, cardKey) => {
+  const card = BonusCardState.create({ id, cardKey });
   const action = ActionCreator.addBonusCard(card);
 
   return Reducer.root(state, action);
 };
 
-const addOrderCard = (id, cardKey, state) => {
+const addOrderCard = (state, id, cardKey) => {
   const card = OrderCardState.create({ id, cardKey });
   const action = ActionCreator.addOrderCard(card);
 
   return Reducer.root(state, action);
 };
 
-const addSiteCard = (id, cardKey, state) => {
+const addSiteCard = (state, id, cardKey) => {
   const card = SiteCardState.create({ id, cardKey });
   const action = ActionCreator.addSiteCard(card);
 
   return Reducer.root(state, action);
 };
 
-const addStructure = (id, foundationId, siteId, materialIds, state) => {
+const addStructure = (state, id, foundationId, siteId, materialIds) => {
   const structure = StructureState.create({
     id,
     foundationId,
@@ -176,12 +177,52 @@ QUnit.test("isLeader()", (assert) => {
   assert.equal(Selector.isLeader(3, state), true);
 });
 
+QUnit.test("isStructureComplete()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const cardId1 = 1;
+  const cardKey1 = OrderCard.AMPHITHEATRE; // Architect Concrete 2
+  const state1 = addOrderCard(state0, cardId1, cardKey1);
+  const cardId2 = 2;
+  const cardKey2 = SiteCard.CONCRETE;
+  const state2 = addSiteCard(state1, cardId2, cardKey2);
+  const cardId3 = 3;
+  const cardKey3 = OrderCard.AQUEDUCT; // Architect Concrete 2
+  const state3 = addOrderCard(state2, cardId3, cardKey3);
+  const structureId1 = 1;
+  const state4 = addStructure(
+    state3,
+    structureId1,
+    cardId1, // foundationId,
+    cardId2, // siteId,
+    [cardId3] // materialIds,
+  );
+
+  // Run / Verify.
+  assert.equal(Selector.isStructureComplete(structureId1, state4), false);
+
+  const cardId4 = 4;
+  const cardKey4 = OrderCard.BRIDGE; // Architect Concrete 2
+  const state5 = addOrderCard(state4, cardId4, cardKey4);
+  const structureId2 = 2;
+  const state = addStructure(
+    state5,
+    structureId2,
+    cardId1, // foundationId,
+    cardId2, // siteId,
+    [cardId3, cardId4] // materialIds,
+  );
+
+  // Run / Verify.
+  assert.equal(Selector.isStructureComplete(structureId2, state), true);
+});
+
 QUnit.test("leaderCard()", (assert) => {
   // Setup.
   const state0 = AppState.create();
   const cardId = 12;
   const cardKey = OrderCard.LEADER;
-  const state = addOrderCard(cardId, cardKey, state0);
+  const state = addOrderCard(state0, cardId, cardKey);
 
   // Run / Verify.
   const result = Selector.leaderCard(state);
@@ -216,7 +257,7 @@ QUnit.test("nextBonusCardId()", (assert) => {
   // Run / Verify.
   assert.equal(Selector.nextBonusCardId(state1), 1);
 
-  const state2 = addBonusCard(12, BonusCard.MERCHANT_BONUS_BRICK, state1);
+  const state2 = addBonusCard(state1, 12, BonusCard.MERCHANT_BONUS_BRICK);
 
   // Run / Verify.
   assert.equal(Selector.nextBonusCardId(state2), 13);
@@ -229,7 +270,7 @@ QUnit.test("nextOrderCardId()", (assert) => {
   // Run / Verify.
   assert.equal(Selector.nextOrderCardId(state1), 1);
 
-  const state2 = addOrderCard(12, OrderCard.ACADEMY, state1);
+  const state2 = addOrderCard(state1, 12, OrderCard.ACADEMY);
 
   // Run / Verify.
   assert.equal(Selector.nextOrderCardId(state2), 13);
@@ -257,7 +298,7 @@ QUnit.test("nextSiteCardId()", (assert) => {
   // Run / Verify.
   assert.equal(Selector.nextSiteCardId(state1), 1);
 
-  const state2 = addSiteCard(12, SiteCard.BRICK, state1);
+  const state2 = addSiteCard(state1, 12, SiteCard.BRICK);
 
   // Run / Verify.
   assert.equal(Selector.nextSiteCardId(state2), 13);
@@ -270,7 +311,7 @@ QUnit.test("nextStructureId()", (assert) => {
   // Run / Verify.
   assert.equal(Selector.nextStructureId(state1), 1);
 
-  const state2 = addStructure(12, 3, 4, [], state1);
+  const state2 = addStructure(state1, 12, 3, 4, []);
 
   // Run / Verify.
   assert.equal(Selector.nextStructureId(state2), 13);
@@ -281,7 +322,7 @@ QUnit.test("orderCard()", (assert) => {
   const state0 = AppState.create();
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const state = addOrderCard(cardId, cardKey, state0);
+  const state = addOrderCard(state0, cardId, cardKey);
 
   // Run / Verify.
   const result = Selector.orderCard(cardId, state);
@@ -298,7 +339,7 @@ QUnit.test("orderCards()", (assert) => {
   const orderCardKeys = OrderCard.keys();
   for (let id = 1; id <= 5; id += 1) {
     const cardKey = orderCardKeys[id - 1];
-    state = addOrderCard(id, cardKey, state);
+    state = addOrderCard(state, id, cardKey);
   }
   const cardIds = [1, 3, 5];
 
@@ -432,7 +473,7 @@ QUnit.test("siteCard()", (assert) => {
   const state0 = AppState.create();
   const cardId = 1;
   const cardKey = OrderCard.ACADEMY;
-  const state = addSiteCard(cardId, cardKey, state0);
+  const state = addSiteCard(state0, cardId, cardKey);
 
   // Run / Verify.
   const result = Selector.siteCard(cardId, state);
@@ -449,7 +490,7 @@ QUnit.test("siteCards()", (assert) => {
   const orderCardKeys = OrderCard.keys();
   for (let id = 1; id <= 5; id += 1) {
     const cardKey = orderCardKeys[id - 1];
-    state = addSiteCard(id, cardKey, state);
+    state = addSiteCard(state, id, cardKey);
   }
   const cardIds = [1, 3, 5];
 
@@ -480,7 +521,7 @@ QUnit.test("siteIdsByMaterial()", (assert) => {
   const siteCardKeys = SiteCard.keys();
   for (let id = 1; id <= 3; id += 1) {
     const cardKey = siteCardKeys[id - 1];
-    state = addSiteCard(id, cardKey, state);
+    state = addSiteCard(state, id, cardKey);
   }
   const action = ActionCreator.setSiteDeck([1, 2, 3]);
   state = Reducer.root(state, action);
@@ -516,22 +557,24 @@ QUnit.test("unfinishedStructureIds()", (assert) => {
   // Setup.
   const state0 = AppState.create();
   const playerId = 3;
-  const state1 = addSiteCard(1, SiteCard.BRICK, state0);
-  const state2 = addStructure(1, 2, 1, [], state1);
-  const state3 = addSiteCard(2, SiteCard.CONCRETE, state2);
-  const state4 = addStructure(2, 3, 2, [5, 6], state3);
-  const action4 = ActionCreator.addToPlayerArray(
+  const state1 = addOrderCard(state0, 2, OrderCard.ACADEMY);
+  const state2 = addSiteCard(state1, 1, SiteCard.BRICK);
+  const state3 = addStructure(state2, 1, 2, 1, []);
+  const state4 = addOrderCard(state3, 3, OrderCard.AMPHITHEATRE);
+  const state5 = addSiteCard(state4, 2, SiteCard.CONCRETE);
+  const state6 = addStructure(state5, 2, 3, 2, [5, 6]);
+  const action6 = ActionCreator.addToPlayerArray(
     "playerToStructures",
     playerId,
     1
   );
-  const state5 = Reducer.root(state4, action4);
-  const action5 = ActionCreator.addToPlayerArray(
+  const state7 = Reducer.root(state6, action6);
+  const action7 = ActionCreator.addToPlayerArray(
     "playerToStructures",
     playerId,
     2
   );
-  const state = Reducer.root(state5, action5);
+  const state = Reducer.root(state7, action7);
 
   // Run / Verify.
   const result = Selector.unfinishedStructureIds(playerId, state);

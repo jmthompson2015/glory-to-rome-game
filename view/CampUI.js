@@ -76,7 +76,7 @@ class CampUI extends React.PureComponent {
       cardStates: influenceCards,
       isFaceup: true,
       slicing: createSlicing("top"),
-      sorter: Sorter.Order.valueMaterialSort,
+      sorter: Sorter.Site.valueMaterialSort,
       title: "Influence",
     });
     const stockpileCell = createCell({

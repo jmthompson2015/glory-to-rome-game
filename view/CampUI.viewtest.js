@@ -13,10 +13,10 @@ import Endpoint from "./Endpoint.js";
 const store = TestData.createStore();
 const playerId = 1;
 store.dispatch(
-  ActionCreator.addToPlayerArray("playerToInfluence", playerId, 32)
+  ActionCreator.addToPlayerArray("playerToInfluence", playerId, 1)
 );
 store.dispatch(
-  ActionCreator.addToPlayerArray("playerToInfluence", playerId, 47)
+  ActionCreator.addToPlayerArray("playerToInfluence", playerId, 7)
 );
 
 store.dispatch(

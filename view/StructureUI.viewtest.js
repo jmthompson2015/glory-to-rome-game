@@ -13,10 +13,7 @@ const { ReactUtilities: RU } = ReactComponent;
 const store = TestData.createStore();
 store.dispatch(ActionCreator.setVerbose(true));
 
-const createStructureCell = (structureState, customKey0) => {
-  const c = structureState;
-  const customKeySuffix = `${c.id}-${c.cardKey}-${c.isHighlighted}`;
-  const customKey = `${customKey0}${customKeySuffix}`;
+const createStructureCell = (structureState, customKey) => {
   const element = React.createElement(StructureUI, {
     key: `StructureUI${structureState.key}`,
     structureState,

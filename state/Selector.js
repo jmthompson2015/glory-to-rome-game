@@ -79,6 +79,22 @@ Selector.isJack = (cardId, state) => {
 
 Selector.isLeader = (playerId, state) => playerId === Selector.leaderId(state);
 
+Selector.isStructureComplete = (structureId, state) => {
+  IV.validateIsNumber("structureId", structureId);
+  IV.validateNotNil("state", state);
+  const structure = state.structureInstances[structureId];
+  IV.validateNotNil("structure", structure);
+  const { foundationId, materialIds } = structure;
+  console.log(`foundationId = ${foundationId}`);
+  IV.validateIsNumber("foundationId", foundationId);
+  IV.validateIsArray("materialIds", materialIds);
+  const foundation = Selector.orderCard(foundationId, state);
+  console.log(`foundation = ${JSON.stringify(foundation)}`);
+  IV.validateNotNil("foundation", foundation);
+
+  return materialIds.length === foundation.cardType.materialValue;
+};
+
 Selector.isVerbose = (state) => state.isVerbose;
 
 Selector.jackCards = (state) => {
@@ -207,13 +223,8 @@ Selector.userMessage = (state) => state.userMessage;
 Selector.unfinishedStructureIds = (playerId, state) => {
   IV.validateNotNil("playerId", playerId);
   IV.validateNotNil("state", state);
-  const filterFunction = (structureId) => {
-    const structure = state.structureInstances[structureId];
-    const { materialIds, siteId } = structure;
-    const site = state.siteCardInstances[siteId];
-    const siteCard = SiteCard.value(site.cardKey);
-    return materialIds.length < siteCard.materialValue;
-  };
+  const filterFunction = (structureId) =>
+    R.not(Selector.isStructureComplete(structureId, state));
   const structureIds = Selector.structureIds(playerId, state);
 
   return R.filter(filterFunction, structureIds);
@@ -273,7 +284,7 @@ Selector.handCards = (playerId, state) =>
 Selector.handIds = (playerId, state) => state.playerToHand[playerId] || [];
 
 Selector.influenceCards = (playerId, state) =>
-  Selector.orderCards(Selector.influenceIds(playerId, state), state);
+  Selector.siteCards(Selector.influenceIds(playerId, state), state);
 
 Selector.influenceIds = (playerId, state) =>
   state.playerToInfluence[playerId] || [];

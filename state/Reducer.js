@@ -294,6 +294,40 @@ const transferPoolToStockpile = (state, playerId, cardId) => {
   };
 };
 
+const transferStockpileToStructure = (state, playerId, cardId, structureId) => {
+  const oldStockpile = state.playerToStockpile[playerId] || [];
+  IV.validateNotNil("oldStockpile", oldStockpile);
+  const newStockpile = R.without([cardId], oldStockpile);
+  const newPlayerToStockpile = {
+    ...state.playerToStockpile,
+    [playerId]: newStockpile,
+  };
+  const oldStructure = state.structureInstances[structureId];
+  IV.validateNotNil("oldStructure", oldStructure);
+  const newMaterialIds = [...oldStructure.materialIds, cardId];
+  const mapFunction = (id) => {
+    const instance = state.orderCardInstances[id];
+    return OrderCard.value(instance.cardKey);
+  };
+  const newMaterialTypes = R.map(mapFunction, newMaterialIds);
+  IV.validateNotIncludesNil("newMaterialTypes", newMaterialTypes);
+  const newStructure = {
+    ...oldStructure,
+    materialIds: newMaterialIds,
+    materialTypes: newMaterialTypes,
+  };
+  const newStructureInstances = {
+    ...state.structureInstances,
+    [structureId]: newStructure,
+  };
+
+  return {
+    ...state,
+    playerToStockpile: newPlayerToStockpile,
+    structureInstances: newStructureInstances,
+  };
+};
+
 const transferStockpileToVault = (state, playerId, cardId) => {
   const oldStockpile = state.playerToStockpile[playerId] || [];
   const newStockpile = R.without([cardId], oldStockpile);
@@ -315,6 +349,27 @@ const transferStockpileToVault = (state, playerId, cardId) => {
   };
 };
 
+const transferStructureToInfluence = (state, structureId, playerId, cardId) => {
+  const oldStructure = state.structureInstances[structureId];
+  const newStructure = { ...oldStructure, siteId: null };
+  const newStructureInstances = {
+    ...state.structureInstances,
+    [structureId]: newStructure,
+  };
+  const oldInfluence = state.playerToInfluence[playerId] || [];
+  const newInfluence = [...oldInfluence, cardId];
+  const newPlayerToInfluence = {
+    ...state.playerToInfluence,
+    [playerId]: newInfluence,
+  };
+
+  return {
+    ...state,
+    playerToInfluence: newPlayerToInfluence,
+    structureInstances: newStructureInstances,
+  };
+};
+
 Reducer.root = (state, action) => {
   // LOGGER.debug(`root() type = ${action.type}`);
 
@@ -327,13 +382,11 @@ Reducer.root = (state, action) => {
     return state;
   }
 
-  let newCardInstances;
   let newCards;
   let newGameRecords;
   let newPlayers;
   let newPlayerToStrategy;
   let newStructures;
-  let state2;
 
   switch (action.type) {
     case ActionType.ADD_BONUS_CARD:
@@ -599,6 +652,18 @@ Reducer.root = (state, action) => {
         state
       );
       return transferPoolToStockpile(state, action.playerId, action.cardId);
+    case ActionType.TRANSFER_STOCKPILE_TO_STRUCTURE:
+      log(
+        `Reducer TRANSFER_STOCKPILE_TO_STRUCTURE playerId = ${action.playerId} ` +
+          `cardId = ${action.cardId} structureId = ${action.structureId}`,
+        state
+      );
+      return transferStockpileToStructure(
+        state,
+        action.playerId,
+        action.cardId,
+        action.structureId
+      );
     case ActionType.TRANSFER_STOCKPILE_TO_VAULT:
       log(
         `Reducer TRANSFER_STOCKPILE_TO_VAULT playerId = ${action.playerId} ` +
@@ -606,6 +671,18 @@ Reducer.root = (state, action) => {
         state
       );
       return transferStockpileToVault(state, action.playerId, action.cardId);
+    case ActionType.TRANSFER_STRUCTURE_TO_INFLUENCE:
+      log(
+        `Reducer TRANSFER_STRUCTURE_TO_INFLUENCE structureId = ${action.structureId} ` +
+          `playerId = ${action.playerId} cardId = ${action.cardId}`,
+        state
+      );
+      return transferStructureToInfluence(
+        state,
+        action.structureId,
+        action.playerId,
+        action.cardId
+      );
     default:
       console.warn(`Reducer.root: Unhandled action type: ${action.type}`);
       return state;

@@ -45,6 +45,7 @@ ActionType.TRANSFER_POOL_TO_CLIENTELE = "transferPoolToClientele";
 ActionType.TRANSFER_POOL_TO_STOCKPILE = "transferPoolToStockpile";
 ActionType.TRANSFER_STOCKPILE_TO_STRUCTURE = "transferStockpileToStructure";
 ActionType.TRANSFER_STOCKPILE_TO_VAULT = "transferStockpileToVault";
+ActionType.TRANSFER_STRUCTURE_TO_INFLUENCE = "transferStructureToInfluence";
 
 Object.freeze(ActionType);
 
