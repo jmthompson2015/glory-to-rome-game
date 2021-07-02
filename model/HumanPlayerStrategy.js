@@ -45,9 +45,6 @@ HumanPlayerStrategy.chooseRoleOption = (options, store) =>
     store.dispatch(ActionCreator.setUserMessage("Select a role."));
   });
 
-HumanPlayerStrategy.chooseThinkerOption = (options, store) =>
-  chooseOption(options, store);
-
 Object.freeze(HumanPlayerStrategy);
 
 export default HumanPlayerStrategy;

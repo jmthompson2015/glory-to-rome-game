@@ -60,12 +60,6 @@ RandomPlayerStrategy.chooseRoleOption = (options, store, delay = DELAY) =>
     delayedResolve(answer, resolve, delay);
   });
 
-RandomPlayerStrategy.chooseThinkerOption = (options, store, delay = DELAY) =>
-  new Promise((resolve) => {
-    const answer = options.length <= 1 ? options[0] : randomElement(options);
-    delayedResolve(answer, resolve, delay);
-  });
-
 Object.freeze(RandomPlayerStrategy);
 
 export default RandomPlayerStrategy;

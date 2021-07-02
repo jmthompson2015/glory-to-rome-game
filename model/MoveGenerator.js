@@ -109,16 +109,10 @@ const generateLeaderRoleOptions = (playerId, state) => {
 
     return accum;
   };
-  const cardId = Selector.leaderCardId(state);
-  const move = MoveState.create({
-    playerId,
-    cardId,
-    roleKey: Role.THINKER,
-    state,
-  });
+  const thinkerMoves = MoveGenerator.generateThinkerOptions(playerId, state);
   const handIds = Selector.handIds(playerId, state);
 
-  return R.reduce(reduceFunction, [move], handIds);
+  return R.reduce(reduceFunction, thinkerMoves, handIds);
 };
 
 const generateNonLeaderRoleOptions = (playerId, state) => {
@@ -139,16 +133,10 @@ const generateNonLeaderRoleOptions = (playerId, state) => {
 
     return accum;
   };
-  const cardId = Selector.leaderCardId(state);
-  const move = MoveState.create({
-    playerId,
-    cardId,
-    roleKey: Role.THINKER,
-    state,
-  });
+  const thinkerMoves = MoveGenerator.generateThinkerOptions(playerId, state);
   const handIds = Selector.handIds(playerId, state);
 
-  return R.reduce(reduceFunction, [move], handIds);
+  return R.reduce(reduceFunction, thinkerMoves, handIds);
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -252,10 +240,12 @@ MoveGenerator.generateRoleOptions = (playerId, state) =>
 MoveGenerator.generateThinkerOptions = (playerId, state) => {
   const answer = [];
   const { options } = Role.value(Role.THINKER);
+  const cardId = Selector.leaderCardId(state);
 
   if (state.jackDeck.length > 0) {
     answer.push(
       MoveState.create({
+        cardId,
         playerId,
         moveKey: options.DRAW_JACK,
         roleKey: Role.THINKER,
@@ -267,11 +257,13 @@ MoveGenerator.generateThinkerOptions = (playerId, state) => {
   answer.push(
     shortfall > 0
       ? MoveState.create({
+          cardId,
           playerId,
           moveKey: options.REFILL_HAND,
           roleKey: Role.THINKER,
         })
       : MoveState.create({
+          cardId,
           playerId,
           moveKey: options.DRAW_CARD,
           roleKey: Role.THINKER,

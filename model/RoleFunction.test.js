@@ -3,6 +3,7 @@ import Phase from "../artifact/Phase.js";
 import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
+import MoveState from "../state/MoveState.js";
 import Selector from "../state/Selector.js";
 import StructureState from "../state/StructureState.js";
 
@@ -429,6 +430,15 @@ QUnit.test("Thinker execute()", (assert) => {
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   const roleFunction = RoleFunction[Role.THINKER];
+  const { options } = Role.value(Role.THINKER);
+  const move = MoveState.create({
+    cardId: 1,
+    moveKey: options.DRAW_JACK,
+    playerId,
+    roleKey: Role.THINKER,
+    state: store.getState(),
+  });
+  store.dispatch(ActionCreator.setCurrentMove(move));
 
   // Run.
   const done = assert.async();
@@ -457,6 +467,15 @@ QUnit.test("Thinker execute() needs refill", (assert) => {
   const cardId = R.last(Selector.cardPool(store.getState()));
   store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
   const roleFunction = RoleFunction[Role.THINKER];
+  const { options } = Role.value(Role.THINKER);
+  const move = MoveState.create({
+    cardId: 1,
+    moveKey: options.REFILL_HAND,
+    playerId,
+    roleKey: Role.THINKER,
+    state: store.getState(),
+  });
+  store.dispatch(ActionCreator.setCurrentMove(move));
 
   // Run.
   const done = assert.async();
@@ -465,11 +484,7 @@ QUnit.test("Thinker execute() needs refill", (assert) => {
     // Verify.
     const state = store.getState();
     const handIds = Selector.handIds(playerId, state);
-    assert.equal(
-      [6, 7].includes(handIds.length),
-      true,
-      `handIds.length = ${handIds.length}`
-    );
+    assert.equal(handIds.length, 5, `handIds.length = ${handIds.length}`);
     done();
   };
 
@@ -488,6 +503,15 @@ QUnit.test("Thinker execute() out of Jacks", (assert) => {
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
   store.dispatch(ActionCreator.setJackDeck([]));
   const roleFunction = RoleFunction[Role.THINKER];
+  const { options } = Role.value(Role.THINKER);
+  const move = MoveState.create({
+    cardId: 1,
+    moveKey: options.DRAW_CARD,
+    playerId,
+    roleKey: Role.THINKER,
+    state: store.getState(),
+  });
+  store.dispatch(ActionCreator.setCurrentMove(move));
 
   // Run.
   const done = assert.async();

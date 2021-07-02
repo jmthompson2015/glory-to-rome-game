@@ -364,13 +364,9 @@ const RoleFunction = {
       if (store.getState().isVerbose) {
         console.log(`RoleFunction THINKER execute()`);
       }
-      const options = MG.generateThinkerOptions(playerId, store.getState());
-      const player = Selector.player(playerId, store.getState());
-      const strategy = SR.resolve(player.strategy);
-      const delay = Selector.delay(store.getState());
-      return strategy
-        .chooseThinkerOption(options, store, delay)
-        .then(performThinkerOption(playerId, store));
+      const move = Selector.currentMove(store.getState());
+      performThinkerOption(playerId, store)(move);
+      return Promise.resolve();
     },
   },
 };

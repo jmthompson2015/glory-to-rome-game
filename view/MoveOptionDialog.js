@@ -30,15 +30,22 @@ const materialLabelFunction = (move) => {
 };
 
 const roleLabelFunction = (move) => {
-  const { cardInstance, materialType, roleType } = move;
+  const { cardInstance, materialType, moveKey, roleType } = move;
   const cardId = cardInstance ? cardInstance.id : undefined;
   const cardType = cardInstance ? cardInstance.cardType : undefined;
   const cardName = cardType ? cardType.name : "";
   const roleName = roleType ? createColorName(roleType) : "";
   const materialName = materialType ? materialType.name : "";
-  const label = materialName
-    ? ` (${cardId} ${cardName} ${materialName})`
-    : ` (${cardId} ${cardName})`;
+  let label;
+
+  if (roleType.key === Role.THINKER) {
+    label = ` (${moveKey})`;
+  } else {
+    label =
+      materialName.length > 0
+        ? ` (${cardId} ${cardName} ${materialName})`
+        : ` (${cardId} ${cardName})`;
+  }
 
   return RU.createSpan(
     [roleName, label],

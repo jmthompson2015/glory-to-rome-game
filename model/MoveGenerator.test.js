@@ -284,13 +284,23 @@ QUnit.test("generateRoleOptions() 1", (assert) => {
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
   InputValidator.validateNotIncludesNil("result", result);
-  assert.equal(result.length, 6, `result.length = ${result.length}`);
+  assert.equal(result.length, 7, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
   assert.equal(moveFirst.cardId, 1, `moveFirst.cardId = ${moveFirst.cardId}`);
+  assert.equal(
+    moveFirst.roleKey,
+    Role.THINKER,
+    `moveFirst.roleKey = ${moveFirst.roleKey}`
+  );
   const moveLast = R.last(result);
   assert.ok(moveLast);
   assert.equal(moveLast.cardId, 6, `moveLast.cardId = ${moveLast.cardId}`);
+  assert.equal(
+    moveLast.roleKey,
+    Role.ARCHITECT,
+    `moveLast.roleKey = ${moveLast.roleKey}`
+  );
 });
 
 QUnit.test("generateRoleOptions() 1 Jacks", (assert) => {
@@ -306,13 +316,23 @@ QUnit.test("generateRoleOptions() 1 Jacks", (assert) => {
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
   InputValidator.validateNotIncludesNil("result", result);
-  assert.equal(result.length, 12, `result.length = ${result.length}`);
+  assert.equal(result.length, 13, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
   assert.equal(moveFirst.cardId, 1, `moveFirst.cardId = ${moveFirst.cardId}`);
+  assert.equal(
+    moveFirst.roleKey,
+    Role.THINKER,
+    `moveFirst.roleKey = ${moveFirst.roleKey}`
+  );
   const moveLast = R.last(result);
   assert.ok(moveLast);
   assert.equal(moveLast.cardId, 146, `moveLast.cardId = ${moveLast.cardId}`);
+  assert.equal(
+    moveLast.roleKey,
+    Role.PATRON,
+    `moveLast.roleKey = ${moveLast.roleKey}`
+  );
 });
 
 QUnit.test("generateRoleOptions() 2", (assert) => {
@@ -327,13 +347,23 @@ QUnit.test("generateRoleOptions() 2", (assert) => {
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
   InputValidator.validateNotIncludesNil("result", result);
-  assert.equal(result.length, 5, `result.length = ${result.length}`);
+  assert.equal(result.length, 6, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
   assert.equal(moveFirst.cardId, 1, `moveFirst.cardId = ${moveFirst.cardId}`);
+  assert.equal(
+    moveFirst.roleKey,
+    Role.THINKER,
+    `moveFirst.roleKey = ${moveFirst.roleKey}`
+  );
   const moveLast = R.last(result);
   assert.ok(moveLast);
   assert.equal(moveLast.cardId, 10, `moveLast.cardId = ${moveLast.cardId}`);
+  assert.equal(
+    moveLast.roleKey,
+    Role.ARCHITECT,
+    `moveLast.roleKey = ${moveLast.roleKey}`
+  );
 });
 
 QUnit.test("generateRoleOptions() 3", (assert) => {
@@ -348,10 +378,23 @@ QUnit.test("generateRoleOptions() 3", (assert) => {
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
   InputValidator.validateNotIncludesNil("result", result);
-  assert.equal(result.length, 1, `result.length = ${result.length}`);
+  assert.equal(result.length, 2, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
   assert.equal(moveFirst.cardId, 1, `moveFirst.cardId = ${moveFirst.cardId}`);
+  assert.equal(
+    moveFirst.roleKey,
+    Role.THINKER,
+    `moveFirst.roleKey = ${moveFirst.roleKey}`
+  );
+  const moveLast = R.last(result);
+  assert.ok(moveLast);
+  assert.equal(moveLast.cardId, 1, `moveLast.cardId = ${moveLast.cardId}`);
+  assert.equal(
+    moveLast.roleKey,
+    Role.THINKER,
+    `moveLast.roleKey = ${moveLast.roleKey}`
+  );
 });
 
 QUnit.test("generateRoleOptions() 4", (assert) => {
@@ -366,10 +409,23 @@ QUnit.test("generateRoleOptions() 4", (assert) => {
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
   InputValidator.validateNotIncludesNil("result", result);
-  assert.equal(result.length, 1, `result.length = ${result.length}`);
+  assert.equal(result.length, 2, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
   assert.equal(moveFirst.cardId, 1, `moveFirst.cardId = ${moveFirst.cardId}`);
+  assert.equal(
+    moveFirst.roleKey,
+    Role.THINKER,
+    `moveFirst.roleKey = ${moveFirst.roleKey}`
+  );
+  const moveLast = R.last(result);
+  assert.ok(moveLast);
+  assert.equal(moveLast.cardId, 1, `moveLast.cardId = ${moveLast.cardId}`);
+  assert.equal(
+    moveLast.roleKey,
+    Role.THINKER,
+    `moveLast.roleKey = ${moveLast.roleKey}`
+  );
 });
 
 QUnit.test("generateRoleOptions() 5", (assert) => {
@@ -384,10 +440,23 @@ QUnit.test("generateRoleOptions() 5", (assert) => {
   // Verify.
   assert.ok(result, `result = ${JSON.stringify(result)}`);
   InputValidator.validateNotIncludesNil("result", result);
-  assert.equal(result.length, 1, `result.length = ${result.length}`);
+  assert.equal(result.length, 2, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
   assert.equal(moveFirst.cardId, 1, `moveFirst.cardId = ${moveFirst.cardId}`);
+  assert.equal(
+    moveFirst.roleKey,
+    Role.THINKER,
+    `moveFirst.roleKey = ${moveFirst.roleKey}`
+  );
+  const moveLast = R.last(result);
+  assert.ok(moveLast);
+  assert.equal(moveLast.cardId, 1, `moveLast.cardId = ${moveLast.cardId}`);
+  assert.equal(
+    moveLast.roleKey,
+    Role.THINKER,
+    `moveLast.roleKey = ${moveLast.roleKey}`
+  );
 });
 
 QUnit.test("generateThinkerOptions()", (assert) => {

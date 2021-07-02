@@ -16,6 +16,7 @@ const StepFunction = {};
 
 const performMove = (playerId, store) => (moveState) => {
   IV.validateNotNil("moveState", moveState);
+  store.dispatch(ActionCreator.setCurrentMove(moveState));
   const { cardId, roleKey } = moveState;
   IV.validateNotNil("cardId", cardId);
   IV.validateNotNil("roleKey", roleKey);
