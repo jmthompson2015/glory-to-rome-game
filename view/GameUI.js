@@ -1,4 +1,5 @@
 import Material from "../artifact/Material.js";
+
 import Selector from "../state/Selector.js";
 
 import CardsUI from "./CardsUI.js";
@@ -6,6 +7,7 @@ import DeckUI from "./DeckUI.js";
 import DecksUI from "./DecksUI.js";
 import Endpoint from "./Endpoint.js";
 import PlayerPanel from "./PlayerPanel.js";
+import ScoreUI from "./ScoreUI.js";
 
 const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
 
@@ -68,6 +70,23 @@ const createPoolCell = (state, resourceBase, width) => {
   });
 
   return RU.createCell(cardsPane, "CardPoolCell", "tc");
+};
+
+const createScoreCell = (state) => {
+  const reduceFunction = (accum, player) => {
+    const score = Selector.score(player.id, state);
+    return { ...accum, [player.id]: score };
+  };
+  const { playerInstances } = state;
+  const players = Object.values(playerInstances);
+  const playerToScore = R.reduce(reduceFunction, {}, players);
+
+  const scoreUI = React.createElement(ScoreUI, {
+    playerInstances,
+    playerToScore,
+  });
+
+  return RU.createCell(scoreUI, "ScoreCell");
 };
 
 const createSitesCell0 = (
@@ -170,6 +189,7 @@ class GameUI extends React.PureComponent {
     const playerIds = Selector.playerIds(state);
     const playerToTableau = R.reduce(reduceFunction, {}, playerIds);
 
+    const scoreCell = createScoreCell(state);
     const orderDeckCell = createOrderDeckCell(state, resourceBase, WIDTH);
     const jackDeckCell = createJackDeckCell(state, resourceBase, WIDTH);
     const poolCell = createPoolCell(state, resourceBase, WIDTH);
@@ -180,6 +200,7 @@ class GameUI extends React.PureComponent {
       RU.createCell(playerToTableau[playerId], `tableauCell${playerId}`, "pa1");
     const cells0 = R.map(mapFunction, playerIds);
     const cells = [
+      scoreCell,
       ...cells0,
       orderDeckCell,
       jackDeckCell,

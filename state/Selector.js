@@ -2,7 +2,6 @@ import IV from "../utility/InputValidator.js";
 
 import OrderCard from "../artifact/OrderCard.js";
 import Role from "../artifact/Role.js";
-import SiteCard from "../artifact/SiteCard.js";
 
 const Selector = {};
 
@@ -85,11 +84,9 @@ Selector.isStructureComplete = (structureId, state) => {
   const structure = state.structureInstances[structureId];
   IV.validateNotNil("structure", structure);
   const { foundationId, materialIds } = structure;
-  console.log(`foundationId = ${foundationId}`);
   IV.validateIsNumber("foundationId", foundationId);
   IV.validateIsArray("materialIds", materialIds);
   const foundation = Selector.orderCard(foundationId, state);
-  console.log(`foundation = ${JSON.stringify(foundation)}`);
   IV.validateNotNil("foundation", foundation);
 
   return materialIds.length === foundation.cardType.materialValue;
@@ -173,6 +170,19 @@ Selector.handShortfall = (playerId, state) => {
   const refillLimit = Selector.refillLimit(playerId, state);
 
   return refillLimit - handIds.length;
+};
+
+Selector.score = (playerId, state) => {
+  IV.validateNotNil("playerId", playerId);
+  IV.validateNotNil("state", state);
+
+  const influenceCards = Selector.influenceCards(playerId, state);
+  const vaultCards = Selector.vaultCards(playerId, state);
+  const reduceFunction = (accum, card) => accum + card.cardType.materialValue;
+  const influence = R.reduce(reduceFunction, 0, influenceCards);
+  const suffix = vaultCards.length > 0 ? ` + Vault` : "";
+
+  return influence + suffix;
 };
 
 Selector.siteCard = (cardId, state) => {
