@@ -22,7 +22,7 @@ Selector.cardPool = (state) => state.cardPool || [];
 Selector.computeInfluence = (playerId, state) => {
   const reduceFunction = (accum, id) => {
     const card = Selector.orderCard(id, state);
-    return accum + card.materialValue;
+    return accum + card.cardType.materialValue;
   };
   const influenceIds = Selector.influenceIds(playerId, state);
 
