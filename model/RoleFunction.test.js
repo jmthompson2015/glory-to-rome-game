@@ -15,6 +15,7 @@ QUnit.module("RoleFunction");
 QUnit.test("Architect execute() Build Structure", (assert) => {
   // Setup.
   const phaseKey = Phase.PERFORM_ROLE;
+  const roleKey = Role.ARCHITECT;
   const playerId = 1;
   const store = TestData.createStore();
   // store.dispatch(ActionCreator.setVerbose(true));
@@ -22,7 +23,8 @@ QUnit.test("Architect execute() Build Structure", (assert) => {
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  const roleFunction = RoleFunction[Role.ARCHITECT];
+  store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const roleFunction = RoleFunction[roleKey];
   // Lay a foundation.
   const handIds0 = Selector.handIds(playerId, store.getState());
   const foundationId = R.head(handIds0);
@@ -103,13 +105,15 @@ QUnit.test("Architect execute() Build Structure", (assert) => {
 QUnit.test("Architect execute() Lay Foundation", (assert) => {
   // Setup.
   const phaseKey = Phase.PERFORM_ROLE;
+  const roleKey = Role.ARCHITECT;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  const roleFunction = RoleFunction[Role.ARCHITECT];
+  store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const roleFunction = RoleFunction[roleKey];
 
   // Run.
   const done = assert.async();
@@ -148,6 +152,7 @@ QUnit.test("Architect execute() Lay Foundation", (assert) => {
 QUnit.test("Craftsman execute() Build Structure", (assert) => {
   // Setup.
   const phaseKey = Phase.PERFORM_ROLE;
+  const roleKey = Role.CRAFTSMAN;
   const playerId = 1;
   const store = TestData.createStore();
   // store.dispatch(ActionCreator.setVerbose(true));
@@ -155,7 +160,8 @@ QUnit.test("Craftsman execute() Build Structure", (assert) => {
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  const roleFunction = RoleFunction[Role.CRAFTSMAN];
+  store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const roleFunction = RoleFunction[roleKey];
   // Lay a foundation.
   const handIds0 = Selector.handIds(playerId, store.getState());
   const foundationId = R.head(handIds0);
@@ -235,13 +241,15 @@ QUnit.test("Craftsman execute() Build Structure", (assert) => {
 QUnit.test("Craftsman execute() Lay Foundation", (assert) => {
   // Setup.
   const phaseKey = Phase.PERFORM_ROLE;
+  const roleKey = Role.CRAFTSMAN;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  const roleFunction = RoleFunction[Role.CRAFTSMAN];
+  store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const roleFunction = RoleFunction[roleKey];
 
   // Run.
   const done = assert.async();
@@ -280,13 +288,15 @@ QUnit.test("Craftsman execute() Lay Foundation", (assert) => {
 QUnit.test("Laborer execute()", (assert) => {
   // Setup.
   const phaseKey = Phase.PERFORM_ROLE;
+  const roleKey = Role.LABORER;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  const roleFunction = RoleFunction[Role.LABORER];
+  store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const roleFunction = RoleFunction[roleKey];
 
   // Run.
   const done = assert.async();
@@ -311,6 +321,7 @@ QUnit.test("Laborer execute()", (assert) => {
 QUnit.test("Legionary execute()", (assert) => {
   // Setup.
   const phaseKey = Phase.PERFORM_ROLE;
+  const roleKey = Role.LEGIONARY;
   const playerId = 1;
   const store = TestData.createStore();
   // store.dispatch(ActionCreator.setVerbose(true));
@@ -318,7 +329,8 @@ QUnit.test("Legionary execute()", (assert) => {
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  const roleFunction = RoleFunction[Role.LEGIONARY];
+  store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const roleFunction = RoleFunction[roleKey];
 
   // Run.
   const done = assert.async();
@@ -359,15 +371,17 @@ QUnit.test("Legionary execute()", (assert) => {
 QUnit.test("Merchant execute()", (assert) => {
   // Setup.
   const phaseKey = Phase.PERFORM_ROLE;
+  const roleKey = Role.MERCHANT;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
+  store.dispatch(ActionCreator.setLeadRole(roleKey));
   const cardId = R.last(Selector.cardPool(store.getState()));
   store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
-  const roleFunction = RoleFunction[Role.MERCHANT];
+  const roleFunction = RoleFunction[roleKey];
 
   // Run.
   const done = assert.async();
@@ -392,13 +406,15 @@ QUnit.test("Merchant execute()", (assert) => {
 QUnit.test("Patron execute()", (assert) => {
   // Setup.
   const phaseKey = Phase.PERFORM_ROLE;
+  const roleKey = Role.PATRON;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  const roleFunction = RoleFunction[Role.PATRON];
+  store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const roleFunction = RoleFunction[roleKey];
 
   // Run.
   const done = assert.async();
@@ -423,19 +439,20 @@ QUnit.test("Patron execute()", (assert) => {
 QUnit.test("Thinker execute()", (assert) => {
   // Setup.
   const phaseKey = Phase.DECLARE_ROLE;
+  const roleKey = Role.THINKER;
   const playerId = 1;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
   store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-  const roleFunction = RoleFunction[Role.THINKER];
-  const { options } = Role.value(Role.THINKER);
+  const roleFunction = RoleFunction[roleKey];
+  const { options } = Role.value(roleKey);
   const move = MoveState.create({
     cardId: 1,
     moveKey: options.DRAW_JACK,
     playerId,
-    roleKey: Role.THINKER,
+    roleKey,
     state: store.getState(),
   });
   store.dispatch(ActionCreator.setCurrentMove(move));

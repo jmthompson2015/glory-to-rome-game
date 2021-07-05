@@ -8,6 +8,7 @@ import Role from "../artifact/Role.js";
 import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
 
+import MoveFunction from "./MoveFunction.js";
 import MoveGenerator from "./MoveGenerator.js";
 import RoleFunction from "./RoleFunction.js";
 import StrategyResolver from "./StrategyResolver.js";
@@ -25,6 +26,8 @@ const performMove = (playerId, store) => (moveState) => {
   const role = Role.value(roleKey);
   IV.validateNotNil("role", role);
   const player = Selector.player(playerId, store.getState());
+  const gameRecord = MoveFunction.createGameRecord(moveState, store.getState());
+  store.dispatch(ActionCreator.addGameRecord(gameRecord));
   store.dispatch(
     ActionCreator.setUserMessage(`${player.name} chose the ${role.name} role.`)
   );

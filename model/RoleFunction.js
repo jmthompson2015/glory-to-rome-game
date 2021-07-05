@@ -8,6 +8,7 @@ import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
 import StructureState from "../state/StructureState.js";
 
+import MoveFunction from "./MoveFunction.js";
 import MG from "./MoveGenerator.js";
 import SR from "./StrategyResolver.js";
 
@@ -17,6 +18,8 @@ const performArchitectOption = (playerId, store) => (moveState) => {
   IV.validateNotNil("playerId", playerId);
   IV.validateNotNil("store", store);
   IV.validateNotNil("moveState", moveState);
+  const gameRecord = MoveFunction.createGameRecord(moveState, store.getState());
+  store.dispatch(ActionCreator.addGameRecord(gameRecord));
   const { moveKey } = moveState;
   const { options } = Role.value(Role.ARCHITECT);
 
@@ -57,6 +60,8 @@ const performCraftsmanOption = (playerId, store) => (moveState) => {
   IV.validateNotNil("playerId", playerId);
   IV.validateNotNil("store", store);
   IV.validateNotNil("moveState", moveState);
+  const gameRecord = MoveFunction.createGameRecord(moveState, store.getState());
+  store.dispatch(ActionCreator.addGameRecord(gameRecord));
   const { moveKey } = moveState;
   const { options } = Role.value(Role.CRAFTSMAN);
 
@@ -96,6 +101,8 @@ const performCraftsmanOption = (playerId, store) => (moveState) => {
 
 const performLaborerOption = (playerId, store) => (moveState) => {
   IV.validateNotNil("moveState", moveState);
+  const gameRecord = MoveFunction.createGameRecord(moveState, store.getState());
+  store.dispatch(ActionCreator.addGameRecord(gameRecord));
   const { cardId } = moveState;
   IV.validateNotNil("cardId", cardId);
   const player = Selector.player(playerId, store.getState());
@@ -108,6 +115,8 @@ const performLaborerOption = (playerId, store) => (moveState) => {
 
 const performLegionaryOption = (playerId, store) => (moveState) => {
   IV.validateNotNil("moveState", moveState);
+  const gameRecord = MoveFunction.createGameRecord(moveState, store.getState());
+  store.dispatch(ActionCreator.addGameRecord(gameRecord));
   const { cardId } = moveState;
   IV.validateNotNil("cardId", cardId);
   const { materialKey } = Selector.orderCard(cardId, store.getState()).cardType;
@@ -165,6 +174,8 @@ const performLegionaryOption = (playerId, store) => (moveState) => {
 
 const performMerchantOption = (playerId, store) => (moveState) => {
   IV.validateNotNil("moveState", moveState);
+  const gameRecord = MoveFunction.createGameRecord(moveState, store.getState());
+  store.dispatch(ActionCreator.addGameRecord(gameRecord));
   const { cardId, materialKey } = moveState;
   const player = Selector.player(playerId, store.getState());
 
@@ -182,6 +193,8 @@ const performMerchantOption = (playerId, store) => (moveState) => {
 
 const performPatronOption = (playerId, store) => (moveState) => {
   IV.validateNotNil("moveState", moveState);
+  const gameRecord = MoveFunction.createGameRecord(moveState, store.getState());
+  store.dispatch(ActionCreator.addGameRecord(gameRecord));
   const { cardId } = moveState;
   IV.validateNotNil("cardId", cardId);
   const player = Selector.player(playerId, store.getState());

@@ -2,6 +2,7 @@ import DeckBuilderTest from "./DeckBuilder.test.js";
 import GameFunctionTest from "./GameFunction.test.js";
 import GameOverTest from "./GameOver.test.js";
 // import GtRGameTest from "./GtRGame.test.js";
+import MoveFunctionTest from "./MoveFunction.test.js";
 import MoveGeneratorTest from "./MoveGenerator.test.js";
 import PhaseRunnerTest from "./PhaseRunner.test.js";
 import RandomPlayerStrategyTest from "./RandomPlayerStrategy.test.js";
