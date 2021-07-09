@@ -14,14 +14,14 @@ class ScoreUI extends React.PureComponent {
     };
     const rows = R.map(mapFunction, Object.keys(playerToScore));
 
-    const table = RU.createTable(rows, "ScoreUI", "bg-light-gray pa1 tl");
+    const table = RU.createTable(rows, "ScoreUI", "bg-white pa1 tl");
 
     return React.createElement(
       TitledElement,
       {
         element: table,
         title: "Scores",
-        titleClass: "b bg-gray f5 ph1 pt1 tc v-mid",
+        titleClass: "b bg-light-gray f5 ph1 pt1 tc v-mid",
       },
       customKey
     );
