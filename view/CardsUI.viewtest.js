@@ -13,7 +13,7 @@ import Endpoint from "./Endpoint.js";
 const store = Redux.createStore(Reducer.root);
 const players = TestData.createPlayers();
 Setup.execute(store, players);
-store.dispatch(ActionCreator.setVerbose(true));
+// store.dispatch(ActionCreator.setVerbose(true));
 const playerId = 1;
 const handIds = Selector.handIds(playerId, store.getState());
 store.dispatch(ActionCreator.setOrderHighlighted(handIds[1], true));

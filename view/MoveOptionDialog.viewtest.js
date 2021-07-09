@@ -1,6 +1,9 @@
 /* eslint no-console: ["error", { allow: ["log"] }] */
 
+import Phase from "../artifact/Phase.js";
 import Role from "../artifact/Role.js";
+
+import ActionCreator from "../state/ActionCreator.js";
 
 import MoveGenerator from "../model/MoveGenerator.js";
 import TestData from "../model/TestData.js";
@@ -24,17 +27,21 @@ const createDialog = (playerId, roleKey, i, state) => {
 
   return React.createElement(MoveOptionDialog, {
     callback: myCallback,
+    currentPhaseKey: Phase.PERFORM_ROLE,
     customKey: `MoveOptionDialog-${playerId}-${roleKey}-${i}`,
+    leadRoleKey: roleKey,
     moveStates,
     role,
   });
 };
 
 const store = TestData.createStore();
+store.dispatch(ActionCreator.setCurrentPhase(Phase.PERFORM_ROLE));
 const state = store.getState();
 
 const element1 = React.createElement(MoveOptionDialog, {
   callback: myCallback,
+  currentPhaseKey: Phase.DECLARE_ROLE,
   customKey: "MoveOptionDialog-1-undefined-1",
   moveStates: MoveGenerator.generateRoleOptions(1, state),
 });

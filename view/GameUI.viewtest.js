@@ -1,5 +1,6 @@
 /* eslint no-console: ["error", { allow: ["log"] }] */
 
+import Phase from "../artifact/Phase.js";
 import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
@@ -21,13 +22,14 @@ const inputCallback = ({ playerId, moveState }) => {
 };
 
 const store = Redux.createStore(Reducer.root);
-store.dispatch(ActionCreator.setVerbose(true));
+// store.dispatch(ActionCreator.setVerbose(true));
 const players = TestData.createPlayers();
 Setup.execute(store, players);
 
 const playerId = R.head(players).id;
 store.dispatch(ActionCreator.setCurrentPlayer(playerId));
-
+const phaseKey = Phase.PERFORM_ROLE;
+store.dispatch(ActionCreator.setCurrentPhase(phaseKey));
 const roleKey = Role.ARCHITECT;
 store.dispatch(ActionCreator.setLeadRole(roleKey));
 

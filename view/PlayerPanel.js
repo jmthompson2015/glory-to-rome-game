@@ -9,13 +9,22 @@ const { CollapsiblePane, ReactUtilities: RU } = ReactComponent;
 
 const TITLE_CLASS = "b bg-gray f5 ph1 pt1 tc v-mid";
 
-const createInputArea = ({ callback, moveStates, player, role }) => {
+const createInputArea = ({
+  callback,
+  currentPhaseKey,
+  leadRoleKey,
+  moveStates,
+  player,
+  role,
+}) => {
   const customKey = `inputArea${player.id}`;
   let element;
 
   if (!R.isEmpty(moveStates)) {
     element = React.createElement(MoveOptionDialog, {
       callback,
+      currentPhaseKey,
+      leadRoleKey,
       moveStates,
       role,
       customKey: "move",
@@ -112,7 +121,15 @@ class PlayerPanel extends React.PureComponent {
   }
 
   render() {
-    const { className, inputCallback, moveStates, player, role } = this.props;
+    const {
+      className,
+      currentPhaseKey,
+      inputCallback,
+      leadRoleKey,
+      moveStates,
+      player,
+      role,
+    } = this.props;
 
     const leaderCell = this.createLeaderCell();
     const handCell = this.createHandCell();
@@ -123,6 +140,8 @@ class PlayerPanel extends React.PureComponent {
     if (!R.isNil(moveStates)) {
       const inputArea = createInputArea({
         callback: inputCallback,
+        currentPhaseKey,
+        leadRoleKey,
         moveStates,
         player,
         role,
@@ -148,6 +167,7 @@ PlayerPanel.propTypes = {
   player: PropTypes.shape().isRequired,
 
   clienteleCards: PropTypes.arrayOf(PropTypes.shape()),
+  currentPhaseKey: PropTypes.string,
   handCards: PropTypes.arrayOf(PropTypes.shape()),
   influenceCards: PropTypes.arrayOf(PropTypes.shape()),
   leadCards: PropTypes.arrayOf(PropTypes.shape()),
@@ -157,6 +177,7 @@ PlayerPanel.propTypes = {
   className: PropTypes.string,
   inputCallback: PropTypes.func,
   isLeader: PropTypes.bool,
+  leadRoleKey: PropTypes.string,
   moveStates: PropTypes.arrayOf(PropTypes.shape()),
   resourceBase: PropTypes.string,
   role: PropTypes.shape(),
@@ -173,8 +194,10 @@ PlayerPanel.defaultProps = {
   vaultCards: [],
 
   className: undefined,
+  currentPhaseKey: undefined,
   inputCallback: undefined,
   isLeader: false,
+  leadRoleKey: undefined,
   moveStates: undefined,
   resourceBase: Endpoint.NETWORK_RESOURCE,
   role: undefined,

@@ -3,7 +3,7 @@ import TestData from "./TestData.js";
 
 QUnit.module("RandomPlayerStrategy");
 
-QUnit.test("chooseLaborerOption()", (assert) => {
+QUnit.test("chooseMove()", (assert) => {
   // Setup.
   const store = TestData.createStore();
   const delay = 0;
@@ -19,12 +19,10 @@ QUnit.test("chooseLaborerOption()", (assert) => {
     done();
   };
 
-  RandomPlayerStrategy.chooseLaborerOption(options, store, delay).then(
-    callback
-  );
+  RandomPlayerStrategy.chooseMove(options, store, delay).then(callback);
 });
 
-QUnit.test("chooseMerchantOption()", (assert) => {
+QUnit.test("chooseRole()", (assert) => {
   // Setup.
   const store = TestData.createStore();
   const delay = 0;
@@ -40,47 +38,7 @@ QUnit.test("chooseMerchantOption()", (assert) => {
     done();
   };
 
-  RandomPlayerStrategy.chooseMerchantOption(options, store, delay).then(
-    callback
-  );
-});
-
-QUnit.test("choosePatronOption()", (assert) => {
-  // Setup.
-  const store = TestData.createStore();
-  const delay = 0;
-  const options = [1, 2, 3, 4];
-
-  // Run.
-  const done = assert.async();
-  const callback = (result) => {
-    assert.ok(true, "test resumed from async operation");
-    // Verify.
-    assert.ok(result);
-    assert.equal(options.includes(result), true);
-    done();
-  };
-
-  RandomPlayerStrategy.choosePatronOption(options, store, delay).then(callback);
-});
-
-QUnit.test("chooseRoleOption()", (assert) => {
-  // Setup.
-  const store = TestData.createStore();
-  const delay = 0;
-  const options = [1, 2, 3, 4];
-
-  // Run.
-  const done = assert.async();
-  const callback = (result) => {
-    assert.ok(true, "test resumed from async operation");
-    // Verify.
-    assert.ok(result);
-    assert.equal(options.includes(result), true);
-    done();
-  };
-
-  RandomPlayerStrategy.chooseRoleOption(options, store, delay).then(callback);
+  RandomPlayerStrategy.chooseRole(options, store, delay).then(callback);
 });
 
 const RandomPlayerStrategyTest = {};

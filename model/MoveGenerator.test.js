@@ -1,6 +1,7 @@
 import InputValidator from "../utility/InputValidator.js";
 
 import Material from "../artifact/Material.js";
+import MoveOption from "../artifact/MoveOption.js";
 import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
@@ -51,7 +52,7 @@ QUnit.test("generateArchitectOptions() Build a Structure", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "Build a Structure",
+    MoveOption.BUILD_FROM_STOCKPILE,
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   assert.equal(moveFirst.cardId, 27, `moveFirst.cardId = ${moveFirst.cardId}`);
@@ -80,14 +81,14 @@ QUnit.test("generateArchitectOptions() Lay Foundation", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "Lay a Foundation",
+    MoveOption.LAY_FOUNDATION,
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   assert.equal(moveFirst.cardId, 2, `moveFirst.cardId = ${moveFirst.cardId}`);
   const moveLast = R.last(result);
   assert.equal(
     moveLast.moveKey,
-    "Lay a Foundation",
+    MoveOption.LAY_FOUNDATION,
     `moveLast.moveKey = ${moveLast.moveKey}`
   );
   assert.equal(moveLast.cardId, 6, `moveLast.cardId = ${moveLast.cardId}`);
@@ -135,7 +136,7 @@ QUnit.test("generateCraftsmanOptions() Build a Structure", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "Build a Structure",
+    MoveOption.BUILD_FROM_HAND,
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   assert.equal(moveFirst.cardId, 3, `moveFirst.cardId = ${moveFirst.cardId}`);
@@ -164,14 +165,14 @@ QUnit.test("generateCraftsmanOptions() Lay Foundation", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "Lay a Foundation",
+    MoveOption.LAY_FOUNDATION,
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   assert.equal(moveFirst.cardId, 2, `moveFirst.cardId = ${moveFirst.cardId}`);
   const moveLast = R.last(result);
   assert.equal(
     moveLast.moveKey,
-    "Lay a Foundation",
+    MoveOption.LAY_FOUNDATION,
     `moveLast.moveKey = ${moveLast.moveKey}`
   );
   assert.equal(moveLast.cardId, 6, `moveLast.cardId = ${moveLast.cardId}`);
@@ -194,9 +195,19 @@ QUnit.test("generateLaborerOptions()", (assert) => {
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
+  assert.equal(
+    moveFirst.moveKey,
+    MoveOption.GATHER_MATERIAL,
+    `moveFirst.moveKey = ${moveFirst.moveKey}`
+  );
   assert.equal(moveFirst.cardId, 27, `moveFirst.cardId = ${moveFirst.cardId}`);
   const moveLast = R.last(result);
   assert.ok(moveLast);
+  assert.equal(
+    moveLast.moveKey,
+    MoveOption.GATHER_MATERIAL,
+    `moveLast.moveKey = ${moveLast.moveKey}`
+  );
   assert.equal(moveLast.cardId, 31, `moveLast.cardId = ${moveLast.cardId}`);
 });
 
@@ -217,9 +228,19 @@ QUnit.test("generateLegionaryOptions()", (assert) => {
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
+  assert.equal(
+    moveFirst.moveKey,
+    MoveOption.DEMAND_MATERIAL,
+    `moveFirst.moveKey = ${moveFirst.moveKey}`
+  );
   assert.equal(moveFirst.cardId, 2, `moveFirst.cardId = ${moveFirst.cardId}`);
   const moveLast = R.last(result);
   assert.ok(moveLast);
+  assert.equal(
+    moveLast.moveKey,
+    MoveOption.DEMAND_MATERIAL,
+    `moveLast.moveKey = ${moveLast.moveKey}`
+  );
   assert.equal(moveLast.cardId, 6, `moveLast.cardId = ${moveLast.cardId}`);
 });
 
@@ -244,9 +265,19 @@ QUnit.test("generateMerchantOptions()", (assert) => {
   assert.equal(result.length, 2, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
+  assert.equal(
+    moveFirst.moveKey,
+    MoveOption.SELL_MATERIAL,
+    `moveFirst.moveKey = ${moveFirst.moveKey}`
+  );
   assert.equal(moveFirst.cardId, 27, `moveFirst.cardId = ${moveFirst.cardId}`);
   const moveLast = R.last(result);
   assert.ok(moveLast);
+  assert.equal(
+    moveLast.moveKey,
+    MoveOption.SELL_MATERIAL,
+    `moveLast.moveKey = ${moveLast.moveKey}`
+  );
   assert.equal(moveLast.cardId, 31, `moveLast.cardId = ${moveLast.cardId}`);
 });
 
@@ -267,9 +298,19 @@ QUnit.test("generatePatronOptions()", (assert) => {
   assert.equal(result.length, 5, `result.length = ${result.length}`);
   const moveFirst = R.head(result);
   assert.ok(moveFirst);
+  assert.equal(
+    moveFirst.moveKey,
+    MoveOption.HIRE_CLIENT,
+    `moveFirst.moveKey = ${moveFirst.moveKey}`
+  );
   assert.equal(moveFirst.cardId, 27, `moveFirst.cardId = ${moveFirst.cardId}`);
   const moveLast = R.last(result);
   assert.ok(moveLast);
+  assert.equal(
+    moveLast.moveKey,
+    MoveOption.HIRE_CLIENT,
+    `moveLast.moveKey = ${moveLast.moveKey}`
+  );
   assert.equal(moveLast.cardId, 31, `moveLast.cardId = ${moveLast.cardId}`);
 });
 
@@ -477,13 +518,13 @@ QUnit.test("generateThinkerOptions()", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "Draw a Jack",
+    MoveOption.DRAW_JACK,
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   const moveLast = R.last(result);
   assert.equal(
     moveLast.moveKey,
-    "Draw a Card",
+    MoveOption.DRAW_CARD,
     `moveLast.moveKey = ${moveLast.moveKey}`
   );
 });
@@ -510,13 +551,13 @@ QUnit.test("generateThinkerOptions() needs refill", (assert) => {
   const moveFirst = R.head(result);
   assert.equal(
     moveFirst.moveKey,
-    "Draw a Jack",
+    MoveOption.DRAW_JACK,
     `moveFirst.moveKey = ${moveFirst.moveKey}`
   );
   const moveLast = R.last(result);
   assert.equal(
     moveLast.moveKey,
-    "Refill Hand",
+    MoveOption.REFILL_HAND,
     `R.last(result) = ${R.last(result)}`
   );
 });
@@ -540,7 +581,7 @@ QUnit.test("generateThinkerOptions() out of Jacks", (assert) => {
   const moveLast = R.last(result);
   assert.equal(
     moveLast.moveKey,
-    "Draw a Card",
+    MoveOption.DRAW_CARD,
     `moveLast.moveKey = ${moveLast.moveKey}`
   );
 });

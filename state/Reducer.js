@@ -248,6 +248,7 @@ const transferOrderToPool = (state) => {
   const newOrderDeck = R.without([cardId], state.orderDeck);
   const oldPool = state.cardPool || [];
   const newPool = [...oldPool, cardId];
+  log(`Reducer TRANSFER_ORDER_TO_POOL cardId = ${cardId}`, state);
 
   return {
     ...state,

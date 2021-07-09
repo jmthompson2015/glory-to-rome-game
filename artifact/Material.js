@@ -10,41 +10,41 @@ const Material = {
 Material.properties = {
   brick: {
     name: "Brick",
-    color: "Red",
+    color: "red",
     key: "brick",
   },
   concrete: {
     name: "Concrete",
-    color: "Gray",
+    color: "gray",
     key: "concrete",
   },
   marble: {
     name: "Marble",
-    color: "Purple",
+    color: "purple",
     key: "marble",
   },
   rubble: {
     name: "Rubble",
-    color: "Orange",
+    color: "orange",
     key: "rubble",
   },
   stone: {
     name: "Stone",
-    color: "Cyan",
+    color: "cyan",
     key: "stone",
   },
   wood: {
     name: "Wood",
-    color: "Green",
+    color: "green",
     key: "wood",
   },
 };
 
 Material.keys = () => Object.keys(Material.properties);
 
-Material.values = () => Object.values(Material.properties);
-
 Material.value = (key) => Material.properties[key];
+
+Material.values = () => Object.values(Material.properties);
 
 Object.freeze(Material);
 

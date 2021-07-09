@@ -10,7 +10,7 @@ import Endpoint from "./Endpoint.js";
 const { ReactUtilities: RU } = ReactComponent;
 
 const store = TestData.createStore();
-store.dispatch(ActionCreator.setVerbose(true));
+// store.dispatch(ActionCreator.setVerbose(true));
 store.dispatch(ActionCreator.setOrderHighlighted(3, true));
 
 const createCardCell = (cardState, customKey0, sliceType) => {

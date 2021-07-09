@@ -8,7 +8,7 @@ QUnit.test("Material properties Brick", (assert) => {
   const materialKey = Material.BRICK;
   const properties = Material.properties[materialKey];
   assert.equal(properties.name, "Brick");
-  assert.equal(properties.color, "Red");
+  assert.equal(properties.color, "red");
   assert.equal(properties.key, materialKey);
 });
 

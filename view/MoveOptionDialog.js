@@ -1,93 +1,51 @@
+import Material from "../artifact/Material.js";
 import Role from "../artifact/Role.js";
 
 import Sorter from "../state/Sorter.js";
+
+import MoveFunction from "../model/MoveFunction.js";
 
 const { RadioButtonPanel, ReactUtilities: RU, TitledElement } = ReactComponent;
 
 const MATERIAL_ROLES = [Role.LABORER, Role.LEGIONARY, Role.MERCHANT];
 
+const createNameMap = (accum, type) => R.assoc(type.name, type, accum);
+
+const MATERIAL_MAP = R.reduce(createNameMap, {}, Material.values());
+const MATERIAL_NAMES = Object.keys(MATERIAL_MAP);
+const ROLE_MAP = R.reduce(createNameMap, {}, Role.values());
+const ROLE_NAMES = Object.keys(ROLE_MAP);
+
 const createColorName = (item) =>
-  RU.createSpan(
-    item.name,
-    `${item.name}-${item.color}`,
-    `b ${item.color.toLowerCase()}`
-  );
+  RU.createSpan(item.name, `${item.name}-${item.color}`, `b ${item.color}`);
 
 const createTitle = (role) => (role ? "Select Action" : "Select Role");
 
-const materialLabelFunction = (move) => {
-  const { cardInstance, materialType, roleType } = move;
-  const cardId = cardInstance ? cardInstance.id : undefined;
-  const cardType = cardInstance ? cardInstance.cardType : undefined;
-  const cardName = cardType ? cardType.name : "";
-  const roleName = roleType ? roleType.name : "";
-  const materialName = materialType ? createColorName(materialType) : "";
+const labelFunction = (currentPhaseKey, leadRoleKey) => (moveState) => {
+  let answer = JSON.stringify(moveState);
 
-  return RU.createSpan(
-    [materialName, ` (${cardId} ${cardName} ${roleName})`],
-    `${materialName}-${cardId}-${cardName}-${roleName}`
-  );
-};
+  if (moveState) {
+    const { moveKey } = moveState;
+    const moveFunction = MoveFunction[moveKey];
+    const labelString = moveFunction.label(
+      moveState,
+      currentPhaseKey,
+      leadRoleKey
+    );
+    const words = labelString.split(" ");
+    const reduceFunction = (accum, word) => {
+      let newWord = `${word} `;
 
-const roleLabelFunction = (move) => {
-  const { cardInstance, materialType, moveKey, roleType } = move;
-  const cardId = cardInstance ? cardInstance.id : undefined;
-  const cardType = cardInstance ? cardInstance.cardType : undefined;
-  const cardName = cardType ? cardType.name : "";
-  const roleName = roleType ? createColorName(roleType) : "";
-  const materialName = materialType ? materialType.name : "";
-  let label;
-
-  if (roleType.key === Role.THINKER) {
-    label = ` (${moveKey})`;
-  } else {
-    label =
-      materialName.length > 0
-        ? ` (${cardId} ${cardName} ${materialName})`
-        : ` (${cardId} ${cardName})`;
-  }
-
-  return RU.createSpan(
-    [roleName, label],
-    `${roleName}-${cardId}-${cardName}-${materialName}`
-  );
-};
-
-const labelFunction = (role) => (move) => {
-  let answer = JSON.stringify(move);
-
-  if (move) {
-    const { cardInstance, materialType, moveKey, roleType } = move;
-    const moveName = moveKey || "";
-    const cardId = cardInstance ? cardInstance.id : undefined;
-    const cardType = cardInstance ? cardInstance.cardType : undefined;
-    const cardName = cardType ? cardType.name : "";
-    const roleName = roleType ? createColorName(roleType) : "";
-    const materialName = materialType ? createColorName(materialType) : "";
-    const key = `${cardId}-${cardName}-${roleName}-${materialName}`;
-
-    if (role) {
-      if (move.roleKey === Role.THINKER) {
-        answer = RU.createSpan([roleName, ` `, moveName], key);
-      } else if (MATERIAL_ROLES.includes(role.key)) {
-        answer = materialLabelFunction(move);
-      } else if (role.key === Role.PATRON) {
-        answer = roleLabelFunction(move);
-      } else {
-        answer = RU.createSpan(
-          [
-            `${moveName} (${cardId} ${cardName} `,
-            roleName,
-            ` `,
-            materialName,
-            `)`,
-          ],
-          key
-        );
+      if (MATERIAL_NAMES.includes(word)) {
+        newWord = createColorName(MATERIAL_MAP[word]);
+      } else if (ROLE_NAMES.includes(word)) {
+        newWord = createColorName(ROLE_MAP[word]);
       }
-    } else {
-      answer = roleLabelFunction(move);
-    }
+
+      return R.append(" ", R.append(newWord, accum));
+    };
+
+    answer = R.reduce(reduceFunction, [], words);
   }
 
   return answer;
@@ -116,7 +74,7 @@ class MoveOptionDialog extends React.Component {
   }
 
   render() {
-    const { customKey, role } = this.props;
+    const { currentPhaseKey, customKey, leadRoleKey, role } = this.props;
     const { moveStates } = this.state;
     const customKey2 = R.map((m) => m.moveKey, moveStates);
     const radioButtonPanel = React.createElement(RadioButtonPanel, {
@@ -127,7 +85,7 @@ class MoveOptionDialog extends React.Component {
       customKey,
       inputPanelClass: "bg-white pa1 tl",
       items: moveStates,
-      labelFunction: labelFunction(role),
+      labelFunction: labelFunction(currentPhaseKey, leadRoleKey),
       selectedItem: R.head(moveStates),
     });
 
@@ -146,12 +104,16 @@ MoveOptionDialog.propTypes = {
   callback: PropTypes.func.isRequired,
   moveStates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
+  currentPhaseKey: PropTypes.string,
   customKey: PropTypes.string,
+  leadRoleKey: PropTypes.string,
   role: PropTypes.shape(),
 };
 
 MoveOptionDialog.defaultProps = {
+  currentPhaseKey: undefined,
   customKey: "MoveOptionDialog",
+  leadRoleKey: undefined,
   role: undefined,
 };
 

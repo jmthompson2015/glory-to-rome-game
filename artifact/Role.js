@@ -12,19 +12,11 @@ Role.properties = {
   architect: {
     name: "Architect",
     color: "gray",
-    options: {
-      LAY_FOUNDATION: "Lay a Foundation",
-      BUILD_STRUCTURE: "Build a Structure",
-    },
     key: "architect",
   },
   craftsman: {
     name: "Craftsman",
     color: "green",
-    options: {
-      LAY_FOUNDATION: "Lay a Foundation",
-      BUILD_STRUCTURE: "Build a Structure",
-    },
     key: "craftsman",
   },
   laborer: {
@@ -50,20 +42,15 @@ Role.properties = {
   thinker: {
     name: "Thinker",
     color: "black",
-    options: {
-      DRAW_JACK: "Draw a Jack",
-      REFILL_HAND: "Refill Hand",
-      DRAW_CARD: "Draw a Card",
-    },
     key: "thinker",
   },
 };
 
 Role.keys = () => Object.keys(Role.properties);
 
-Role.values = () => Object.values(Role.properties);
-
 Role.value = (key) => Role.properties[key];
+
+Role.values = () => Object.values(Role.properties);
 
 Object.freeze(Role);
 

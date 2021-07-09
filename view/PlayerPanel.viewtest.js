@@ -1,5 +1,6 @@
 /* eslint no-console: ["error", { allow: ["log"] }] */
 
+import Phase from "../artifact/Phase.js";
 import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
@@ -82,12 +83,14 @@ const state = store.getState();
 
 const element = React.createElement(PlayerPanel, {
   clienteleCards: Selector.clienteleCards(playerId, state),
+  currentPhaseKey: Phase.PERFORM_ROLE,
   handCards: Selector.handCards(playerId, state),
   influenceCards: Selector.influenceCards(playerId, state),
   inputCallback,
   isLeader: true,
   leadCards: Selector.campCards(playerId, state),
   leaderCard: Selector.leaderCard(state),
+  leadRoleKey: Role.ARCHITECT,
   moveStates,
   player: Selector.player(playerId, state),
   resourceBase: Endpoint.LOCAL_RESOURCE,

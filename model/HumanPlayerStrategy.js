@@ -9,7 +9,7 @@ const cleanup = (resolve, store) => (moveState) => {
   resolve(moveState);
 };
 
-const chooseOption = (options, store) =>
+HumanPlayerStrategy.chooseMove = (options, store) =>
   new Promise((resolve) => {
     store.dispatch(
       ActionCreator.setCurrentInputCallback(cleanup(resolve, store))
@@ -18,25 +18,7 @@ const chooseOption = (options, store) =>
     store.dispatch(ActionCreator.setUserMessage("Select an action."));
   });
 
-HumanPlayerStrategy.chooseArchitectOption = (options, store) =>
-  chooseOption(options, store);
-
-HumanPlayerStrategy.chooseCraftsmanOption = (options, store) =>
-  chooseOption(options, store);
-
-HumanPlayerStrategy.chooseLaborerOption = (options, store) =>
-  chooseOption(options, store);
-
-HumanPlayerStrategy.chooseLegionaryOption = (options, store) =>
-  chooseOption(options, store);
-
-HumanPlayerStrategy.chooseMerchantOption = (options, store) =>
-  chooseOption(options, store);
-
-HumanPlayerStrategy.choosePatronOption = (options, store) =>
-  chooseOption(options, store);
-
-HumanPlayerStrategy.chooseRoleOption = (options, store) =>
+HumanPlayerStrategy.chooseRole = (options, store) =>
   new Promise((resolve) => {
     store.dispatch(
       ActionCreator.setCurrentInputCallback(cleanup(resolve, store))

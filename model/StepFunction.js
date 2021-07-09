@@ -10,10 +10,53 @@ import Selector from "../state/Selector.js";
 
 import MoveFunction from "./MoveFunction.js";
 import MoveGenerator from "./MoveGenerator.js";
-import RoleFunction from "./RoleFunction.js";
 import StrategyResolver from "./StrategyResolver.js";
 
 const StepFunction = {};
+
+const roleFunctionPerformMove = (playerId, store) => (moveState) => {
+  IV.validateNotNil("playerId", playerId);
+  IV.validateNotNil("store", store);
+  IV.validateNotNil("moveState", moveState);
+  const gameRecord = MoveFunction.createGameRecord(moveState, store.getState());
+  store.dispatch(ActionCreator.addGameRecord(gameRecord));
+  const { moveKey } = moveState;
+  const moveFunction = MoveFunction[moveKey];
+  moveFunction.execute(moveState, store);
+};
+
+const roleFunctionExecute = (roleKey, playerId, store) => {
+  IV.validateNotNil("roleKey", roleKey);
+  IV.validateNotNil("playerId", playerId);
+  IV.validateNotNil("store", store);
+  if (store.getState().isVerbose) {
+    console.log(`roleFunctionExecute() roleKey = ${roleKey}`);
+  }
+
+  let answer = Promise.resolve();
+
+  if (roleKey === Role.THINKER) {
+    const moveState = Selector.currentMove(store.getState());
+    roleFunctionPerformMove(playerId, store)(moveState);
+  } else {
+    const options = MoveGenerator.generateOptions(
+      roleKey,
+      playerId,
+      store.getState()
+    );
+
+    if (!R.isEmpty(options)) {
+      const player = Selector.player(playerId, store.getState());
+      const strategy = StrategyResolver.resolve(player.strategy);
+      const delay = Selector.delay(store.getState());
+      answer = strategy
+        .chooseMove(options, store, delay)
+        .then(roleFunctionPerformMove(playerId, store));
+    }
+  }
+
+  return answer;
+};
 
 const performMove = (playerId, store) => (moveState) => {
   IV.validateNotNil("moveState", moveState);
@@ -39,8 +82,7 @@ const performMove = (playerId, store) => (moveState) => {
   let answer = Promise.resolve();
 
   if (roleKey === Role.THINKER) {
-    const roleFunction = RoleFunction[Role.THINKER];
-    answer = roleFunction.execute(playerId, store);
+    answer = roleFunctionExecute(roleKey, playerId, store);
   } else {
     store.dispatch(ActionCreator.transferHandToCamp(playerId, cardId));
   }
@@ -70,7 +112,7 @@ StepFunction.declareRole = (store) => {
       const player = Selector.player(playerId, store.getState());
       const strategy = StrategyResolver.resolve(player.strategy);
       answer = strategy
-        .chooseRoleOption(options, store, delay)
+        .chooseRole(options, store, delay)
         .then(performMove(playerId, store));
     }
   }
@@ -82,12 +124,11 @@ StepFunction.performRole = (store) => {
     console.log(`StepFunction.performRole()`);
   }
   const leadRoleKey = Selector.leadRoleKey(store.getState());
-  const roleFunction = RoleFunction[leadRoleKey];
   const playerId = Selector.currentPlayerId(store.getState());
   const campIds = Selector.campIds(playerId, store.getState());
 
   return !R.isEmpty(campIds)
-    ? roleFunction.execute(playerId, store)
+    ? roleFunctionExecute(leadRoleKey, playerId, store)
     : Promise.resolve();
 };
 

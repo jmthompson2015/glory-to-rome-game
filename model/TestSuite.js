@@ -6,7 +6,6 @@ import MoveFunctionTest from "./MoveFunction.test.js";
 import MoveGeneratorTest from "./MoveGenerator.test.js";
 import PhaseRunnerTest from "./PhaseRunner.test.js";
 import RandomPlayerStrategyTest from "./RandomPlayerStrategy.test.js";
-import RoleFunctionTest from "./RoleFunction.test.js";
 import SetupTest from "./Setup.test.js";
 import StepFunctionTest from "./StepFunction.test.js";
 import StepRunnerTest from "./StepRunner.test.js";
