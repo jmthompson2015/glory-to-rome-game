@@ -468,6 +468,18 @@ QUnit.test("refillLimit()", (assert) => {
   assert.equal(result, 5);
 });
 
+QUnit.test("score()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const playerId = 3;
+
+  // Run / Verify.
+  const result = Selector.score(playerId, state);
+
+  // Run / Verify.
+  assert.equal(result, 2);
+});
+
 QUnit.test("siteCard()", (assert) => {
   // Setup.
   const state0 = AppState.create();

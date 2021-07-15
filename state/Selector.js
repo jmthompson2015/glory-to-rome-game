@@ -20,13 +20,10 @@ Selector.bonusDeck = (state) => state.bonusDeck;
 Selector.cardPool = (state) => state.cardPool || [];
 
 Selector.computeInfluence = (playerId, state) => {
-  const reduceFunction = (accum, id) => {
-    const card = Selector.orderCard(id, state);
-    return accum + card.cardType.materialValue;
-  };
-  const influenceIds = Selector.influenceIds(playerId, state);
+  const influenceCards = Selector.influenceCards(playerId, state);
+  const reduceFunction = (accum, card) => accum + card.cardType.materialValue;
 
-  return R.reduce(reduceFunction, 2, influenceIds);
+  return R.reduce(reduceFunction, 2, influenceCards);
 };
 
 Selector.currentInputCallback = (state) => state.currentInputCallback;
@@ -176,10 +173,8 @@ Selector.score = (playerId, state) => {
   IV.validateNotNil("playerId", playerId);
   IV.validateNotNil("state", state);
 
-  const influenceCards = Selector.influenceCards(playerId, state);
+  const influence = Selector.computeInfluence(playerId, state);
   const vaultCards = Selector.vaultCards(playerId, state);
-  const reduceFunction = (accum, card) => accum + card.cardType.materialValue;
-  const influence = R.reduce(reduceFunction, 0, influenceCards);
   const suffix = vaultCards.length > 0 ? ` + Vault` : "";
 
   return influence + suffix;
