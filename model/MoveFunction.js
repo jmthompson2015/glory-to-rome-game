@@ -134,11 +134,6 @@ const MoveFunction = {
       const { cardId, playerId } = moveState;
       IV.validateIsNumber("cardId", cardId);
       IV.validateIsNumber("playerId", playerId);
-      const gameRecord = MoveFunction.createGameRecord(
-        moveState,
-        store.getState()
-      );
-      store.dispatch(ActionCreator.addGameRecord(gameRecord));
       const { materialKey } = Selector.orderCard(
         cardId,
         store.getState()
@@ -265,11 +260,6 @@ const MoveFunction = {
       const { cardId, playerId } = moveState;
       IV.validateIsNumber("cardId", cardId);
       IV.validateIsNumber("playerId", playerId);
-      const gameRecord = MoveFunction.createGameRecord(
-        moveState,
-        store.getState()
-      );
-      store.dispatch(ActionCreator.addGameRecord(gameRecord));
       const player = Selector.player(playerId, store.getState());
       const card = Selector.orderCard(cardId, store.getState());
       const { materialKey } = card.cardType;
@@ -299,11 +289,6 @@ const MoveFunction = {
       const { cardId, playerId } = moveState;
       IV.validateIsNumber("cardId", cardId);
       IV.validateIsNumber("playerId", playerId);
-      const gameRecord = MoveFunction.createGameRecord(
-        moveState,
-        store.getState()
-      );
-      store.dispatch(ActionCreator.addGameRecord(gameRecord));
       const player = Selector.player(playerId, store.getState());
       const card = Selector.orderCard(cardId, store.getState());
       const { roleKey } = card.cardType;
@@ -381,11 +366,6 @@ const MoveFunction = {
       IV.validateIsNumber("cardId", cardId);
       IV.validateIsNumber("playerId", playerId);
       IV.validateIsString("materialKey", materialKey);
-      const gameRecord = MoveFunction.createGameRecord(
-        moveState,
-        store.getState()
-      );
-      store.dispatch(ActionCreator.addGameRecord(gameRecord));
       const player = Selector.player(playerId, store.getState());
 
       IV.validateNotNil("cardId", cardId);

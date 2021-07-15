@@ -69,8 +69,6 @@ const performMove = (playerId, store) => (moveState) => {
   const role = Role.value(roleKey);
   IV.validateNotNil("role", role);
   const player = Selector.player(playerId, store.getState());
-  const gameRecord = MoveFunction.createGameRecord(moveState, store.getState());
-  store.dispatch(ActionCreator.addGameRecord(gameRecord));
   store.dispatch(
     ActionCreator.setUserMessage(`${player.name} chose the ${role.name} role.`)
   );
@@ -84,6 +82,11 @@ const performMove = (playerId, store) => (moveState) => {
   if (roleKey === Role.THINKER) {
     answer = roleFunctionExecute(roleKey, playerId, store);
   } else {
+    const gameRecord = MoveFunction.createGameRecord(
+      moveState,
+      store.getState()
+    );
+    store.dispatch(ActionCreator.addGameRecord(gameRecord));
     store.dispatch(ActionCreator.transferHandToCamp(playerId, cardId));
   }
 
