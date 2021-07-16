@@ -129,10 +129,18 @@ StepFunction.performRole = (store) => {
   const leadRoleKey = Selector.leadRoleKey(store.getState());
   const playerId = Selector.currentPlayerId(store.getState());
   const campIds = Selector.campIds(playerId, store.getState());
+  const clienteleIds = Selector.clienteleIdsByRole(
+    leadRoleKey,
+    playerId,
+    store.getState()
+  );
+  const cardIds = R.concat(campIds, clienteleIds);
+  const reduceFunction = (promise) =>
+    promise.then(() => roleFunctionExecute(leadRoleKey, playerId, store));
 
-  return !R.isEmpty(campIds)
-    ? roleFunctionExecute(leadRoleKey, playerId, store)
-    : Promise.resolve();
+  return R.isEmpty(cardIds)
+    ? Promise.resolve()
+    : R.reduce(reduceFunction, Promise.resolve(), cardIds);
 };
 
 StepFunction.execute = (store) => {

@@ -280,8 +280,21 @@ Selector.campIds = (playerId, state) => state.playerToCamp[playerId] || [];
 Selector.clienteleCards = (playerId, state) =>
   Selector.orderCards(Selector.clienteleIds(playerId, state), state);
 
+Selector.clienteleCardsByRole = (roleKey, playerId, state) => {
+  const filterFunction = (card) => card.cardType.roleKey === roleKey;
+  const clienteleCards = Selector.clienteleCards(playerId, state);
+
+  return R.filter(filterFunction, clienteleCards);
+};
+
 Selector.clienteleIds = (playerId, state) =>
   state.playerToClientele[playerId] || [];
+
+Selector.clienteleIdsByRole = (roleKey, playerId, state) => {
+  const cards = Selector.clienteleCardsByRole(roleKey, playerId, state);
+
+  return R.map((c) => c.id, cards);
+};
 
 Selector.handCards = (playerId, state) =>
   Selector.orderCards(Selector.handIds(playerId, state), state);
