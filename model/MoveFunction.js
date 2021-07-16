@@ -143,11 +143,10 @@ const MoveFunction = {
       store.dispatch(ActionCreator.setUserMessage(userMessage));
       const currentPlayerOrder = Selector.currentPlayerOrder(store.getState());
       const index = currentPlayerOrder.indexOf(playerId);
-      const filterFunction = (orderCard) =>
-        orderCard.cardType.materialKey === materialKey;
-      const poolIds = Selector.cardPool(store.getState());
-      const pool = Selector.orderCards(poolIds, store.getState());
-      const poolCards = R.filter(filterFunction, pool);
+      const poolCards = Selector.poolCardsByMaterial(
+        materialKey,
+        store.getState()
+      );
       if (poolCards.length > 0) {
         store.dispatch(
           ActionCreator.transferPoolToStockpile(playerId, R.head(poolCards).id)
@@ -156,8 +155,11 @@ const MoveFunction = {
       // Right neighbor.
       const rightNeighborIndex = modulo(index - 1, currentPlayerOrder.length);
       const rightNeighborId = currentPlayerOrder[rightNeighborIndex];
-      const rightHand = Selector.handCards(rightNeighborId, store.getState());
-      const rightCards = R.filter(filterFunction, rightHand);
+      const rightCards = Selector.handCardsByMaterial(
+        materialKey,
+        rightNeighborId,
+        store.getState()
+      );
       if (rightCards.length > 0) {
         store.dispatch(
           ActionCreator.transferHandToStockpile(
@@ -170,8 +172,11 @@ const MoveFunction = {
       // Left neighbor.
       const leftNeighborIndex = modulo(index + 1, currentPlayerOrder.length);
       const leftNeighborId = currentPlayerOrder[leftNeighborIndex];
-      const leftHand = Selector.handCards(leftNeighborId, store.getState());
-      const leftCards = R.filter(filterFunction, leftHand);
+      const leftCards = Selector.handCardsByMaterial(
+        materialKey,
+        leftNeighborId,
+        store.getState()
+      );
       if (leftCards.length > 0) {
         store.dispatch(
           ActionCreator.transferHandToStockpile(

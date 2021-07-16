@@ -29,6 +29,12 @@ const addOrderCard = (state, id, cardKey) => {
   return Reducer.root(state, action);
 };
 
+const addPoolCard = (state, id) => {
+  const action = ActionCreator.addPoolCard(id);
+
+  return Reducer.root(state, action);
+};
+
 const addSiteCard = (state, id, cardKey) => {
   const card = SiteCardState.create({ id, cardKey });
   const action = ActionCreator.addSiteCard(card);
@@ -456,6 +462,28 @@ QUnit.test("playersInOrder() 4", (assert) => {
   assert.equal(result[4].id, 3);
 });
 
+QUnit.test("poolIdsByMaterial()", (assert) => {
+  // Setup.
+  let state = AppState.create();
+  const poolCardKeys = OrderCard.keys();
+  for (let id = 1; id <= 12; id += 1) {
+    const cardKey = poolCardKeys[id - 1];
+    state = addOrderCard(state, id, cardKey);
+    state = addPoolCard(state, id);
+  }
+  const materialKey = Material.BRICK;
+
+  // Run / Verify.
+  const result = Selector.poolIdsByMaterial(materialKey, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, 4, `result.length = ${result.length}`);
+  assert.equal(R.head(result), 1);
+  assert.equal(R.last(result), 8);
+});
+
 QUnit.test("refillLimit()", (assert) => {
   // Setup.
   const state = AppState.create();
@@ -546,9 +574,7 @@ QUnit.test("siteIdsByMaterial()", (assert) => {
   assert.ok(result);
   assert.equal(Array.isArray(result), true);
   assert.equal(result.length, 1, `result.length = ${result.length}`);
-  const siteCardId = R.head(result);
-  assert.ok(siteCardId);
-  assert.equal(siteCardId, 1);
+  assert.equal(R.head(result), 1);
 });
 
 QUnit.test("stockpileIds()", (assert) => {
@@ -590,6 +616,44 @@ QUnit.test("unfinishedStructureIds()", (assert) => {
 
   // Run / Verify.
   const result = Selector.unfinishedStructureIds(playerId, state);
+
+  // Run / Verify.
+  assert.ok(result);
+  assert.equal(Array.isArray(result), true);
+  assert.equal(result.length, 1, `result.length = ${result.length}`);
+  assert.equal(R.head(result), 1);
+});
+
+QUnit.test("unfinishedStructureIdsByMaterial()", (assert) => {
+  // Setup.
+  const state0 = AppState.create();
+  const playerId = 3;
+  const state1 = addOrderCard(state0, 2, OrderCard.ACADEMY);
+  const state2 = addSiteCard(state1, 1, SiteCard.BRICK);
+  const state3 = addStructure(state2, 1, 2, 1, []);
+  const state4 = addOrderCard(state3, 3, OrderCard.AMPHITHEATRE);
+  const state5 = addSiteCard(state4, 2, SiteCard.CONCRETE);
+  const state6 = addStructure(state5, 2, 3, 2, [5, 6]);
+  const action6 = ActionCreator.addToPlayerArray(
+    "playerToStructures",
+    playerId,
+    1
+  );
+  const state7 = Reducer.root(state6, action6);
+  const action7 = ActionCreator.addToPlayerArray(
+    "playerToStructures",
+    playerId,
+    2
+  );
+  const state = Reducer.root(state7, action7);
+  const materialKey = Material.BRICK;
+
+  // Run / Verify.
+  const result = Selector.unfinishedStructureIdsByMaterial(
+    materialKey,
+    playerId,
+    state
+  );
 
   // Run / Verify.
   assert.ok(result);

@@ -5,6 +5,14 @@ import Role from "../artifact/Role.js";
 
 const Selector = {};
 
+const filterByMaterial = (materialKey) => (cardInstance) =>
+  cardInstance.cardType.materialKey === materialKey;
+
+const filterByRole = (roleKey) => (cardInstance) =>
+  cardInstance.cardType.roleKey === roleKey;
+
+const mapToId = (cardInstance) => cardInstance.id;
+
 Selector.bonusCard = (cardId, state) => state.bonusCardInstances[cardId];
 
 Selector.bonusCards = (cardIds, state) => {
@@ -19,7 +27,27 @@ Selector.bonusDeck = (state) => state.bonusDeck;
 
 Selector.cardPool = (state) => state.cardPool || [];
 
+Selector.clienteleCardsByRole = (roleKey, playerId, state) => {
+  IV.validateIsString("roleKey", roleKey);
+  IV.validateIsNumber("playerId", playerId);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.clienteleCards(playerId, state);
+
+  return R.filter(filterByRole(roleKey), cardInstances);
+};
+
+Selector.clienteleIdsByRole = (roleKey, playerId, state) => {
+  IV.validateIsString("roleKey", roleKey);
+  IV.validateIsNumber("playerId", playerId);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.clienteleCardsByRole(roleKey, playerId, state);
+
+  return R.map(mapToId, cardInstances);
+};
+
 Selector.computeInfluence = (playerId, state) => {
+  IV.validateIsNumber("playerId", playerId);
+  IV.validateNotNil("state", state);
   const influenceCards = Selector.influenceCards(playerId, state);
   const reduceFunction = (accum, card) => accum + card.cardType.materialValue;
 
@@ -49,8 +77,57 @@ Selector.delay = (state) => state.delay;
 
 Selector.gameRecords = (state) => state.gameRecords;
 
+Selector.handCardsByMaterial = (materialKey, playerId, state) => {
+  IV.validateIsString("materialKey", materialKey);
+  IV.validateIsNumber("playerId", playerId);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.handCards(playerId, state);
+
+  return R.filter(filterByMaterial(materialKey), cardInstances);
+};
+
+Selector.handCardsByRole = (roleKey, playerId, state) => {
+  IV.validateIsString("roleKey", roleKey);
+  IV.validateIsNumber("playerId", playerId);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.handCards(playerId, state);
+
+  return R.filter(filterByRole(roleKey), cardInstances);
+};
+
+Selector.handIdsByMaterial = (materialKey, playerId, state) => {
+  IV.validateIsString("materialKey", materialKey);
+  IV.validateIsNumber("playerId", playerId);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.handCardsByMaterial(
+    materialKey,
+    playerId,
+    state
+  );
+
+  return R.map(mapToId, cardInstances);
+};
+
+Selector.handIdsByRole = (roleKey, playerId, state) => {
+  IV.validateIsString("roleKey", roleKey);
+  IV.validateIsNumber("playerId", playerId);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.handCardsByRole(roleKey, playerId, state);
+
+  return R.map(mapToId, cardInstances);
+};
+
+Selector.handShortfall = (playerId, state) => {
+  IV.validateIsNumber("playerId", playerId);
+  IV.validateNotNil("state", state);
+  const handIds = Selector.handIds(playerId, state);
+  const refillLimit = Selector.refillLimit(playerId, state);
+
+  return refillLimit - handIds.length;
+};
+
 Selector.isComputerPlayer = (playerId, state) => {
-  IV.validateNotNil("playerId", playerId);
+  IV.validateIsNumber("playerId", playerId);
   IV.validateNotNil("state", state);
   const player = Selector.player(playerId, state);
 
@@ -60,7 +137,7 @@ Selector.isComputerPlayer = (playerId, state) => {
 Selector.isGameOver = (state) => state.isGameOver;
 
 Selector.isHumanPlayer = (playerId, state) => {
-  IV.validateNotNil("playerId", playerId);
+  IV.validateIsNumber("playerId", playerId);
   IV.validateNotNil("state", state);
   const player = Selector.player(playerId, state);
 
@@ -121,7 +198,7 @@ Selector.leadRoleKey = (state) => state.leadRoleKey;
 Selector.mctsRoot = (state) => state.mctsRoot;
 
 Selector.orderCard = (cardId, state) => {
-  IV.validateNotNil("cardId", cardId);
+  IV.validateIsNumber("cardId", cardId);
   IV.validateNotNil("state", state);
   return state.orderCardInstances[cardId];
 };
@@ -160,17 +237,42 @@ Selector.playersInOrder = (state) => {
   return R.map(mapFunction, currentPlayerOrder);
 };
 
-Selector.refillLimit = (/* playerId, state */) => 5;
+Selector.poolCardsByMaterial = (materialKey, state) => {
+  IV.validateIsString("materialKey", materialKey);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.orderCards(state.cardPool, state);
 
-Selector.handShortfall = (playerId, state) => {
-  const handIds = Selector.handIds(playerId, state);
-  const refillLimit = Selector.refillLimit(playerId, state);
-
-  return refillLimit - handIds.length;
+  return R.filter(filterByMaterial(materialKey), cardInstances);
 };
 
+Selector.poolCardsByRole = (roleKey, state) => {
+  IV.validateIsString("roleKey", roleKey);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.orderCards(state.cardPool);
+
+  return R.filter(filterByRole(roleKey), cardInstances);
+};
+
+Selector.poolIdsByMaterial = (materialKey, state) => {
+  IV.validateIsString("materialKey", materialKey);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.poolCardsByMaterial(materialKey, state);
+
+  return R.map(mapToId, cardInstances);
+};
+
+Selector.poolIdsByRole = (roleKey, state) => {
+  IV.validateIsString("roleKey", roleKey);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.poolCardsByRole(roleKey, state);
+
+  return R.map(mapToId, cardInstances);
+};
+
+Selector.refillLimit = (/* playerId, state */) => 5;
+
 Selector.score = (playerId, state) => {
-  IV.validateNotNil("playerId", playerId);
+  IV.validateIsNumber("playerId", playerId);
   IV.validateNotNil("state", state);
 
   const influence = Selector.computeInfluence(playerId, state);
@@ -181,7 +283,7 @@ Selector.score = (playerId, state) => {
 };
 
 Selector.siteCard = (cardId, state) => {
-  IV.validateNotNil("cardId", cardId);
+  IV.validateIsNumber("cardId", cardId);
   IV.validateNotNil("state", state);
 
   return state.siteCardInstances[cardId];
@@ -195,21 +297,26 @@ Selector.siteCards = (cardIds, state) => {
   return R.map(mapFunction, cardIds);
 };
 
+Selector.siteCardsByMaterial = (materialKey, state) => {
+  IV.validateIsString("materialKey", materialKey);
+  IV.validateNotNil("state", state);
+  const cardInstances = Selector.siteCards(state.siteDeck, state);
+
+  return R.filter(filterByMaterial(materialKey), cardInstances);
+};
+
 Selector.siteDeck = (state) => state.siteDeck;
 
 Selector.siteIdsByMaterial = (materialKey, state) => {
-  IV.validateNotNil("materialKey", materialKey);
+  IV.validateIsString("materialKey", materialKey);
   IV.validateNotNil("state", state);
-  const filterFunction = (siteCardId) => {
-    const siteCard = Selector.siteCard(siteCardId, state);
-    return siteCard.cardType.materialKey === materialKey;
-  };
+  const cardInstances = Selector.siteCardsByMaterial(materialKey, state);
 
-  return R.filter(filterFunction, state.siteDeck);
+  return R.map(mapToId, cardInstances);
 };
 
 Selector.structure = (structureId, state) => {
-  IV.validateNotNil("structureId", structureId);
+  IV.validateIsNumber("structureId", structureId);
   IV.validateNotNil("state", state);
 
   return state.structureInstances[structureId];
@@ -226,7 +333,7 @@ Selector.structures = (structureIds, state) => {
 Selector.userMessage = (state) => state.userMessage;
 
 Selector.unfinishedStructureIds = (playerId, state) => {
-  IV.validateNotNil("playerId", playerId);
+  IV.validateIsNumber("playerId", playerId);
   IV.validateNotNil("state", state);
   const filterFunction = (structureId) =>
     R.not(Selector.isStructureComplete(structureId, state));
@@ -235,9 +342,9 @@ Selector.unfinishedStructureIds = (playerId, state) => {
   return R.filter(filterFunction, structureIds);
 };
 
-Selector.unfinishedStructureIdsByMaterial = (playerId, materialKey, state) => {
-  IV.validateNotNil("playerId", playerId);
-  IV.validateNotNil("materialKey", materialKey);
+Selector.unfinishedStructureIdsByMaterial = (materialKey, playerId, state) => {
+  IV.validateIsString("materialKey", materialKey);
+  IV.validateIsNumber("playerId", playerId);
   IV.validateNotNil("state", state);
   const filterFunction = (structureId) => {
     const structure = state.structureInstances[structureId];
@@ -280,21 +387,8 @@ Selector.campIds = (playerId, state) => state.playerToCamp[playerId] || [];
 Selector.clienteleCards = (playerId, state) =>
   Selector.orderCards(Selector.clienteleIds(playerId, state), state);
 
-Selector.clienteleCardsByRole = (roleKey, playerId, state) => {
-  const filterFunction = (card) => card.cardType.roleKey === roleKey;
-  const clienteleCards = Selector.clienteleCards(playerId, state);
-
-  return R.filter(filterFunction, clienteleCards);
-};
-
 Selector.clienteleIds = (playerId, state) =>
   state.playerToClientele[playerId] || [];
-
-Selector.clienteleIdsByRole = (roleKey, playerId, state) => {
-  const cards = Selector.clienteleCardsByRole(roleKey, playerId, state);
-
-  return R.map((c) => c.id, cards);
-};
 
 Selector.handCards = (playerId, state) =>
   Selector.orderCards(Selector.handIds(playerId, state), state);

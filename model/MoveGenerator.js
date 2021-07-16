@@ -39,8 +39,8 @@ const generateBuildStructureOptions = (cards, moveKey, playerId, state) => {
   const reduceFunction = (accum, stockpileCard) => {
     const { materialKey } = stockpileCard.cardType;
     const structureIds2 = Selector.unfinishedStructureIdsByMaterial(
-      playerId,
       materialKey,
+      playerId,
       state
     );
     const forEachFunction = (structureId) => {
