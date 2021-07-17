@@ -190,7 +190,7 @@ QUnit.test("label() Build a Structure from Hand", (assert) => {
   assert.ok(result);
   assert.equal(
     result,
-    "Craftsman Build a Structure from Hand (Academy Brick 2)"
+    "Build a Structure from Hand (Academy Craftsman Brick 2)"
   );
 });
 
@@ -224,7 +224,7 @@ QUnit.test("label() Build a Structure from Stockpile", (assert) => {
   assert.ok(result);
   assert.equal(
     result,
-    "Architect Build a Structure from Stockpile (Academy Brick 2)"
+    "Build a Structure from Stockpile (Academy Architect Brick 2)"
   );
 });
 
@@ -255,7 +255,7 @@ QUnit.test("label() Demand Material", (assert) => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result, "Legionary Demand Material (Academy Brick 2)");
+  assert.equal(result, "Demand Material (Academy Legionary Brick 2)");
 });
 
 QUnit.test("label() Draw a Card", (assert) => {
@@ -345,7 +345,7 @@ QUnit.test("label() Gather Material", (assert) => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result, "Laborer Gather Material (Academy Brick 2)");
+  assert.equal(result, "Gather Material (Academy Laborer Brick 2)");
 });
 
 QUnit.test("label() Hire a Client", (assert) => {
@@ -375,7 +375,7 @@ QUnit.test("label() Hire a Client", (assert) => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result, "Patron Hire a Client (Academy Brick 2)");
+  assert.equal(result, "Hire a Client (Academy Patron Brick 2)");
 });
 
 QUnit.test("label() Lay a Foundation", (assert) => {
@@ -405,7 +405,7 @@ QUnit.test("label() Lay a Foundation", (assert) => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result, "Architect Lay a Foundation (Academy Brick 2)");
+  assert.equal(result, "Lay a Foundation (Academy Architect Brick 2)");
 });
 
 QUnit.test("label() Refill Hand", (assert) => {
@@ -465,7 +465,7 @@ QUnit.test("label() Sell Material", (assert) => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result, "Merchant Sell Material (Academy Brick 2)");
+  assert.equal(result, "Sell Material (Academy Merchant Brick 2)");
 });
 
 const MoveFunctionTest = {};
