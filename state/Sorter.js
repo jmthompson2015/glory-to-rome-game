@@ -6,11 +6,13 @@ const isJack = (card) => (card ? OrderCard.isJack(card.cardKey) : false);
 
 Sorter.Move = {
   materialRoleSort: R.sortWith([
+    R.ascend(R.prop("moveKey")),
     R.ascend(R.prop("materialKey")),
     R.ascend(R.prop("roleKey")),
     R.ascend(R.prop("cardId")),
   ]),
   roleMaterialSort: R.sortWith([
+    R.ascend(R.prop("moveKey")),
     R.ascend(R.prop("roleKey")),
     R.ascend(R.prop("materialKey")),
     R.ascend(R.prop("cardId")),
