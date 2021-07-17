@@ -16,8 +16,12 @@ const MATERIAL_NAMES = Object.keys(MATERIAL_MAP);
 const ROLE_MAP = R.reduce(createNameMap, {}, Role.values());
 const ROLE_NAMES = Object.keys(ROLE_MAP);
 
-const createColorName = (item) =>
-  RU.createSpan(item.name, `${item.name}-${item.color}`, `b ${item.color}`);
+const createColorName = (item, keySuffix = "") =>
+  RU.createSpan(
+    item.name,
+    `${item.name}-${item.color}${keySuffix}`,
+    `b ${item.color}`
+  );
 
 const createTitle = (role) => (role ? "Select Action" : "Select Role");
 
@@ -32,18 +36,25 @@ const labelFunction = (currentPhaseKey, leadRoleKey) => (moveState) => {
       currentPhaseKey,
       leadRoleKey
     );
-    const words = labelString.split(" ");
+    let wordToCount = {};
     const reduceFunction = (accum, word) => {
       let newWord = `${word} `;
 
       if (MATERIAL_NAMES.includes(word)) {
-        newWord = createColorName(MATERIAL_MAP[word]);
+        const oldCount = wordToCount[word] || 0;
+        const newCount = oldCount + 1;
+        wordToCount = { ...wordToCount, [word]: newCount };
+        newWord = createColorName(MATERIAL_MAP[word], newCount);
       } else if (ROLE_NAMES.includes(word)) {
-        newWord = createColorName(ROLE_MAP[word]);
+        const oldCount = wordToCount[word] || 0;
+        const newCount = oldCount + 1;
+        wordToCount = { ...wordToCount, [word]: newCount };
+        newWord = createColorName(ROLE_MAP[word], newCount);
       }
 
       return R.append(" ", R.append(newWord, accum));
     };
+    const words = labelString.split(" ");
 
     answer = R.reduce(reduceFunction, [], words);
   }

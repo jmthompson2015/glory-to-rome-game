@@ -10,16 +10,24 @@ import ActionCreator from "../state/ActionCreator.js";
 import Selector from "../state/Selector.js";
 import StructureState from "../state/StructureState.js";
 
-const createCardDescription = (cardInstance, materialType) => {
+const createCardDescription = (cardInstance, roleType, materialType) => {
+  IV.validateNotNil("cardInstance", cardInstance);
   const cardType = cardInstance ? cardInstance.cardType : undefined;
   const cardName = cardType ? cardType.name : "";
-  const materialKey = materialType ? materialType.key : cardType.materialKey;
-  const materialName = materialKey ? Material.value(materialKey).name : "";
-  const materialValue = cardType ? cardType.materialValue : "";
+  let answer;
 
-  return OrderCard.isJack(cardInstance.cardKey)
-    ? `${cardName}`
-    : `${cardName} ${materialName} ${materialValue}`;
+  if (OrderCard.isJack(cardInstance.cardKey)) {
+    answer = cardName;
+  } else {
+    const roleKey = roleType ? roleType.key : cardType.roleKey;
+    const roleName = roleKey ? Role.value(roleKey).name : "";
+    const materialKey = materialType ? materialType.key : cardType.materialKey;
+    const materialName = materialKey ? Material.value(materialKey).name : "";
+    const materialValue = cardType ? cardType.materialValue : "";
+    answer = `${cardName} ${roleName} ${materialName} ${materialValue}`;
+  }
+
+  return answer;
 };
 
 const determineRoleName = (moveState, currentPhaseKey, leadRoleKey) => {
@@ -40,14 +48,14 @@ const determineRoleName = (moveState, currentPhaseKey, leadRoleKey) => {
 const createLabel = (moveState, currentPhaseKey, leadRoleKey) => {
   IV.validateNotNil("moveState", moveState);
   IV.validateIsString("currentPhaseKey", currentPhaseKey);
-  const { cardInstance, materialType, moveKey } = moveState;
+  const { cardInstance, materialType, moveKey, roleType } = moveState;
   const roleName = determineRoleName(moveState, currentPhaseKey, leadRoleKey);
   const moveName = MoveOption.value(moveKey).name;
-  const cardDesc = createCardDescription(cardInstance, materialType);
+  const cardDesc = createCardDescription(cardInstance, roleType, materialType);
 
   return R.isNil(moveState.moveKey)
     ? `${roleName} (${cardDesc})`
-    : `${roleName} ${moveName} (${cardDesc})`;
+    : `${moveName} (${cardDesc})`;
 };
 
 const modulo = (a, n) => ((a % n) + n) % n;
@@ -121,8 +129,12 @@ const MoveFunction = {
         currentPhaseKey,
         leadRoleKey
       );
-      const { cardInstance, materialType } = moveState;
-      const cardDesc = createCardDescription(cardInstance, materialType);
+      const { cardInstance, materialType, roleType } = moveState;
+      const cardDesc = createCardDescription(
+        cardInstance,
+        roleType,
+        materialType
+      );
 
       return `${roleName} (${cardDesc})`;
     },
