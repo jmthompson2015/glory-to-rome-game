@@ -12,23 +12,6 @@ import MoveFunction from "./MoveFunction.js";
 
 const MoveGenerator = {};
 
-const createMoves00 = (cardIds, moveKey, playerId, state) => {
-  const mapFunction = (cardId) => {
-    const card = Selector.orderCard(cardId, state);
-
-    return MoveState.create({
-      moveKey,
-      playerId,
-      cardId,
-      materialKey: card.cardType.materialKey,
-      roleKey: card.cardType.roleKey,
-      state,
-    });
-  };
-
-  return R.map(mapFunction, cardIds);
-};
-
 const createMoves = (cardIds, moveKey, playerId, state) => {
   const moveFunction = MoveFunction[moveKey];
   const reduceFunction = (accum, cardId) => {
@@ -119,7 +102,6 @@ const generateLayFoundationOptions = (handIds, playerId, state) => {
 
 const generateLeaderRoleOptions = (playerId, state) => {
   const reduceFunction = (accum, cardId) => {
-    const card = Selector.orderCard(cardId, state);
     const moveKey = MoveOption.DECLARE_ROLE;
 
     if (Selector.isJack(cardId, state)) {
@@ -135,6 +117,7 @@ const generateLeaderRoleOptions = (playerId, state) => {
         accum.push(...moves);
       }
     } else {
+      const card = Selector.orderCard(cardId, state);
       const { materialKey, roleKey } = card.cardType;
       accum.push(
         MoveState.create({
