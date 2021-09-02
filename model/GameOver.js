@@ -1,4 +1,5 @@
-import ActionCreator from "../state/ActionCreator.js";
+/* eslint no-console: ["error", { allow: ["info"] }] */
+
 import Selector from "../state/Selector.js";
 
 const GameOver = {};
@@ -13,32 +14,31 @@ GameOver.getWinner = (/* state */) => {
   return winnerId;
 };
 
-GameOver.isGameOver = (store, roundLimit = 100) => {
+GameOver.isGameOver = (state, roundLimit = 100) => {
   // Is there a winner?
-  const winnerId = GameOver.getWinner(store.getState());
+  const winnerId = GameOver.getWinner(state);
 
   if (!R.isNil(winnerId)) {
-    store.dispatch(ActionCreator.setWinner(winnerId));
     const player = Selector.player(winnerId);
-    store.dispatch(ActionCreator.setUserMessage(`Player ${player.name} won!`));
+    console.info(`Player ${player.name} won!`);
     return true;
   }
 
   // Did the draw deck run out?
-  if (store.getState().orderDeck.length === 0) {
-    store.dispatch(ActionCreator.setUserMessage(`The draw deck ran out.`));
+  if (state.orderDeck.length === 0) {
+    console.info(`The draw deck ran out.`);
     return true;
   }
 
   // Did the site cards run out?
-  if (store.getState().siteDeck.length === 0) {
-    store.dispatch(ActionCreator.setUserMessage(`The site cards ran out.`));
+  if (state.siteDeck.length === 0) {
+    console.info(`The site cards ran out.`);
     return true;
   }
 
   // Did we hit the round limit?
-  if (Selector.currentRound(store.getState()) >= roundLimit) {
-    store.dispatch(ActionCreator.setUserMessage(`Round limit exceeded.`));
+  if (Selector.currentRound(state) >= roundLimit) {
+    console.info(`Round limit exceeded.`);
     return true;
   }
 

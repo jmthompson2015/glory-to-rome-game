@@ -21,7 +21,7 @@ QUnit.test("isGameOver() false", (assert) => {
   const store = TestData.createStore();
 
   // Run.
-  const result = GameOver.isGameOver(store);
+  const result = GameOver.isGameOver(store.getState());
 
   // Verify.
   assert.equal(result, false);
@@ -33,7 +33,7 @@ QUnit.test("isGameOver() empty draw deck", (assert) => {
   store.dispatch(ActionCreator.setOrderDeck([]));
 
   // Run.
-  const result = GameOver.isGameOver(store);
+  const result = GameOver.isGameOver(store.getState());
 
   // Verify.
   assert.equal(result, true);
@@ -45,7 +45,7 @@ QUnit.test("isGameOver() empty site cards", (assert) => {
   store.dispatch(ActionCreator.setSiteDeck([]));
 
   // Run.
-  const result = GameOver.isGameOver(store);
+  const result = GameOver.isGameOver(store.getState());
 
   // Verify.
   assert.equal(result, true);

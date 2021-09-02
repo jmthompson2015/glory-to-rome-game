@@ -8,7 +8,7 @@ import StepFunction from "./StepFunction.js";
 
 const GameFunction = {};
 
-GameFunction.isGameOver = (store) => GameOver.isGameOver(store);
+GameFunction.isGameOver = (store) => GameOver.isGameOver(store.getState());
 
 GameFunction.phaseKeys = () => Phase.keys();
 
