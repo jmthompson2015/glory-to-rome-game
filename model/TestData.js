@@ -8,6 +8,7 @@ import BonusCardState from "../state/BonusCardState.js";
 import OrderCardState from "../state/OrderCardState.js";
 import PlayerState from "../state/PlayerState.js";
 import Reducer from "../state/Reducer.js";
+import Selector from "../state/Selector.js";
 
 import DeckBuilder from "./DeckBuilder.js";
 import Setup from "./Setup.js";
@@ -80,7 +81,8 @@ TestData.createStore = () => {
 
 TestData.printCardPool = (store) => {
   const { cardPool } = store.getState();
-  console.info(`cardPool ${JSON.stringify(cardPool)}`);
+  const cards = Selector.orderCards(cardPool, store.getState());
+  console.info(`cardPool ${JSON.stringify(cards)}`);
 };
 
 TestData.printHands = (store) => {

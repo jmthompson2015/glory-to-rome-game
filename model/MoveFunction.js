@@ -85,7 +85,25 @@ const MoveFunction = {
         );
       }
     },
-    isLegal: (/* shipId, state */) => true,
+    isLegal: (moveState, state) => {
+      IV.validateNotNil("moveState", moveState);
+      IV.validateNotNil("state", state);
+      const phaseKey = Selector.currentPhaseKey(state);
+      const leadRoleKey = Selector.leadRoleKey(state);
+      const moveOption = MoveOption.value(MoveOption.BUILD_FROM_HAND);
+      const { cardId, structureId } = moveState;
+      const handCard = Selector.orderCard(cardId, state);
+      const structure = Selector.structure(structureId, state);
+
+      return (
+        phaseKey === Phase.PERFORM_ROLE &&
+        moveOption.roleKeys.includes(leadRoleKey) &&
+        !R.isNil(handCard) &&
+        !R.isNil(structure) &&
+        !Selector.isStructureComplete(structureId, state) &&
+        handCard.cardType.materialKey === structure.siteType.materialKey
+      );
+    },
     label: createLabel,
   },
   [MoveOption.BUILD_FROM_STOCKPILE]: {
@@ -115,7 +133,25 @@ const MoveFunction = {
         );
       }
     },
-    isLegal: (/* shipId, state */) => true,
+    isLegal: (moveState, state) => {
+      IV.validateNotNil("moveState", moveState);
+      IV.validateNotNil("state", state);
+      const phaseKey = Selector.currentPhaseKey(state);
+      const leadRoleKey = Selector.leadRoleKey(state);
+      const moveOption = MoveOption.value(MoveOption.BUILD_FROM_STOCKPILE);
+      const { cardId, structureId } = moveState;
+      const stockpileCard = Selector.orderCard(cardId, state);
+      const structure = Selector.structure(structureId, state);
+
+      return (
+        phaseKey === Phase.PERFORM_ROLE &&
+        moveOption.roleKeys.includes(leadRoleKey) &&
+        !R.isNil(stockpileCard) &&
+        !R.isNil(structure) &&
+        !Selector.isStructureComplete(structureId, state) &&
+        stockpileCard.cardType.materialKey === structure.siteType.materialKey
+      );
+    },
     label: createLabel,
   },
   [MoveOption.DECLARE_ROLE]: {
@@ -211,7 +247,11 @@ const MoveFunction = {
       IV.validateNotEmpty("orderDeck", store.getState().orderDeck);
       store.dispatch(ActionCreator.transferOrderToHand(playerId));
     },
-    isLegal: (playerId, state) => {
+    isLegal: (moveState, state) => {
+      IV.validateNotNil("moveState", moveState);
+      IV.validateNotNil("state", state);
+      const { playerId } = moveState;
+      IV.validateIsNumber("playerId", playerId);
       const leadRoleKey = Selector.leadRoleKey(state);
       const roleKey = Role.THINKER;
       const moveOption = MoveOption.value(MoveOption.DRAW_CARD);
@@ -245,7 +285,9 @@ const MoveFunction = {
       IV.validateNotEmpty("jackDeck", store.getState().jackDeck);
       store.dispatch(ActionCreator.transferJackToHand(playerId));
     },
-    isLegal: (playerId, state) => {
+    isLegal: (moveState, state) => {
+      IV.validateNotNil("moveState", moveState);
+      IV.validateNotNil("state", state);
       const leadRoleKey = Selector.leadRoleKey(state);
       const roleKey = Role.THINKER;
       const moveOption = MoveOption.value(MoveOption.DRAW_JACK);
@@ -284,17 +326,20 @@ const MoveFunction = {
       store.dispatch(ActionCreator.setUserMessage(userMessage));
       store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId));
     },
-    isLegal: (playerId, state) => {
+    isLegal: (moveState, state) => {
+      IV.validateNotNil("moveState", moveState);
+      IV.validateNotNil("state", state);
+      const { cardId } = moveState;
+      const phaseKey = Selector.currentPhaseKey(state);
       const leadRoleKey = Selector.leadRoleKey(state);
-      const roleKey = Role.LABORER;
       const moveOption = MoveOption.value(MoveOption.GATHER_MATERIAL);
       const cardPool = Selector.cardPool(state);
       return (
-        leadRoleKey === roleKey &&
-        !R.isNil(moveOption) &&
-        moveOption.roleKeys.includes(roleKey) &&
+        phaseKey === Phase.PERFORM_ROLE &&
+        moveOption.roleKeys.includes(leadRoleKey) &&
         !R.isNil(cardPool) &&
-        cardPool.length > 0
+        cardPool.length > 0 &&
+        cardPool.includes(cardId)
       );
     },
     label: createLabel,
@@ -335,7 +380,20 @@ const MoveFunction = {
       });
       store.dispatch(ActionCreator.layFoundation(playerId, structureState));
     },
-    isLegal: (/* shipId, state */) => true,
+    isLegal: (moveState, state) => {
+      IV.validateNotNil("moveState", moveState);
+      IV.validateNotNil("state", state);
+      const { materialKey } = moveState;
+      const phaseKey = Selector.currentPhaseKey(state);
+      const leadRoleKey = Selector.leadRoleKey(state);
+      const moveOption = MoveOption.value(MoveOption.LAY_FOUNDATION);
+      const siteIds = Selector.siteIdsByMaterial(materialKey, state);
+      return (
+        phaseKey === Phase.PERFORM_ROLE &&
+        moveOption.roleKeys.includes(leadRoleKey) &&
+        siteIds.length > 0
+      );
+    },
     label: createLabel,
   },
   [MoveOption.REFILL_HAND]: {
@@ -350,7 +408,11 @@ const MoveFunction = {
         store.dispatch(ActionCreator.transferOrderToHand(playerId));
       }
     },
-    isLegal: (playerId, state) => {
+    isLegal: (moveState, state) => {
+      IV.validateNotNil("moveState", moveState);
+      IV.validateNotNil("state", state);
+      const { playerId } = moveState;
+      IV.validateIsNumber("playerId", playerId);
       const leadRoleKey = Selector.leadRoleKey(state);
       const roleKey = Role.THINKER;
       const moveOption = MoveOption.value(MoveOption.REFILL_HAND);
@@ -390,17 +452,20 @@ const MoveFunction = {
       store.dispatch(ActionCreator.setUserMessage(message));
       store.dispatch(ActionCreator.transferStockpileToVault(playerId, cardId));
     },
-    isLegal: (playerId, state) => {
+    isLegal: (moveState, state) => {
+      IV.validateNotNil("moveState", moveState);
+      IV.validateNotNil("state", state);
+      const { cardId, playerId } = moveState;
+      const phaseKey = Selector.currentPhaseKey(state);
       const leadRoleKey = Selector.leadRoleKey(state);
-      const roleKey = Role.MERCHANT;
       const moveOption = MoveOption.value(MoveOption.SELL_MATERIAL);
       const stockpileIds = Selector.stockpileIds(playerId, state);
       return (
-        leadRoleKey === roleKey &&
-        !R.isNil(moveOption) &&
-        moveOption.roleKeys.includes(roleKey) &&
+        phaseKey === Phase.PERFORM_ROLE &&
+        moveOption.roleKeys.includes(leadRoleKey) &&
         !R.isNil(stockpileIds) &&
-        stockpileIds.length > 0
+        stockpileIds.length > 0 &&
+        stockpileIds.includes(cardId)
       );
     },
     label: createLabel,
@@ -437,14 +502,14 @@ MoveFunction.execute = (moveState, state) => {
   return moveFunction.execute(moveState, state);
 };
 
-MoveFunction.isLegal = (moveKey, playerId, state) => {
-  IV.validateIsString("moveKey", moveKey);
-  IV.validateIsNumber("playerId", playerId);
+MoveFunction.isLegal = (moveState, state) => {
+  IV.validateNotNil("moveState", moveState);
   IV.validateNotNil("state", state);
+  const { moveKey } = moveState;
   const moveFunction = MoveFunction[moveKey];
   IV.validateNotNil("moveFunction", moveFunction);
 
-  return moveFunction.isLegal(playerId, state);
+  return moveFunction.isLegal(moveState, state);
 };
 
 MoveFunction.label = (moveState, currentPhaseKey, leadRoleKey) => {

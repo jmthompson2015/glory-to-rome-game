@@ -19,24 +19,36 @@ QUnit.test("isLegal() Draw a Card", (assert) => {
   const leaderId = 1;
   const roleKey = Role.THINKER;
   const playerId = 1;
+  const cardId = 27;
+  const materialKey = Material.BRICK;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
   store.dispatch(ActionCreator.setCurrentPhase(Phase.DECLARE_ROLE));
-  console.log(`Order Deck`);
+  const moveState0 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(
-    MoveFunction.isLegal(moveKey, playerId, store.getState()),
-    false
-  );
+  assert.equal(MoveFunction.isLegal(moveState0, store.getState()), false);
 
   // Setup.
   store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const moveState1 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(MoveFunction.isLegal(moveKey, playerId, store.getState()), true);
+  assert.equal(MoveFunction.isLegal(moveState1, store.getState()), true);
 });
 
 QUnit.test("isLegal() Draw a Jack", (assert) => {
@@ -45,24 +57,36 @@ QUnit.test("isLegal() Draw a Jack", (assert) => {
   const leaderId = 1;
   const roleKey = Role.THINKER;
   const playerId = 1;
+  const cardId = 27;
+  const materialKey = Material.BRICK;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
   store.dispatch(ActionCreator.setCurrentPhase(Phase.DECLARE_ROLE));
-  console.log(`Order Deck`);
+  const moveState0 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(
-    MoveFunction.isLegal(moveKey, playerId, store.getState()),
-    false
-  );
+  assert.equal(MoveFunction.isLegal(moveState0, store.getState()), false);
 
   // Setup.
   store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const moveState1 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(MoveFunction.isLegal(moveKey, playerId, store.getState()), true);
+  assert.equal(MoveFunction.isLegal(moveState1, store.getState()), true);
 });
 
 QUnit.test("isLegal() Gather Material", (assert) => {
@@ -71,24 +95,38 @@ QUnit.test("isLegal() Gather Material", (assert) => {
   const leaderId = 1;
   const roleKey = Role.LABORER;
   const playerId = 1;
+  const cardId = 27;
+  const materialKey = Material.BRICK;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
-  store.dispatch(ActionCreator.setCurrentPhase(Phase.DECLARE_ROLE));
-  console.log(`Order Deck`);
+  store.dispatch(ActionCreator.setCurrentPhase(Phase.PERFORM_ROLE));
+  console.log(`Card Pool`);
+  TestData.printCardPool(store);
+  const moveState0 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(
-    MoveFunction.isLegal(moveKey, playerId, store.getState()),
-    false
-  );
+  assert.equal(MoveFunction.isLegal(moveState0, store.getState()), false);
 
   // Setup.
   store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const moveState1 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(MoveFunction.isLegal(moveKey, playerId, store.getState()), true);
+  assert.equal(MoveFunction.isLegal(moveState1, store.getState()), true);
 });
 
 QUnit.test("isLegal() Refill Hand", (assert) => {
@@ -97,33 +135,49 @@ QUnit.test("isLegal() Refill Hand", (assert) => {
   const leaderId = 1;
   const roleKey = Role.THINKER;
   const playerId = 1;
+  const cardId = 27;
+  const materialKey = Material.BRICK;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
   store.dispatch(ActionCreator.setCurrentPhase(Phase.DECLARE_ROLE));
-  console.log(`Hand`);
+  const moveState0 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(
-    MoveFunction.isLegal(moveKey, playerId, store.getState()),
-    false
-  );
+  assert.equal(MoveFunction.isLegal(moveState0, store.getState()), false);
 
   // Setup.
   store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const moveState1 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(
-    MoveFunction.isLegal(moveKey, playerId, store.getState()),
-    false
-  );
+  assert.equal(MoveFunction.isLegal(moveState1, store.getState()), false);
 
   // Setup.
   store.dispatch(ActionCreator.transferHandToCamp(playerId, 2));
+  const moveState2 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(MoveFunction.isLegal(moveKey, playerId, store.getState()), true);
+  assert.equal(MoveFunction.isLegal(moveState2, store.getState()), true);
 });
 
 QUnit.test("isLegal() Sell Material", (assert) => {
@@ -132,32 +186,53 @@ QUnit.test("isLegal() Sell Material", (assert) => {
   const leaderId = 1;
   const roleKey = Role.MERCHANT;
   const playerId = 1;
+  const cardId = 2;
+  const materialKey = Material.BRICK;
   const store = TestData.createStore();
   store.dispatch(ActionCreator.setDelay(TestData.DELAY));
   store.dispatch(ActionCreator.setCurrentRound(1));
   store.dispatch(ActionCreator.setCurrentPlayer(leaderId));
-  store.dispatch(ActionCreator.setCurrentPhase(Phase.DECLARE_ROLE));
+  store.dispatch(ActionCreator.setCurrentPhase(Phase.PERFORM_ROLE));
+  console.log(`Hands`);
+  TestData.printHands(store);
+  const moveState0 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(
-    MoveFunction.isLegal(moveKey, playerId, store.getState()),
-    false
-  );
+  assert.equal(MoveFunction.isLegal(moveState0, store.getState()), false);
 
   // Setup.
   store.dispatch(ActionCreator.setLeadRole(roleKey));
+  const moveState1 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(
-    MoveFunction.isLegal(moveKey, playerId, store.getState()),
-    false
-  );
+  assert.equal(MoveFunction.isLegal(moveState1, store.getState()), false);
 
   // Setup.
-  store.dispatch(ActionCreator.transferHandToStockpile(playerId, 2, playerId));
+  store.dispatch(
+    ActionCreator.transferHandToStockpile(playerId, cardId, playerId)
+  );
+  const moveState2 = MoveState.create({
+    moveKey,
+    playerId,
+    cardId,
+    materialKey,
+    state: store.getState(),
+  });
 
   // Run / Verify.
-  assert.equal(MoveFunction.isLegal(moveKey, playerId, store.getState()), true);
+  assert.equal(MoveFunction.isLegal(moveState2, store.getState()), true);
 });
 
 QUnit.test("label() Build a Structure from Hand", (assert) => {

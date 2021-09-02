@@ -8,9 +8,11 @@ import Role from "../artifact/Role.js";
 import MoveState from "../state/MoveState.js";
 import Selector from "../state/Selector.js";
 
+import MoveFunction from "./MoveFunction.js";
+
 const MoveGenerator = {};
 
-const createMoves = (cardIds, moveKey, playerId, state) => {
+const createMoves00 = (cardIds, moveKey, playerId, state) => {
   const mapFunction = (cardId) => {
     const card = Selector.orderCard(cardId, state);
 
@@ -27,6 +29,29 @@ const createMoves = (cardIds, moveKey, playerId, state) => {
   return R.map(mapFunction, cardIds);
 };
 
+const createMoves = (cardIds, moveKey, playerId, state) => {
+  const moveFunction = MoveFunction[moveKey];
+  const reduceFunction = (accum, cardId) => {
+    const card = Selector.orderCard(cardId, state);
+    const moveState = MoveState.create({
+      moveKey,
+      playerId,
+      cardId,
+      materialKey: card.cardType.materialKey,
+      roleKey: card.cardType.roleKey,
+      state,
+    });
+
+    if (moveFunction.isLegal(moveState, state)) {
+      accum.push(moveState);
+    }
+
+    return accum;
+  };
+
+  return R.reduce(reduceFunction, [], cardIds);
+};
+
 const filterJacks = (cardIds, state) => {
   IV.validateNotNil("state", state);
   IV.validateIsArray("cardIds", cardIds);
@@ -36,25 +61,31 @@ const filterJacks = (cardIds, state) => {
 };
 
 const generateBuildStructureOptions = (cards, moveKey, playerId, state) => {
-  const reduceFunction = (accum, stockpileCard) => {
-    const { materialKey } = stockpileCard.cardType;
-    const structureIds2 = Selector.unfinishedStructureIdsByMaterial(
+  const moveFunction = MoveFunction[moveKey];
+  const reduceFunction = (accum, card) => {
+    const { materialKey } = card.cardType;
+    const structureIds = Selector.unfinishedStructureIdsByMaterial(
       materialKey,
       playerId,
       state
     );
     const forEachFunction = (structureId) => {
-      const move = MoveState.create({
-        cardId: stockpileCard.id,
+      const moveState = MoveState.create({
+        cardId: card.id,
+        materialKey,
         moveKey,
         playerId,
-        roleKey: stockpileCard.cardType.roleKey,
+        roleKey: card.cardType.roleKey,
         state,
         structureId,
       });
-      accum.push(move);
+
+      if (moveFunction.isLegal(moveState, state)) {
+        accum.push(moveState);
+      }
     };
-    R.forEach(forEachFunction, structureIds2);
+    R.forEach(forEachFunction, structureIds);
+
     return accum;
   };
 
@@ -62,23 +93,23 @@ const generateBuildStructureOptions = (cards, moveKey, playerId, state) => {
 };
 
 const generateLayFoundationOptions = (handIds, playerId, state) => {
+  const moveKey = MoveOption.LAY_FOUNDATION;
+  const moveFunction = MoveFunction[moveKey];
   const reduceFunction = (accum, card) => {
     const { materialKey } = card.cardType;
-    IV.validateNotNil("materialKey", materialKey);
-    const siteIds = Selector.siteIdsByMaterial(materialKey, state);
+    const moveState = MoveState.create({
+      cardId: card.id,
+      materialKey,
+      moveKey,
+      playerId,
+      roleKey: card.cardType.roleKey,
+      state,
+    });
 
-    if (siteIds.length > 0) {
-      accum.push(
-        MoveState.create({
-          cardId: card.id,
-          materialKey,
-          moveKey: MoveOption.LAY_FOUNDATION,
-          playerId,
-          roleKey: card.cardType.roleKey,
-          state,
-        })
-      );
+    if (moveFunction.isLegal(moveState, state)) {
+      accum.push(moveState);
     }
+
     return accum;
   };
   const handCards = Selector.orderCards(handIds, state);
@@ -167,53 +198,35 @@ const generateNonLeaderRoleOptions = (playerId, state) => {
 MoveGenerator.generateArchitectOptions = (playerId, state) => {
   const handIds0 = Selector.handIds(playerId, state);
   const handIds = filterJacks(handIds0, state);
-  let answer = [];
-
-  if (!R.isEmpty(handIds)) {
-    answer = generateLayFoundationOptions(handIds, playerId, state);
-  }
+  const answer = generateLayFoundationOptions(handIds, playerId, state);
 
   const moveKey = MoveOption.BUILD_FROM_STOCKPILE;
   const stockpileCards = Selector.stockpileCards(playerId, state);
-  const structureIds = Selector.unfinishedStructureIds(playerId, state);
+  const newOptions = generateBuildStructureOptions(
+    stockpileCards,
+    moveKey,
+    playerId,
+    state
+  );
 
-  if (!R.isEmpty(stockpileCards) && !R.isEmpty(structureIds)) {
-    const newOptions = generateBuildStructureOptions(
-      stockpileCards,
-      moveKey,
-      playerId,
-      state
-    );
-    answer = R.concat(answer, newOptions);
-  }
-
-  return answer;
+  return R.concat(answer, newOptions);
 };
 
 MoveGenerator.generateCraftsmanOptions = (playerId, state) => {
   const handIds0 = Selector.handIds(playerId, state);
   const handIds = filterJacks(handIds0, state);
-  let answer = [];
-
-  if (!R.isEmpty(handIds)) {
-    answer = generateLayFoundationOptions(handIds, playerId, state);
-  }
+  const answer = generateLayFoundationOptions(handIds, playerId, state);
 
   const moveKey = MoveOption.BUILD_FROM_HAND;
-  const structureIds = Selector.unfinishedStructureIds(playerId, state);
+  const handCards = Selector.orderCards(handIds, state);
+  const newOptions = generateBuildStructureOptions(
+    handCards,
+    moveKey,
+    playerId,
+    state
+  );
 
-  if (!R.isEmpty(handIds) && !R.isEmpty(structureIds)) {
-    const handCards = Selector.orderCards(handIds, state);
-    const newOptions = generateBuildStructureOptions(
-      handCards,
-      moveKey,
-      playerId,
-      state
-    );
-    answer = R.concat(answer, newOptions);
-  }
-
-  return answer;
+  return R.concat(answer, newOptions);
 };
 
 MoveGenerator.generateLaborerOptions = (playerId, state) => {

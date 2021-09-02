@@ -2,6 +2,7 @@ import InputValidator from "../utility/InputValidator.js";
 
 import Material from "../artifact/Material.js";
 import MoveOption from "../artifact/MoveOption.js";
+import Phase from "../artifact/Phase.js";
 import Role from "../artifact/Role.js";
 
 import ActionCreator from "../state/ActionCreator.js";
@@ -17,6 +18,8 @@ QUnit.test("generateArchitectOptions() Build a Structure", (assert) => {
   // Setup.
   const playerId = 1;
   const store = TestData.createStore();
+  store.dispatch(ActionCreator.setCurrentPhase(Phase.PERFORM_ROLE));
+  store.dispatch(ActionCreator.setLeadRole(Role.ARCHITECT));
   // Lay a foundation.
   const handIds0 = Selector.handIds(playerId, store.getState());
   const foundationId = R.head(handIds0);
@@ -67,6 +70,8 @@ QUnit.test("generateArchitectOptions() Lay Foundation", (assert) => {
   // Setup.
   const playerId = 1;
   const store = TestData.createStore();
+  store.dispatch(ActionCreator.setCurrentPhase(Phase.PERFORM_ROLE));
+  store.dispatch(ActionCreator.setLeadRole(Role.ARCHITECT));
 
   // Run.
   const result = MoveGenerator.generateArchitectOptions(
@@ -98,6 +103,8 @@ QUnit.test("generateCraftsmanOptions() Build a Structure", (assert) => {
   // Setup.
   const playerId = 1;
   const store = TestData.createStore();
+  store.dispatch(ActionCreator.setCurrentPhase(Phase.PERFORM_ROLE));
+  store.dispatch(ActionCreator.setLeadRole(Role.CRAFTSMAN));
   // Lay a foundation.
   const handIds0 = Selector.handIds(playerId, store.getState());
   const foundationId = R.head(handIds0);
@@ -151,6 +158,8 @@ QUnit.test("generateCraftsmanOptions() Lay Foundation", (assert) => {
   // Setup.
   const playerId = 1;
   const store = TestData.createStore();
+  store.dispatch(ActionCreator.setCurrentPhase(Phase.PERFORM_ROLE));
+  store.dispatch(ActionCreator.setLeadRole(Role.CRAFTSMAN));
 
   // Run.
   const result = MoveGenerator.generateCraftsmanOptions(
@@ -182,6 +191,8 @@ QUnit.test("generateLaborerOptions()", (assert) => {
   // Setup.
   const playerId = 1;
   const store = TestData.createStore();
+  store.dispatch(ActionCreator.setCurrentPhase(Phase.PERFORM_ROLE));
+  store.dispatch(ActionCreator.setLeadRole(Role.LABORER));
 
   // Run.
   const result = MoveGenerator.generateLaborerOptions(
@@ -248,6 +259,8 @@ QUnit.test("generateMerchantOptions()", (assert) => {
   // Setup.
   const playerId = 1;
   const store = TestData.createStore();
+  store.dispatch(ActionCreator.setCurrentPhase(Phase.PERFORM_ROLE));
+  store.dispatch(ActionCreator.setLeadRole(Role.MERCHANT));
   const cardId0 = R.head(Selector.cardPool(store.getState()));
   store.dispatch(ActionCreator.transferPoolToStockpile(playerId, cardId0));
   const cardId1 = R.last(Selector.cardPool(store.getState()));
