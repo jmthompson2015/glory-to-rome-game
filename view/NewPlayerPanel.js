@@ -3,7 +3,7 @@ import PlayerState from "../state/PlayerState.js";
 const { ReactUtilities: RU, Select } = ReactComponent;
 
 const computerTypes = [
-  // "MCTSPlayerStrategy",
+  "MCTSPlayerStrategy",
   "RandomPlayerStrategy",
   // "SimplePlayerStrategy",
 ];

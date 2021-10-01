@@ -6,6 +6,7 @@ module.exports = {
   globals: {
     GameEngine: true,
     Immutable: true,
+    MCTS: true,
     PropTypes: true,
     QUnit: true,
     R: true,

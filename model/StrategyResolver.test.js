@@ -1,4 +1,5 @@
 import HumanPlayerStrategy from "./HumanPlayerStrategy.js";
+import MCTSPlayerStrategy from "./MCTSPlayerStrategy.js";
 import RandomPlayerStrategy from "./RandomPlayerStrategy.js";
 import StrategyResolver from "./StrategyResolver.js";
 
@@ -8,6 +9,13 @@ QUnit.test("resolve() HumanPlayerStrategy", (assert) => {
   assert.equal(
     StrategyResolver.resolve("HumanPlayerStrategy"),
     HumanPlayerStrategy
+  );
+});
+
+QUnit.test("resolve() MCTSPlayerStrategy", (assert) => {
+  assert.equal(
+    StrategyResolver.resolve("MCTSPlayerStrategy"),
+    MCTSPlayerStrategy
   );
 });
 
